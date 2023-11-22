@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 7.0.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>【数据集处理】LS-VID - MudSynth</title>
+
+  
+    <meta name="description" content="数据集简介 原始视频捕获 利用 15 个摄像机网络并选择 4 天进行数据记录。 每天上午、中午、下午分别拍摄3小时的视频。我们最终的原始视频包含 180 小时的视频、12 个室外摄像机、3 个室内摄像机和 12 个时段。 检测和追踪 Faster RCNN 用于行人检测。之后，数据集作者设计了一种特征匹配策略来跟踪每个摄像机中检测到的每个行人。在丢弃一些长度过短的序列后，我们最终收集了 3,772">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数据集处理】LS-VID">
+<meta property="og:url" content="http://example.com/2023/09/19/note/ReID/Video/%E3%80%90%E6%95%B0%E6%8D%AE%E9%9B%86%E5%A4%84%E7%90%86%E3%80%91LS-VID/index.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="数据集简介 原始视频捕获 利用 15 个摄像机网络并选择 4 天进行数据记录。 每天上午、中午、下午分别拍摄3小时的视频。我们最终的原始视频包含 180 小时的视频、12 个室外摄像机、3 个室内摄像机和 12 个时段。 检测和追踪 Faster RCNN 用于行人检测。之后，数据集作者设计了一种特征匹配策略来跟踪每个摄像机中检测到的每个行人。在丢弃一些长度过短的序列后，我们最终收集了 3,772">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/Pasted%20image%2020230919113217.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/Pasted%20image%2020230919113451.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/Pasted%20image%2020230919113504.png">
+<meta property="article:published_time" content="2023-09-19T03:04:07.349Z">
+<meta property="article:modified_time" content="2023-11-19T08:09:44.509Z">
+<meta property="article:author" content="Mudrobot">
+<meta property="article:tag" content="ReID">
+<meta property="article:tag" content="pedestrian_retrieval">
+<meta property="article:tag" content="Video">
+<meta property="article:tag" content="dataset">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/Pasted%20image%2020230919113217.png">
+  
+  
+  
+  <meta name="keywords" content="ReID,pedestrian_retrieval,Video,dataset">
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+    <script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+    <script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/assets/cat.jpg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title">MudSynth</div><div class="sub normal cap">Thinking</div><div class="sub hover cap" style="opacity:0"> Inspiring</div></a></div>
+
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/wiki/">项目</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a></nav>
+</header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">【数据集处理】LS-VID</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E7%AE%80%E4%BB%8B"><span class="toc-text">数据集简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%A7%8B%E8%A7%86%E9%A2%91%E6%8D%95%E8%8E%B7"><span class="toc-text">原始视频捕获</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E5%92%8C%E8%BF%BD%E8%B8%AA"><span class="toc-text">检测和追踪</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-text">特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E4%BD%9C%E8%80%85%E8%AE%AD%E7%BB%83%E6%96%B9%E6%A1%88"><span class="toc-text">原作者训练方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BB%93%E6%9E%84"><span class="toc-text">数据集结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#list-sequence%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-text">list_sequence文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#list-frame%E6%96%87%E4%BB%B6%E5%A4%B9%EF%BC%88%E4%B8%8D%E4%BD%BF%E7%94%A8%EF%BC%89"><span class="toc-text">list_frame文件夹（不使用）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#test-data%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-text">test&#x2F;data文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tracklet-test-tracklet-train-tracklet-val%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-text">tracklet_test,tracklet_train,tracklet_val文件夹</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%A4%84%E7%90%86"><span class="toc-text">代码处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#dataset%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">dataset初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Step-1"><span class="toc-text">Step 1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step-2"><span class="toc-text">Step 2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Step-3"><span class="toc-text">Step 3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA"><span class="toc-text">数据增强</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Dataloader%E9%83%A8%E5%88%86"><span class="toc-text">Dataloader部分</span></a></li></ol></li></ol></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/ReID/">ReID</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/ReID/Video/">Video</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-09-19T03:04:07.349Z">2023-09-19</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>【数据集处理】LS-VID</span></h1>
+<h2 id="数据集简介">数据集简介</h2>
+<h3 id="原始视频捕获">原始视频捕获</h3>
+<p>利用 15 个摄像机网络并选择 4 天进行数据记录。 每天上午、中午、下午分别拍摄3小时的视频。我们最终的原始视频包含 180 小时的视频、12 个室外摄像机、3 个室内摄像机和 12 个时段。</p>
+<h3 id="检测和追踪">检测和追踪</h3>
+<p>Faster RCNN 用于行人检测。之后，数据集作者设计了一种特征匹配策略来跟踪每个摄像机中检测到的每个行人。在丢弃一些长度过短的序列后，我们最终收集了 3,772 名行人的 14,943 个序列，平均序列长度为 200 帧。</p>
+<h3 id="特点">特点</h3>
+<p>LS-VID中的示例序列如下图所示，统计数据在表1和图4中给出。LS-VID显示出以下新特征： (1)更长的序列。 (2)更准确的行人轨迹。 (3) 目前最大的视频ReID数据集。 (4)定义更现实、更具挑战性的ReID任务。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/Pasted%20image%2020230919113217.png"/></div></div>
+<blockquote>
+<p>从人物轨迹中均匀采样的帧。每行显示同一个人在不同摄像机下的两个序列。与现有数据集相比，LS-VID 呈现出更丰富的光照、场景和背景等变化。出于隐私目的，我们遮盖了脸部。</p>
+</blockquote>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/Pasted%20image%2020230919113451.png"/></div></div>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/Pasted%20image%2020230919113504.png"/></div></div>
+<h3 id="原作者训练方案">原作者训练方案</h3>
+<p>由于数据标注成本高昂，我们将数据集以 1:3 的比例随机划分为训练集和测试集，以鼓励更有效的训练策略。我们进一步划分一个小的验证集。最后，训练集包含 842 个身份的 550,419 个边界框，验证集包含 200 个身份的 155,191 个边界框，测试集包含 2,730 个身份的 2,277,075 个边界框。与现有视频 ReID 数据集 [56, 47] 类似，LS-VID 利用累积匹配特征（CMC）曲线和平均精度（mAP）作为评估指标。</p>
+<h2 id="数据集结构">数据集结构</h2>
+<p>数据文件树如下图所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">LS-VID</span><br><span class="line">  ├── list_frame</span><br><span class="line">  |  ├── list_lvreid_test.txt</span><br><span class="line">  |  ├── list_lvreid_train.txt</span><br><span class="line">  |  └── list_lvreid_val.txt</span><br><span class="line">  ├── list_sequence</span><br><span class="line">  |  ├── list_seq_test.txt</span><br><span class="line">  |  ├── list_seq_train.txt</span><br><span class="line">  |  └── list_seq_val.txt</span><br><span class="line">  ├── test</span><br><span class="line">  |  ├── compute_AP.m</span><br><span class="line">  |  ├── data</span><br><span class="line">  |  ├── make_video_fea.m</span><br><span class="line">  |  └── test.m</span><br><span class="line">  ├── tracklet_test</span><br><span class="line">  |  ├── 0000</span><br><span class="line">  |  ├── 0001</span><br><span class="line">  |  ...</span><br><span class="line">  ├── tracklet_train</span><br><span class="line">  |  ├── 0000</span><br><span class="line">  |  ├── 0001</span><br><span class="line">  |  ...</span><br><span class="line">  ├── tracklet_val</span><br><span class="line">  |  ├── 0000</span><br><span class="line">  |  ├── 0001</span><br><span class="line">  |  ...</span><br></pre></td></tr></table></figure>
+<h3 id="list-sequence文件夹"><code>list_sequence</code>文件夹</h3>
+<p>里面的三个txt文件分别代表训练，测试，验证集合。记录着<strong>每个对应集合文件夹</strong>中图像序列<strong>文件夹</strong>所对应的人物ID编号。</p>
+<p>格式如下(test为例)：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tracklet_test/0000/00 0</span><br><span class="line">tracklet_test/0000/01 0</span><br><span class="line">tracklet_test/0000/02 0</span><br><span class="line">tracklet_test/0000/03 0</span><br><span class="line">tracklet_test/0001/00 1</span><br><span class="line">tracklet_test/0001/01 1</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>命名规则，第一个文件夹代表的是人物ID，最后的前缀代表的是相机</p>
+</blockquote>
+<h3 id="list-frame文件夹（不使用）"><code>list_frame</code>文件夹（不使用）</h3>
+<p>里面的东西记录着<strong>每个文件夹中的每张图像</strong>对应的人物ID编号。一般不使用</p>
+<p>格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">tracklet_test/0000/00_0000_01_0303morning.jpg 0</span><br><span class="line">tracklet_test/0000/00_0001_01_0303morning.jpg 0</span><br><span class="line">tracklet_test/0000/00_0002_01_0303morning.jpg 0</span><br><span class="line">tracklet_test/0000/00_0003_01_0303morning.jpg 0</span><br><span class="line">tracklet_test/0000/00_0004_01_0303morning.jpg 0</span><br><span class="line">tracklet_test/0000/00_0005_01_0303morning.jpg 0</span><br><span class="line">tracklet_test/0000/00_0006_01_0303morning.jpg 0</span><br><span class="line">...</span><br><span class="line">tracklet_test/0229/09_0122_07_0303afternoon.jpg 229</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="test-data文件夹"><code>test/data</code>文件夹</h3>
+<p>主要使用其中的<code>info_test.mat</code>文件，作为<code>query</code>集合的索引，使用文件中的query字段(size: 3504x1)</p>
+<h3 id="tracklet-test-tracklet-train-tracklet-val文件夹"><code>tracklet_test,tracklet_train,tracklet_val</code>文件夹</h3>
+<p>分别对应测试，训练，验证集三个数据集合的数据文件夹，被之前讲的对应的txt索引。</p>
+<h2 id="代码处理">代码处理</h2>
+<h3 id="dataset初始化"><code>dataset</code>初始化</h3>
+<h4 id="Step-1">Step 1</h4>
+<p>直接从<code>list_seq_train.txt</code>和<code>list_seq_test.txt</code>读取训练和测试类别并存储为list形式于<code>track_train</code>(2831)和<code>track_test</code>(11333)两个变量中。</p>
+<h4 id="Step-2">Step 2</h4>
+<p>从<code>test/data/info_test.mat</code>的<code>query</code>字段中读取<code>query</code>的索引存为<code>query_IDX</code>。利用<code>query_IDX</code>将<code>track_test</code>分为<code>track_query</code>和<code>track_gallery</code></p>
+<p>这步结束得到三个索引：</p>
+<ul>
+<li><code>track_train</code></li>
+<li><code>track_query</code></li>
+<li><code>track_gallery</code></li>
+</ul>
+<h4 id="Step-3">Step 3</h4>
+<p>同之前的数据集一样，生成<code>train,query,gallery</code>。唯一不同的是还生成了一个<code>train_dense</code>。这是sampling_step为48所产生的结果。这指的是每连续的48帧组成一个track。因此训练数据会变多。</p>
+<p>至此数据集处理基本结束。</p>
+<h3 id="数据增强">数据增强</h3>
+<p>见[[【数据集处理】i-LIDS-VID#数据增强]]</p>
+<h3 id="Dataloader部分"><code>Dataloader</code>部分</h3>
+<p>见[[【数据集处理】i-LIDS-VID#<code>Dataloader</code> 部分]]</p>
+<blockquote>
+<p>同之前一样，超参数设置一样则<code>VideoDataset</code>出来的大小为cxtxhxw(3x4x256x128)</p>
+</blockquote>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/09/20/note/ReID/Image/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91DiP--Learning%20Discriminative%20Implicit%20Parts%20for%20Person%20Re-Identification/">【论文笔记】DiP--Learning Discriminative Implicit Parts for Person Re-Identification</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/09/15/note/ReID/Video/%E3%80%90%E4%BB%A3%E7%A0%81%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86%E3%80%91Video%20ReID/">【代码流程梳理】</a></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>

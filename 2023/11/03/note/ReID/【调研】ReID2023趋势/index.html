@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 7.0.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>【调研】ReID2023趋势 - MudSynth</title>
+
+  
+    <meta name="description" content="ReID是计算机视觉领域的一个热门研究方向，它致力于在不同的摄像头视野中识别特定的人员。根据我调研CVPR2023（共13篇）以及ICCV2023（共13篇）的论文，我认为ReID方向主要有如下趋势 传统跨域ReID CVPR2023 PHA: Patch-wise High-frequency Augmentation for Transformer-based Person Re-identi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【调研】ReID2023趋势">
+<meta property="og:url" content="http://example.com/2023/11/03/note/ReID/%E3%80%90%E8%B0%83%E7%A0%94%E3%80%91ReID2023%E8%B6%8B%E5%8A%BF/index.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="ReID是计算机视觉领域的一个热门研究方向，它致力于在不同的摄像头视野中识别特定的人员。根据我调研CVPR2023（共13篇）以及ICCV2023（共13篇）的论文，我认为ReID方向主要有如下趋势 传统跨域ReID CVPR2023 PHA: Patch-wise High-frequency Augmentation for Transformer-based Person Re-identi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-03T06:38:27.929Z">
+<meta property="article:modified_time" content="2023-11-05T01:38:17.987Z">
+<meta property="article:author" content="Mudrobot">
+<meta property="article:tag" content="CV">
+<meta property="article:tag" content="ReID">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  <meta name="keywords" content="CV,ReID">
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+    <script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+    <script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='post'>
+    
+
+  
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/assets/cat.jpg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title">MudSynth</div><div class="sub normal cap">Thinking</div><div class="sub hover cap" style="opacity:0"> Inspiring</div></a></div>
+
+<nav class="menu dis-select"><a class="nav-item active" href="/">文章</a><a class="nav-item" href="/wiki/">项目</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a></nav>
+</header>
+
+
+<div class="widgets">
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/blog/" placeholder="文章搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
+
+
+<widget class="widget-wrapper toc single" id="data-toc"><div class="widget-header cap dis-select"><span class="name">【调研】ReID2023趋势</span></div><div class="widget-body fs14"><div class="doc-tree active"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9F%E8%B7%A8%E5%9F%9FReID"><span class="toc-text">传统跨域ReID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVPR2023"><span class="toc-text">CVPR2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#PHA-Patch-wise-High-frequency-Augmentation-for-Transformer-based-Person-Re-identification"><span class="toc-text">PHA: Patch-wise High-frequency Augmentation for Transformer-based Person Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Event-guided-Person-Re-Identification-via-Sparse-Dense-Complementary-Learning%E2%80%BB"><span class="toc-text">Event-guided Person Re-Identification via Sparse-Dense Complementary Learning※</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%A8%E6%A8%A1%E6%80%81ReID"><span class="toc-text">跨模态ReID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVPR-2023"><span class="toc-text">CVPR 2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Diverse-Embedding-Expansion-Network-and-Low-Light-Cross-Modality-Benchmark-for-Visible-Infrared-Person-Re-identification"><span class="toc-text">Diverse Embedding Expansion Network and Low-Light Cross-Modality Benchmark for Visible-Infrared Person Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Similarity-Metric-Learning-For-RGB-Infrared-Group-Re-Identification"><span class="toc-text">Similarity Metric Learning For RGB-Infrared Group Re-Identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Shape-Erased-Feature-Learning-for-Visible-Infrared-Person-Re-Identification"><span class="toc-text">Shape-Erased Feature Learning for Visible-Infrared Person Re-Identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PartMix-Regularization-Strategy-to-Learn-Part-Discovery-for-Visible-Infrared-Person-Re-identification"><span class="toc-text">PartMix: Regularization Strategy to Learn Part Discovery for Visible-Infrared Person Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Unsupervised-Visible-Infrared-Person-Re-Identification-via-Progressive-Graph-Matching-and-Alternate-Learning"><span class="toc-text">Unsupervised Visible-Infrared Person Re-Identification via Progressive Graph Matching and Alternate Learning</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TranSG-Transformer-Based-Skeleton-Graph-Prototype-Contrastive-Learning-with-Structure-Trajectory-Prompted-Reconstruction-for-Person-Re-Identification"><span class="toc-text">TranSG: Transformer-Based Skeleton Graph Prototype Contrastive Learning with Structure-Trajectory Prompted Reconstruction for Person Re-Identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Towards-Modality-Agnostic-Person-Re-identification-with-Descriptive-Query"><span class="toc-text">Towards Modality-Agnostic Person Re-identification with Descriptive Query</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ICCV-2023"><span class="toc-text">ICCV 2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Towards-Grand-Unified-Representation-Learning-for-Unsupervised-Visible-Infrared-Person-Re-Identification"><span class="toc-text">Towards Grand Unified Representation Learning for Unsupervised Visible-Infrared Person Re-Identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Visible-Infrared-Person-Re-Identification-via-Semantic-Alignment-and-Affinity-Inference"><span class="toc-text">Visible-Infrared Person Re-Identification via Semantic Alignment and Affinity Inference</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Learning-Concordant-Attention-via-Target-aware-Alignment-for-Visible-Infrared-Person-Re-identification"><span class="toc-text">Learning Concordant Attention via Target-aware Alignment for Visible-Infrared Person Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Unified-Pre-training-with-Pseudo-Texts-for-Text-To-Image-Person-Re-identification"><span class="toc-text">Unified Pre-training with Pseudo Texts for Text-To-Image Person Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Modality-Unifying-Network-for-Visible-Infrared-Person-Re-Identification"><span class="toc-text">Modality Unifying Network for Visible-Infrared Person Re-Identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Dual-Pseudo-Labels-Interactive-Self-Training-for-Semi-Supervised-Visible-Infrared-Person-Re-Identification"><span class="toc-text">Dual Pseudo-Labels Interactive Self-Training for Semi-Supervised Visible-Infrared Person Re-Identification</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E7%9B%91%E7%9D%A3%E4%B8%8E%E5%8D%8A%E7%9B%91%E7%9D%A3ReID"><span class="toc-text">无监督与半监督ReID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVPR2023-2"><span class="toc-text">CVPR2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Unsupervised-Visible-Infrared-Person-Re-Identification-via-Progressive-Graph-Matching-and-Alternate-Learning-2"><span class="toc-text">Unsupervised Visible-Infrared Person Re-Identification via Progressive Graph Matching and Alternate Learning</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ICCV-2023-2"><span class="toc-text">ICCV 2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Identity-Seeking-Self-Supervised-Representation-Learning-for-Generalizable-Person-Re-identification"><span class="toc-text">Identity-Seeking Self-Supervised Representation Learning for Generalizable Person Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Discrepant-and-Multi-instance-Proxies-for-Unsupervised-Person-Re-identification"><span class="toc-text">Discrepant and Multi-instance Proxies for Unsupervised Person Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Camera-Driven-Representation-Learning-for-Unsupervised-Domain-Adaptive-Person-Re-identification"><span class="toc-text">Camera-Driven Representation Learning for Unsupervised Domain Adaptive Person Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Part-Aware-Transformer-for-Generalizable-Person-Re-identification-%E5%9F%9F%E8%87%AA%E9%80%82%E5%BA%94"><span class="toc-text">Part-Aware Transformer for Generalizable Person Re-identification(域自适应)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Dual-Pseudo-Labels-Interactive-Self-Training-for-Semi-Supervised-Visible-Infrared-Person-Re-Identification-2"><span class="toc-text">Dual Pseudo-Labels Interactive Self-Training for Semi-Supervised Visible-Infrared Person Re-Identification</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%A2%E8%A3%85ReID"><span class="toc-text">换装ReID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVPR2023-3"><span class="toc-text">CVPR2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Good-is-Bad-Causality-Inspired-Cloth-debiasing-for-Cloth-changing-Person-Re-identification"><span class="toc-text">Good is Bad: Causality Inspired Cloth-debiasing for Cloth-changing Person Re-identification</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ICCV-2023-3"><span class="toc-text">ICCV 2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Learning-Clothing-and-Pose-Invariant-3D-Shape-Representation-for-Long-Term-Person-Re-Identification"><span class="toc-text">Learning Clothing and Pose Invariant 3D Shape Representation for Long-Term Person Re-Identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DeepChange-A-Long-Term-Person-Re-Identification-Benchmark-with-Clothes-Change"><span class="toc-text">DeepChange: A Long-Term Person Re-Identification Benchmark with Clothes Change</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CVPR2023-4"><span class="toc-text">CVPR2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Adaptive-Sparse-Pairwise-Loss-for-Object-Re-Identification"><span class="toc-text">Adaptive Sparse Pairwise Loss for Object Re-Identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Large-scale-Training-Data-Search-for-Object-Re-identification"><span class="toc-text">Large-scale Training Data Search for Object Re-identification</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#An-In-depth-Exploration-of-Person-Re-identification-and-Gait-Recognition-in-Cloth-Changing-Conditions%E2%80%BB"><span class="toc-text">An In-depth Exploration of Person Re-identification and Gait Recognition in Cloth-Changing Conditions※</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ICCV-2023-4"><span class="toc-text">ICCV 2023</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Person-Re-Identification-without-Identification-via-Event-Anonymization"><span class="toc-text">Person Re-Identification without Identification via Event Anonymization</span></a></li></ol></li></ol></li></ol></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+
+
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/ReID/">ReID</a></div><div id="post-meta">发布于&nbsp;<time datetime="2023-11-03T06:38:27.929Z">2023-11-03</time></div></div>
+
+<article class='md-text content post'>
+<h1 class="article-title"><span>【调研】ReID2023趋势</span></h1>
+<p>ReID是计算机视觉领域的一个热门研究方向，它致力于在不同的摄像头视野中识别特定的人员。根据我调研CVPR2023（共13篇）以及ICCV2023（共13篇）的论文，我认为ReID方向主要有如下趋势</p>
+<h2 id="传统跨域ReID">传统跨域ReID</h2>
+<h3 id="CVPR2023">CVPR2023</h3>
+<h4 id="PHA-Patch-wise-High-frequency-Augmentation-for-Transformer-based-Person-Re-identification">PHA: Patch-wise High-frequency Augmentation for Transformer-based Person Re-identification</h4>
+<p>这篇文章的主要内容是：</p>
+<ul>
+<li><strong>基于变换器的人物重识别</strong>：文章提出了一种基于变换器的人物重识别方法，称为PHA（Patch-wise High-frequency Augmentation），目的是提高变换器对人物图像中高频成分（例如细节纹理）的表示能力和区分度。</li>
+<li><strong>频域分析</strong>：文章从频域的角度分析了变换器在人物重识别任务上的不足，发现变换器由于自注意力机制的影响，容易忽略或稀释关键的高频成分，导致性能下降。</li>
+<li><strong>高频增强和低频降采样</strong>：文章提出了一种高频增强和低频降采样的方法，通过离散哈尔小波变换（DHWT）将人物图像分解为四个子带，然后选择具有高频响应的图像块作为辅助输入，同时通过量化操作去除部分低频成分，防止变换器过拟合低频成分。</li>
+<li><strong>块级对比损失</strong>：文章提出了一种块级对比损失，用于在网络优化过程中保持高频成分不被低频成分稀释。该损失函数利用对比学习的思想，将高频增强的图像块与同一身份的原始图像块拉近，将不同身份的图像块推远。从梯度优化的角度，该损失函数相当于一种隐式增强，提升了关键高频成分的表示能力。</li>
+<li><strong>实验结果</strong>：文章在三个标准的人物重识别数据集上进行了实验，与现有的基于卷积神经网络和变换器的方法进行了对比，验证了PHA方法的有效性和优越性。</li>
+</ul>
+<blockquote></blockquote>
+<h4 id="Event-guided-Person-Re-Identification-via-Sparse-Dense-Complementary-Learning※">Event-guided Person Re-Identification via Sparse-Dense Complementary Learning※</h4>
+<p>本文的内容概括如下：</p>
+<ul>
+<li><strong>基于事件的人员重识别</strong>：本文提出了一种利用事件流来指导视频中人员重识别的新方法。事件流是一种生物启发的视觉信号，可以异步地记录亮度变化，提供高时空分辨率和动态范围，捕捉行人的运动信息。</li>
+<li><strong>稀疏-密集互补学习网络</strong>：本文设计了一个稀疏-密集互补学习网络（SDCL），有效地提取了密集的视频帧和稀疏的事件流中的互补信息。具体地，对于视频帧，采用CNN模块逐步聚合行人外观特征；对于事件流，采用生物启发的脉冲神经网络（SNN）模块，以脉冲形式编码事件信号，提取行人的动态运动特征。最后，构建一个交叉特征对齐模块，融合事件流中的运动信息和视频帧中的外观线索，增强身份表示学习。</li>
+<li><strong>实验结果和分析</strong>：本文在三个视频重识别数据集上进行了实验，与多个最先进的方法进行了比较。结果表明，引入事件流和SNN可以显著提高重识别性能，尤其是在退化条件下。本文还进行了可视化和消融实验，验证了各个模块的有效性和必要性。</li>
+</ul>
+<blockquote>
+<p>PRID-2011, iLIDS-VID, MARS</p>
+</blockquote>
+<h2 id="跨模态ReID">跨模态ReID</h2>
+<p>随着多模态数据的可用性增加，研究者可能会探索如何结合视觉数据与其他类型的数据（如红外、深度或文本信息）来提高ReID系统的性能。</p>
+<h3 id="CVPR-2023">CVPR 2023</h3>
+<h4 id="Diverse-Embedding-Expansion-Network-and-Low-Light-Cross-Modality-Benchmark-for-Visible-Infrared-Person-Re-identification">Diverse Embedding Expansion Network and Low-Light Cross-Modality Benchmark for Visible-Infrared Person Re-identification</h4>
+<p>这篇文章的第一部分主要讲述了以下内容：</p>
+<ul>
+<li><strong>可见-红外人员重识别任务</strong>：这是一种在不同摄像头下匹配给定人员和图库图像的任务，其中摄像头可以是可见光或红外光。这个任务面临着可见光和红外光图像之间的模态差异的挑战，需要找到一种有效的方法来缩小这种差异。</li>
+<li><strong>多样化嵌入扩展网络</strong>：这是一种新颖的增强网络，在嵌入空间中生成更多的嵌入，以学习有信息量的特征表示，并减少可见光和红外光图像之间的模态差异。该网络由一个多样化嵌入扩展模块和一个多阶段特征聚合块组成，分别用于生成多样化的嵌入和挖掘潜在的通道和空间特征表示。</li>
+<li><strong>低光照跨模态基准数据集</strong>：这是一个新收集的数据集，包含了在低光照环境下由9个RGB/IR摄像头捕获的1,064个身份的46,767个边界框。该数据集具有更具挑战性和实际性的可见-红外人员重识别环境，可以促进该任务向实际应用的发展。</li>
+<li><strong>实验结果</strong>：在SYSU-MM01、RegDB和LLCM三个数据集上进行了广泛的实验，结果表明了所提出的网络相对于其他最先进方法的优越性。</li>
+</ul>
+<h4 id="Similarity-Metric-Learning-For-RGB-Infrared-Group-Re-Identification">Similarity Metric Learning For RGB-Infrared Group Re-Identification</h4>
+<p>这篇文章的主要内容是：</p>
+<ul>
+<li><strong>RGB-IR组重识别问题</strong>：文章提出了一种新的组重识别问题，即在不同摄像头视角下匹配由RGB图像和红外图像组成的人群。这个问题在视频监控领域具有重要意义，但目前还没有被研究过。</li>
+<li><strong>最近排列匹配方法</strong>：文章提出了一种基于度量学习的方法，称为最近排列匹配（CPM），用于RGB-IR组重识别。CPM将每个组建模为一组单人特征，然后使用最近排列距离（CPD）来衡量两组特征之间的相似度。CPD是一种与排列无关的度量，能够解决组内成员布局变化的问题。</li>
+<li><strong>关系感知模块</strong>：文章还提出了一种弱监督的方法，称为关系感知模块（RAM），用于在没有单人标签的情况下进行RGB-IR组重识别。RAM利用组内成员之间的视觉关系，生成一种与模态无关的特征排序，从而形成一个对模态变化鲁棒的组表示。</li>
+<li><strong>CM-Group数据集</strong>：文章构建了一个新的大规模RGB-IR组重识别数据集，称为CM-Group。该数据集包含15,440张RGB图像和15,506张红外图像，涵盖427个组和1,013个身份。该数据集具有多样的场景、光照、视角、尺度和服装变化，是一个具有挑战性的基准数据集。</li>
+</ul>
+<h4 id="Shape-Erased-Feature-Learning-for-Visible-Infrared-Person-Re-Identification">Shape-Erased Feature Learning for Visible-Infrared Person Re-Identification</h4>
+<p>这篇文章的内容概括如下：</p>
+<ul>
+<li><strong>可见-红外人员重识别的特征学习方法</strong>：文章提出了一种基于形状擦除的特征学习范式，用于可见-红外人员重识别（VI-ReID）任务。该范式通过正交分解将特征分为形状相关和形状擦除两个子空间，以提高特征的多样性和鉴别性。</li>
+<li><strong>形状相关和形状擦除特征的学习目标</strong>：文章设计了不同的损失函数来优化形状相关和形状擦除特征。形状相关特征的目标是模仿和覆盖人体形状的判别信息，同时减少跨视角的差异。形状擦除特征的目标是在去除形状信息的条件下，最大化与身份标签的互信息，同时消除模态特异性信息。</li>
+<li><strong>实验结果和分析</strong>：文章在三个数据集上进行了实验，分别是SYSU-MM01，RegDB和HITSZ-VCM。实验结果表明，该方法在各个指标上都优于或接近现有的最先进方法。文章还进行了消融实验和可视化分析，验证了方法的有效性和合理性。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01, HITSZ-VCM，RegDB</p>
+</blockquote>
+<h4 id="PartMix-Regularization-Strategy-to-Learn-Part-Discovery-for-Visible-Infrared-Person-Re-identification">PartMix: Regularization Strategy to Learn Part Discovery for Visible-Infrared Person Re-identification</h4>
+<p>这篇文章的内容总结如下：</p>
+<ul>
+<li><strong>可见-红外人员重识别的新方法</strong>：文章提出了一种新的数据增强技术，称为PartMix，用于可见-红外人员重识别（VI-ReID）任务。该技术通过混合不同模态的部分描述符来合成增强样本，提高了部分发现的鲁棒性和泛化能力。</li>
+<li><strong>部分混合策略</strong>：文章设计了一种部分混合策略，将可见和红外图像的部分描述符进行随机混合，生成正样本和负样本。正样本是在同一身份内混合相同部分信息的样本，负样本是在不同身份间混合不同部分信息的样本。这些样本可以覆盖训练集中未出现的人体部分组合，从而减轻对特定部分和模态的过拟合。</li>
+<li><strong>对比学习目标</strong>：文章采用<strong>对比学习</strong>目标来训练模型，使正样本之间的相似度最大化，负样本之间的相似度最小化。这有助于模型学习模态不变的部分表示，提高人员重识别的性能。</li>
+<li><strong>熵基挖掘策略</strong>：文章还提出了一种熵基挖掘策略，用于消除不可靠的正负样本。该策略利用身份预测的熵差作为不确定性度量，选择熵差较小的正样本和熵差较大的负样本进行对比学习。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01, RegDB</p>
+</blockquote>
+<h4 id="Unsupervised-Visible-Infrared-Person-Re-Identification-via-Progressive-Graph-Matching-and-Alternate-Learning">Unsupervised Visible-Infrared Person Re-Identification via Progressive Graph Matching and Alternate Learning</h4>
+<p>这篇文章的内容概括如下：</p>
+<ul>
+<li><strong>无监督可见光-红外人员重识别</strong>：本文研究了一种在没有跨模态对应关系的情况下，利用可见光和红外图像进行人员重识别的无监督方法。该方法面临着巨大的模态差异和跨模态对应关系缺失的挑战。</li>
+<li><strong>渐进式图匹配和交替学习</strong>：本文提出了一种渐进式图匹配方法，通过全局优化的图匹配过程，在不同模态的聚类结果之间寻找可靠的对应关系，并采用渐进式策略处理聚类不平衡的问题。基于图匹配结果，本文设计了一种交替的跨模态对比学习模块，利用对应关系减少模态差异，同时通过交替更新方案减轻对应关系中噪声的影响。</li>
+<li><strong>实验结果和分析</strong>：本文在两个公开的可见光-红外数据集上进行了实验，与多个最先进的方法进行了比较。结果表明，本文的方法在无监督可见光-红外人员重识别任务上取得了显著的提升，并验证了各个组件的有效性。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01, RegDB</p>
+</blockquote>
+<h4 id="TranSG-Transformer-Based-Skeleton-Graph-Prototype-Contrastive-Learning-with-Structure-Trajectory-Prompted-Reconstruction-for-Person-Re-Identification">TranSG: Transformer-Based Skeleton Graph Prototype Contrastive Learning with Structure-Trajectory Prompted Reconstruction for Person Re-Identification</h4>
+<p>这篇文章的内容概括如下：</p>
+<ul>
+<li><strong>基于骨架图的人物重识别方法</strong>：文章提出了一种基于变换器的骨架图原型对比学习（TranSG）方法，利用结构-轨迹提示重建来从骨架图中提取关键信息和语义，实现人物重识别的任务。</li>
+<li><strong>骨架图变换器模型</strong>：文章设计了骨架图变换器（SGT）模型，通过多个全关系（FR）头来同时学习骨架图中的身体结构和动作关系，将关键的节点特征聚合成图表示。</li>
+<li><strong>图原型对比学习机制</strong>：文章提出了图原型对比学习（GPC）机制，利用每个身份的图特征质心作为图原型，将序列级别和骨架级别的图表示与相应的原型进行对比，学习判别性的图表示。</li>
+<li><strong>结构-轨迹提示重建机制</strong>：文章提出了结构-轨迹提示重建（STPR）机制，利用骨架图的部分节点位置和部分节点轨迹作为提示，重建骨架图的结构和动态，捕获更多的图语义和独特特征。</li>
+<li><strong>实验结果和贡献</strong>：文章在五个公开数据集上进行了实验，证明了TranSG方法在人物重识别任务上显著优于现有的方法，并展示了其在不同的图建模、RGB估计骨架和无监督场景下的通用性。文章是首次将变换器范式应用于基于骨架的人物重识别任务，并提出了新颖的对比学习和提示学习机制。</li>
+</ul>
+<blockquote>
+<p>IAS, KS20, BIWI, KGBD, CASIA-B</p>
+</blockquote>
+<h4 id="Towards-Modality-Agnostic-Person-Re-identification-with-Descriptive-Query">Towards Modality-Agnostic Person Re-identification with Descriptive Query</h4>
+<p>这篇文章的内容概括如下：</p>
+<ul>
+<li><strong>跨模态人员重识别问题</strong>：文章提出了一个新的挑战性问题，即使用不确定的描述性查询（文本或素描）来检索目标行人的RGB图像，以应对实际场景中的查询不确定性。</li>
+<li><strong>统一人员重识别架构</strong>：文章设计了一个基于双编码器的变换器架构，可以有效地适应跨模态和多模态任务。具体地，该架构利用任务特定的模态学习、任务感知的动态训练和跨模态交互来挖掘和融合视觉和文本模态信息。</li>
+<li><strong>多模态数据集构建</strong>：文章基于三个文本为基础的人员重识别数据集，通过使用API生成素描图像，构建了三个多模态数据集，以支持统一人员重识别的评估。</li>
+<li><strong>实验结果</strong>：文章在三个多模态数据集上进行了广泛的实验，验证了所提方法的有效性。文章还在一个专业素描数据集上进行了跨域泛化能力的评估，显示了所提方法的鲁棒性。</li>
+</ul>
+<blockquote>
+<p>Tri-CUHK-PEDES, Tri-ICFG-PEDES, and Tri-RSTPReid</p>
+</blockquote>
+<h3 id="ICCV-2023">ICCV 2023</h3>
+<h4 id="Towards-Grand-Unified-Representation-Learning-for-Unsupervised-Visible-Infrared-Person-Re-Identification">Towards Grand Unified Representation Learning for Unsupervised Visible-Infrared Person Re-Identification</h4>
+<p>这篇文章的主要内容如下：</p>
+<ul>
+<li><strong>无监督可见-红外人员重识别</strong>：这是一项非常重要和具有挑战性的任务，它可以减轻跨模态标注的代价。现有的方法主要关注在无监督条件下处理跨模态差异，但忽略了无监督可见-红外人员重识别（USL-VI-ReID）是一种具有层次差异的跨模态检索任务，即相机变化和模态差异，导致聚类不一致和跨模态标签关联模糊。</li>
+<li><strong>大统一表示学习</strong>：为了解决这些问题，作者提出了一个层次化的框架来学习大统一表示（GUR）用于USL-VI-ReID。大统一表示包括两个方面：1）GUR采用自下而上的域学习策略，结合一个跨记忆关联嵌入模块，来探索层次域的信息，即相机内部、相机间和模态间域，学习一个对层次差异具有鲁棒性的统一表示。2）为了统一两个模态的身份，作者设计了一个跨模态标签统一模块，构建一个跨模态亲和矩阵作为两个模态之间传播标签的桥梁，然后利用同质结构矩阵来平滑传播后的标签，保证每个模态内部的标签结构不变。</li>
+<li><strong>实验结果</strong>：作者在SYSU-MM01和RegDB两个数据集上进行了广泛的实验，证明了GUR框架显著优于现有的USL-VI-ReID方法，甚至超过了一些有监督的对比方法。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01 and RegDB</p>
+</blockquote>
+<h4 id="Visible-Infrared-Person-Re-Identification-via-Semantic-Alignment-and-Affinity-Inference">Visible-Infrared Person Re-Identification via Semantic Alignment and Affinity Inference</h4>
+<p>这篇文章的第一部分主要讨论了以下内容：</p>
+<ul>
+<li><strong>可见-红外人员再识别</strong>：文章介绍了可见-红外人员再识别（VI-ReID）的概念，这是一种通过不同模态摄像头捕获同一身份行人图像的技术。</li>
+<li><strong>语义对齐和亲和推理框架</strong>：提出了一个新的框架，称为语义对齐和亲和推理（SAAI），旨在通过学习原型对潜在的语义部分特征进行对齐，并利用亲和信息来优化推理过程。</li>
+<li><strong>实验结果</strong>：通过在SYSU-MM01和RegDB数据集上进行的实验结果，证明了SAAI框架的有效性，并承诺将代码发布在GitHub上。¹[1]</li>
+<li><strong>技术细节</strong>：详细介绍了如何通过相似性聚合像素级特征来提取潜在的语义部分特征，以及如何使用双分支BNNeck来减少模态差异。还提出了部分多样性约束和中心分离损失来指导网络识别行人关系。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01与RegDB</p>
+</blockquote>
+<h4 id="Learning-Concordant-Attention-via-Target-aware-Alignment-for-Visible-Infrared-Person-Re-identification">Learning Concordant Attention via Target-aware Alignment for Visible-Infrared Person Re-identification</h4>
+<p>这篇论文的主要内容是：</p>
+<ul>
+<li><strong>可见-红外人员重识别问题</strong>：这是一个在不同光谱摄像头下匹配人员身份的问题，由于可见光和红外光图像之间存在很大的数据异质性，这个问题非常具有挑战性。</li>
+<li><strong>协调注意力学习框架</strong>：这是一个新颖的框架，模仿人类视觉系统的目标感知比较行为，学习可见光和红外光之间的语义对齐表示。具体地，该框架包括两个关键组成部分：目标感知协调对齐（TCA）和匹配蒸馏（MatchDistill）。</li>
+<li><strong>目标感知协调对齐</strong>：这是一个目标感知的训练范式，利用目标模态（即模态对应物）的判别性局部线索，实现异质样本的自适应注意力调整和部分对齐的度量学习。</li>
+<li><strong>匹配蒸馏</strong>：这是一个匹配和蒸馏的过程，通过双边图建模异质部分查询之间的语义相关性，进行跨模态查询匹配，然后通过双层知识蒸馏损失实现跨模态知识交换，从而使每个模态都能从其模态对应物中学习知识。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01 and RegDB</p>
+</blockquote>
+<h4 id="Unified-Pre-training-with-Pseudo-Texts-for-Text-To-Image-Person-Re-identification">Unified Pre-training with Pseudo Texts for Text-To-Image Person Re-identification</h4>
+<p>这篇论文的第一部分主要介绍了以下内容：</p>
+<ul>
+<li><strong>文本到图像人物重识别的问题</strong>：文本到图像人物重识别（T2I-ReID）是一种检索任务，目的是根据自然语言描述来搜索特定的人物图像。这个任务面临着数据规模和多样性的限制，以及图像和文本之间的域差距和粒度不一致的问题。</li>
+<li><strong>统一预训练的方法</strong>：为了解决这些问题，作者提出了一个新的统一预训练流程（UniPT），专门针对T2I-ReID任务。作者首先构建了一个大规模的文本标注的人物数据集“LUPerson-T”，其中利用CLIP模型和一种分治合并的策略自动生成了图像的伪文本描述。然后，作者使用一个简单的视觉和语言预训练框架，在LUPerson-T上进行对比损失和掩码语言模型的联合优化，从而在预训练阶段显式地对齐图像和文本的特征空间。</li>
+<li><strong>实验结果和分析</strong>：作者在三个T2I-ReID数据集上进行了实验，分别是CUHK-PEDES，ICFG-PEDES和RSTPReid。结果表明，UniPT在不使用任何额外技巧的情况下，都取得了有竞争力的性能，超过了当前的最先进方法。作者还对LUPerson-T数据集和UniPT流程的有效性进行了消融实验和分析。</li>
+</ul>
+<blockquote>
+<p>CUHK-PEDES ICFG-PEDES RSTPReid</p>
+</blockquote>
+<h4 id="Modality-Unifying-Network-for-Visible-Infrared-Person-Re-Identification">Modality Unifying Network for Visible-Infrared Person Re-Identification</h4>
+<p>这篇论文的内容概括如下：</p>
+<ul>
+<li><strong>可见-红外人员再识别的挑战</strong>：可见-红外人员再识别（VI-ReID）是一项困难的任务，因为可见和红外图像之间存在很大的跨模态差异和类内变化。现有的方法主要侧重于通过将不同模态嵌入到相同的特征空间中来学习模态共享的表示。然而，这样做会忽略模态特异性和身份相关的信息，导致特征缺乏判别力。</li>
+<li><strong>模态统一网络的提出</strong>：我们提出了一种新颖的模态统一网络（MUN），来探索一个强大的辅助模态来帮助VI-ReID。首先，辅助模态是通过结合我们提出的跨模态学习器和类内模态学习器生成的，它们可以动态地建模模态特异性和模态共享的表示，以缓解跨模态和类内模态的变化。其次，通过对齐三种模态的身份中心，我们提出了一个身份对齐损失函数，来发现判别性的特征表示。第三，我们引入了一个模态对齐损失，来通过模态原型建模来一致地减少可见和红外图像的分布距离。</li>
+<li><strong>实验结果和贡献</strong>：我们在多个公开数据集上进行了广泛的实验，证明了我们的方法超过了当前的最先进的方法，达到了显著的性能提升。我们的主要贡献有：
+<ul>
+<li>我们提出了一种新颖的模态统一网络，通过构建一个强大的辅助模态，来解决模态差异和增强特征的判别性。</li>
+<li>我们设计了一个辅助生成器，由类内模态学习器和跨模态学习器构成，来动态地提取身份相关和模态共享的模式。</li>
+<li>我们设计了身份对齐损失和模态对齐损失，来联合探索三种模态在身份和分布层面上的一般化和判别性的特征关系。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01, RegDB</p>
+</blockquote>
+<h4 id="Dual-Pseudo-Labels-Interactive-Self-Training-for-Semi-Supervised-Visible-Infrared-Person-Re-Identification">Dual Pseudo-Labels Interactive Self-Training for Semi-Supervised Visible-Infrared Person Re-Identification</h4>
+<p>这篇论文的主要内容是：</p>
+<ul>
+<li><strong>半监督可见-红外人员重识别</strong>：论文探讨了两种实际的半监督设置：单半监督（只标注可见图像）和双半监督（在两种模态上部分标注）。这两种半监督设置面临着由于跨模态差异和可见-红外图像之间缺乏对应监督而导致的两个挑战。论文的目标是用有限的标注数据训练一个可与全监督方法相媲美的可见-红外人员重识别模型。</li>
+<li><strong>双伪标签交互自训练框架</strong>：论文提出了一个双伪标签交互自训练（DPIS）框架，该框架综合了两种不同模型生成的两种伪标签，即聚类和最优传输标签分配（OTLA），来获得未标注数据的混合伪标签。然而，混合伪标签仍然不可避免地包含噪声。为了消除噪声伪标签的负面影响，论文引入了三个模块：噪声标签惩罚（NLP），噪声对应校准（NCC），和不可靠锚点学习（UAL）。具体来说，NLP根据置信度惩罚噪声标签，NCC校准噪声对应，UAL挖掘难以区分的特征。</li>
+<li><strong>广泛的实验结果</strong>：论文在两个流行的可见-红外人员重识别基准数据集SYSU-MM01和RegDB上进行了广泛的实验，证明了DPIS在两种半监督设置下的卓越性能。论文还与多种全监督、无监督域适应和半监督方法进行了对比，展示了DPIS的优势和泛化能力。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01, RegDB</p>
+</blockquote>
+<h2 id="无监督与半监督ReID">无监督与半监督ReID</h2>
+<p>因为标注数据的成本高昂，越来越多的研究可能集中在无监督或半监督学习方法，它们可以在没有大量标记训练样本的情况下进行有效学习。</p>
+<h3 id="CVPR2023-2">CVPR2023</h3>
+<h4 id="Unsupervised-Visible-Infrared-Person-Re-Identification-via-Progressive-Graph-Matching-and-Alternate-Learning-2">Unsupervised Visible-Infrared Person Re-Identification via Progressive Graph Matching and Alternate Learning</h4>
+<p>这篇文章的内容概括如下：</p>
+<ul>
+<li><strong>无监督可见光-红外人员重识别</strong>：本文研究了一种在没有跨模态对应关系的情况下，利用可见光和红外图像进行人员重识别的无监督方法。该方法面临着巨大的模态差异和跨模态对应关系缺失的挑战。</li>
+<li><strong>渐进式图匹配和交替学习</strong>：本文提出了一种渐进式图匹配方法，通过全局优化的图匹配过程，在不同模态的聚类结果之间寻找可靠的对应关系，并采用渐进式策略处理聚类不平衡的问题。基于图匹配结果，本文设计了一种交替的跨模态对比学习模块，利用对应关系减少模态差异，同时通过交替更新方案减轻对应关系中噪声的影响。</li>
+<li><strong>实验结果和分析</strong>：本文在两个公开的可见光-红外数据集上进行了实验，与多个最先进的方法进行了比较。结果表明，本文的方法在无监督可见光-红外人员重识别任务上取得了显著的提升，并验证了各个组件的有效性。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01, RegDB</p>
+</blockquote>
+<h3 id="ICCV-2023-2">ICCV 2023</h3>
+<h4 id="Identity-Seeking-Self-Supervised-Representation-Learning-for-Generalizable-Person-Re-identification">Identity-Seeking Self-Supervised Representation Learning for Generalizable Person Re-identification</h4>
+<p>这篇论文的第一部分主要介绍了以下内容：</p>
+<ul>
+<li><strong>领域泛化的人员重识别问题</strong>：论文旨在从大量无标注的视频数据中学习一个领域泛化的人员重识别（ReID）表示，该表示可以直接应用于任意领域而无需微调。与现有的领域泛化方法不同，论文不需要使用有标注的训练数据，而是利用从互联网上爬取的74,000个视频片段提取的47.8百万个无标注的人员图像。</li>
+<li><strong>身份寻求的自监督表示学习方法</strong>：论文提出了一种身份寻求的自监督表示学习（ISR）方法，该方法通过对比学习的方式从视频帧间的图像中挖掘身份信息。ISR将同一身份的帧间图像视为正样本对，将不同身份的图像视为负样本对，从而实现身份判别的目标。为了解决正样本对中的噪声问题，论文进一步提出了一种可靠性引导的对比损失函数，该函数可以抑制噪声正样本对的影响，确保可靠的正样本对主导学习过程。</li>
+<li><strong>实验结果和贡献</strong>：论文在多个公开的ReID数据集上进行了广泛的实验，验证了ISR的有效性。在不使用任何人工标注和微调的情况下，ISR在Market-1501上达到了87.0%的Rank-1，在MSMT17上达到了56.4%的Rank-1，分别超过了最好的有监督领域泛化方法5.0%和19.5%。在预训练→微调的场景下，ISR也取得了最先进的性能，例如在MSMT17上达到了88.4%的Rank-1。论文的主要贡献有：
+<ul>
+<li>提出了一种从大量无标注的视频数据中学习领域泛化的ReID表示的方法，无需人工标注和领域适应。</li>
+<li>提出了一种新颖的可靠性引导的对比损失函数，有效地减轻了噪声正样本对的不利影响，使可靠的正样本对主导表示学习过程。</li>
+<li>在多种实际场景下进行了大量的实验，证明了ISR的优越性。特别地，在不使用人工标注和微调的情况下，ISR在Market-1501上达到了87.0%的Rank-1，在MSMT17上达到了56.4%的Rank-1，分别超过了最好的有监督领域泛化方法5.0%和19.5%。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Market-1501[82], DukeMTMC [54], CUHK03 [41], and MSMT17</p>
+</blockquote>
+<h4 id="Discrepant-and-Multi-instance-Proxies-for-Unsupervised-Person-Re-identification">Discrepant and Multi-instance Proxies for Unsupervised Person Re-identification</h4>
+<p>这篇文章的第一部分主要讲了以下几点：</p>
+<ul>
+<li><strong>无监督人员重识别的方法</strong>：文章提出了一种基于不同的集群代理和多实例代理的对比学习框架，用于解决无监督人员重识别的问题。无监督人员重识别的目的是在没有标注的情况下，从不同的摄像头视角和场景中检索出同一个人的图像。</li>
+<li><strong>不同的集群代理</strong>：文章认为，使用一个集群代理（即集群中心或可学习的权重）来表示一个集群的信息是不充分和不准确的，因为一个集群内部可能存在很大的差异性和多样性。因此，文章提出了使用几个不同的集群代理来互补地表示一个集群，并通过集群对比损失函数来利用这些代理作为难正样本，拉近集群内部的距离，减少内部差异。</li>
+<li><strong>多实例代理</strong>：文章提出了使用更细粒度和更精确的多实例代理来补充粗粒度的集群代理。多实例代理是用每个集群中随机选择的K个实例特征来初始化和更新的。文章通过在多实例代理中进行全局难负样本挖掘，来选择真正难以区分的类别之间的负样本，并通过实例对比损失函数来利用这些负样本，推开不同类别之间的距离，增加类别间差异。</li>
+<li><strong>实验结果</strong>：文章在两个常用的数据集Market-1501和MSMT17上进行了广泛的实验，证明了所提出方法的有效性和优越性。文章在无监督设置下，分别在Market-1501和MSMT17上达到了86.7%/94.7%和40.9%/69.3%的mAP/top-1指标，超过了之前的最好方法。文章还在有监督设置下，与一些知名的有监督方法进行了竞争性的对比。</li>
+</ul>
+<blockquote>
+<p>Market-1501, MSMT17</p>
+</blockquote>
+<h4 id="Camera-Driven-Representation-Learning-for-Unsupervised-Domain-Adaptive-Person-Re-identification">Camera-Driven Representation Learning for Unsupervised Domain Adaptive Person Re-identification</h4>
+<p>这篇论文的内容概括如下：</p>
+<ul>
+<li><strong>无监督域自适应人员重识别方法</strong>：本文提出了一种新的无监督域自适应方法，用于将在有标注的源域上训练的模型泛化到无标注的目标域，实现人员重识别（reID）的任务。该任务的目的是在不同的摄像头视角下，找出同一个人的图像。</li>
+<li><strong>基于摄像头的课程学习框架</strong>：本文引入了一个基于摄像头的课程学习（CaCL）框架，利用人员图像的摄像头标签，从源域到目标域逐步传递知识。为此，本文将目标域数据集根据摄像头标签分成多个子集，并根据一个基于摄像头的调度规则，得到一个课程序列。该规则考虑了每个子集和源域数据集之间的最大均值差异（MMD），使得与源域更接近的子集在课程中更早地被利用。对于每个课程序列，本文使用聚类算法为目标域的人员图像生成伪标签，以监督的方式训练reID模型。</li>
+<li><strong>摄像头多样性损失函数</strong>：本文观察到，目标域的伪标签在摄像头标签上有很强的偏差，即同一个摄像头拍摄的人员图像很可能被分配到同一个伪标签，即使他们的真实身份不同。为了解决这个摄像头偏差问题，本文还引入了一个摄像头多样性（CD）损失函数，鼓励同一个伪标签下，来自不同摄像头的人员图像参与更多的判别性特征学习，提供了对摄像头变化更鲁棒的人员表示。</li>
+<li><strong>实验结果和贡献</strong>：本文在标准的无监督域自适应人员重识别基准上，包括真实到真实和合成到真实的场景，进行了实验，证明了本文框架的有效性，并创造了新的性能记录。本文的主要贡献有三个方面：（1）本文提出了一种新颖的无监督域自适应人员重识别框架，利用人员图像的摄像头标签，实现了课程学习。这是第一个将课程学习方案应用于无监督域自适应人员重识别的工作。（2）本文提出了一个摄像头多样性损失函数，学习了对摄像头变化更鲁棒的人员表示，即使在使用有摄像头偏差的伪标签的情况下。（3）本文在标准的无监督域自适应人员重识别基准上，刷新了最佳性能，并展示了本文框架的有效性。</li>
+</ul>
+<blockquote>
+<p>Market1501 [55], MSMT17 [45], PersonX [41] and Unreal</p>
+</blockquote>
+<h4 id="Part-Aware-Transformer-for-Generalizable-Person-Re-identification-域自适应">Part-Aware Transformer for Generalizable Person Re-identification(域自适应)</h4>
+<p>这篇论文的内容概括如下（仅限第一部分）：</p>
+<ul>
+<li><strong>针对可泛化人员重识别的部分感知变换器方法</strong>：本文提出了一种纯变换器模型（称为部分感知变换器），用于域泛化人员重识别（DG-ReID）的任务。该任务的目的是在不同的域之间，找出同一个人的图像。</li>
+<li><strong>基于部分的注意力机制</strong>：本文设计了一个变换器编码器，由L个块组成，每个块包含全局注意力，部分感知注意力和一个前馈网络。全局/部分感知注意力用于提取全局/局部特征。本文引入了一个可学习的“类别标记”和三个“部分标记”，与图像分割成的N个“图像标记”一起作为变换器编码器的输入。</li>
+<li><strong>跨ID相似性学习</strong>：本文设计了一个代理任务，称为跨ID相似性学习（CSL），用于挖掘不同ID之间共享的局部视觉信息。该代理任务不使用ID标签，而是从数据本身学习局部相似性，从而减轻域特定偏差的副作用。本文利用部分感知注意力得到的局部特征，和一个动量更新的记忆库，计算当前局部特征和整个数据集的样本之间的距离，从而找出具有明显局部相似性的样本。</li>
+<li><strong>部分引导的自我蒸馏</strong>：本文还引入了一个部分引导的自我蒸馏（PSD）模块，进一步提高全局特征的泛化能力。本文利用CSL的结果构建软标签，指导全局特征进行自我蒸馏。这样可以学习超越硬标签的视觉相似性，使模型更容易收敛到平坦的极小值。</li>
+<li><strong>实验结果和贡献</strong>：本文在标准的DG ReID基准上进行了实验，证明了本文框架的有效性，并创造了新的性能记录。本文的主要贡献有三个方面：（1）本文首次提出了一种纯变换器模型，利用部分感知注意力和跨ID相似性学习，实现了DG ReID。（2）本文提出了一个部分引导的自我蒸馏模块，利用局部相似性构建软标签，进一步提高了全局特征的泛化能力。（3）本文在标准的DG ReID基准上，刷新了最佳性能，并展示了本文框架的有效性。</li>
+</ul>
+<blockquote>
+<p>Market MSMT CUHK03-NP</p>
+</blockquote>
+<h4 id="Dual-Pseudo-Labels-Interactive-Self-Training-for-Semi-Supervised-Visible-Infrared-Person-Re-Identification-2">Dual Pseudo-Labels Interactive Self-Training for Semi-Supervised Visible-Infrared Person Re-Identification</h4>
+<p>这篇论文的主要内容是：</p>
+<ul>
+<li><strong>半监督可见-红外人员重识别</strong>：论文探讨了两种实际的半监督设置：单半监督（只标注可见图像）和双半监督（在两种模态上部分标注）。这两种半监督设置面临着由于跨模态差异和可见-红外图像之间缺乏对应监督而导致的两个挑战。论文的目标是用有限的标注数据训练一个可与全监督方法相媲美的可见-红外人员重识别模型。</li>
+<li><strong>双伪标签交互自训练框架</strong>：论文提出了一个双伪标签交互自训练（DPIS）框架，该框架综合了两种不同模型生成的两种伪标签，即聚类和最优传输标签分配（OTLA），来获得未标注数据的混合伪标签。然而，混合伪标签仍然不可避免地包含噪声。为了消除噪声伪标签的负面影响，论文引入了三个模块：噪声标签惩罚（NLP），噪声对应校准（NCC），和不可靠锚点学习（UAL）。具体来说，NLP根据置信度惩罚噪声标签，NCC校准噪声对应，UAL挖掘难以区分的特征。</li>
+<li><strong>广泛的实验结果</strong>：论文在两个流行的可见-红外人员重识别基准数据集SYSU-MM01和RegDB上进行了广泛的实验，证明了DPIS在两种半监督设置下的卓越性能。论文还与多种全监督、无监督域适应和半监督方法进行了对比，展示了DPIS的优势和泛化能力。</li>
+</ul>
+<blockquote>
+<p>SYSU-MM01, RegDB</p>
+</blockquote>
+<h2 id="换装ReID">换装ReID</h2>
+<p>换装人员重识别（ReID），即Cross-Clothing ReID，是人员重识别领域的一个特定分支，它处理的是特定挑战：如何在人们更换衣物之后仍然正确识别他们。这比传统的ReID要困难得多，因为衣物是人们外观最容易变化的部分，而传统ReID算法往往依赖于衣物的颜色和纹理来进行匹配。</p>
+<h3 id="CVPR2023-3">CVPR2023</h3>
+<h4 id="Good-is-Bad-Causality-Inspired-Cloth-debiasing-for-Cloth-changing-Person-Re-identification">Good is Bad: Causality Inspired Cloth-debiasing for Cloth-changing Person Re-identification</h4>
+<p>这篇论文的内容概括如下：</p>
+<ul>
+<li><strong>人物识别中的服装偏见问题</strong>：在传统的人物识别中，服装是人类身份的重要因素。然而，在换装人物识别（CC-ReID）中，由于其混淆性质，服装也带来了重大挑战。本文分析了服装对模型预测的影响，并采用因果干预来自动消除这种影响。具体而言，首先提出了一种基于因果关系的自动干预模型（AIM），以减轻服装偏见，实现强大的CC-ReID。采用双分支结构来模拟因果干预过程，并通过因果性损失进行惩罚。AIM最终被鼓励学习不受服装偏见影响的内在身份线索。在两个标准的CC-ReID数据集上进行的广泛实验表明，AIM优于其他最先进的方法。</li>
+<li><strong>缺点和局限性</strong>：在纠正当前ReID模型误导注意力方面，缺乏实用工具使其变得具有挑战性。即使知道服装是一个关键影响因素，也不清楚如何直接在表示空间中干预服装。更不用说粗略地忽略服装会破坏人物表示的完整性，例如基于面具[12、16、41]和基于步态[6、17]的方法试图通过强制覆盖或忽略服装信息来获得无衣物特征表示。虽然这些方法有效，但它们失去了大量语义信息，并忽视了服装与真实身份之间的事实关系。</li>
+<li><strong>贡献</strong>：本文的贡献可以总结为以下三点：
+<ul>
+<li>我们提出了一种新颖的基于因果关系的自动干预模型（AIM）用于换装人物识别（CC-ReID）。AIM保证所学习到的表示不受服装偏见影响。据我们所知，AIM是第一个将因果关系引入CC-ReID中的模型。¹[1]</li>
+<li>我们提出了一个双分支模型来模拟因果干预。逐步消除了混淆ID-服装表示中的服装偏见，同时保持语义完整性，优化了ID内在特征学习。</li>
+<li>我们全面展示了服装偏见如何影响当前ReID模型，并强调因果推断在CC-ReID中的重要性。在两个CC-ReID数据集PRCC-ReID [38]和LTCC-ReID [26]上进行的实验结果表明，AIM优于最先进的方法。²[2]</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>cloth-changing datasets PRCC-ReID and LTCC-ReID</p>
+</blockquote>
+<h3 id="ICCV-2023-3">ICCV 2023</h3>
+<h4 id="Learning-Clothing-and-Pose-Invariant-3D-Shape-Representation-for-Long-Term-Person-Re-Identification">Learning Clothing and Pose Invariant 3D Shape Representation for Long-Term Person Re-Identification</h4>
+<p>这篇文章的内容概括如下：</p>
+<ul>
+<li><strong>长期人员重识别</strong>：本文研究了一种更具挑战性和实用性的场景，即在考虑服装变化和多样化人体活动的情况下，识别不同地点和时间的特定人员。这个场景由于人体姿势和服装的多样性，导致了几何不对齐和外观模糊的问题。</li>
+<li><strong>3D隐式模型</strong>：本文提出了一种新的方法3DInvarReID，通过分离身份和非身份成分（姿势、服装形状和纹理）的3D隐式表示，来重建精确的3D穿衣人体形状，并学习裸体形状的判别特征，用于人员重识别。</li>
+<li><strong>CCDA数据集</strong>：为了更好地评估本文的研究问题，本文收集了一个真实世界的数据集CCDA，包含了多种人体活动和服装变化的图像。实验结果表明，本文的方法在人员重识别方面具有优越的性能。代码可在此处获取。</li>
+</ul>
+<blockquote>
+<p>CAPE [34] (3, 000 scans) and THuman2.0</p>
+</blockquote>
+<h4 id="DeepChange-A-Long-Term-Person-Re-Identification-Benchmark-with-Clothes-Change">DeepChange: A Long-Term Person Re-Identification Benchmark with Clothes Change</h4>
+<p>这篇文章的主要内容如下：</p>
+<ul>
+<li><strong>深度变化（Deepchange）</strong>：一个长期的人员重识别基准，考虑了衣服变化的影响。该基准使用了真实的监控视频，包含了<strong>1121</strong>个身份，<strong>17</strong>个摄像头，<strong>178K</strong>个边界框，覆盖了<strong>12</strong>个月的时间跨度。该基准具有真实和丰富的个人外观（例如衣服和发型）和变化，以及不同的天气和场景。</li>
+<li><strong>多模态融合</strong>：为了应对衣服变化的挑战，作者探索了多模态融合的策略，利用灰度图像，边缘图和骨架关键点等额外的信息来提高人员重识别的性能。作者提出了两种融合方法：一种是基于CNN的后融合，另一种是基于Transformer的前融合。两种方法都支持多于两种模态的输入。</li>
+<li><strong>实验结果</strong>：作者在深度变化基准上对比了多种代表性的有监督和无监督的人员重识别方法，以及多种CNN和Transformer模型。实验结果表明，作者提出的多模态融合方法在深度变化基准上取得了新的最优性能，超过了各种CNN和CNN基于重识别方法。此外，实验结果也表明，Transformer可能是一种更强大的架构来处理长期人员重识别问题。</li>
+</ul>
+<h2 id="其他">其他</h2>
+<p>比如对Triplet Loss等ReID常用组件进行优化</p>
+<h3 id="CVPR2023-4">CVPR2023</h3>
+<h4 id="Adaptive-Sparse-Pairwise-Loss-for-Object-Re-Identification">Adaptive Sparse Pairwise Loss for Object Re-Identification</h4>
+<p>这篇文章的内容概括如下：</p>
+<ul>
+<li><strong>目标</strong>：这篇文章提出了一种新的损失范式，称为稀疏成对（SP）损失，用于对象重识别（ReID）任务。SP损失不依赖于密集的实例级锚点，而是为每个类别挖掘最有信息量的正负样本对。</li>
+<li><strong>方法</strong>：基于SP损失框架，作者提出了一种最不困难的正样本挖掘策略，以应对大的类内变化。另外，作者还开发了一种自适应的挖掘方法，根据不同的类内变化水平动态地调整正样本对的权重。</li>
+<li><strong>结果</strong>：作者在多个人员/车辆ReID数据集上进行了广泛的实验，表明SP损失及其自适应变体优于其他成对损失，并在多个基准测试中达到了最先进的性能。</li>
+</ul>
+<h4 id="Large-scale-Training-Data-Search-for-Object-Re-identification">Large-scale Training Data Search for Object Re-identification</h4>
+<p>这篇文章的内容概括如下：</p>
+<ul>
+<li><strong>目标：</strong> 本文研究了如何从大规模的数据池中搜索适合目标域的训练数据，用于对象重识别（re-ID）的任务。对象重识别是指在不同的摄像头下匹配同一个对象的图像。</li>
+<li><strong>方法：</strong> 本文提出了一种搜索和剪枝（SnP）的解决方案，分为两个阶段。第一阶段，根据特征层面的距离（即Fréchet Inception Distance，FID），从数据池中识别和合并与目标域分布相似的源域身份的聚类。第二阶段，在给定一个预算（即训练数据的大小限制）的情况下，从第一阶段的输出中选择身份和图像，以控制最终训练集的规模和质量。</li>
+<li><strong>结果：</strong> 本文在多个对象重识别的目标域上进行了实验，比较了SnP方法与随机采样和贪心采样等基线方法。实验结果表明，SnP方法能够在不同的预算下，构建出具有较低域间距离和较高重识别准确率的训练集。此外，本文还分析了域间距离、数据集大小和训练集质量之间的关系，并讨论了SnP方法在缩小重识别域间差距方面的作用。</li>
+</ul>
+<blockquote>
+<p>Create the source pool for person re-ID using 10 public datasets, including Market [54], Duke [55], MSMT17 [45] (denoted as MSMT), CUHK03 [19], RAiD [6], PersonX [37], UnrealPerson [52], RandPerson [43], PKU-Reid [28] and VIPeR [4].</p>
+</blockquote>
+<h4 id="An-In-depth-Exploration-of-Person-Re-identification-and-Gait-Recognition-in-Cloth-Changing-Conditions※">An In-depth Exploration of Person Re-identification and Gait Recognition in Cloth-Changing Conditions※</h4>
+<p>这篇文章的主要内容如下：</p>
+<ul>
+<li><strong>人体重识别和步态识别的目标</strong>：文章介绍了<strong>人体重识别和步态识别</strong>的定义和应用，指出它们的目标是一致的，即在监控摄像头下识别目标行人。文章也分析了两者的主要区别，即人体重识别依赖于外观特征，而步态识别依赖于运动特征。</li>
+<li><strong>衣服变化问题的挑战</strong>：文章指出在实际场景中，行人可能会更换衣服，这对于人体重识别和步态识别都是一个困难的问题。文章回顾了现有的视频人体重识别和步态识别的数据集和方法，发现它们大多数都是在衣服不变或者变化有限的情况下进行研究，缺乏一个适合衣服变化问题的基准数据集。</li>
+<li><strong>CCPG数据集的构建</strong>：文章提出了一个新的衣服变化基准数据集，名为CCPG，它包含了200个身份和超过16K个序列，每个身份有七种不同的衣服状态，包括整套、上半身、下半身、携带包等。数据集同时提供了RGB和轮廓版本的数据，适用于人体重识别和步态识别的研究。数据集还具有多种挑战性，如多视角、遮挡、光照变化等。</li>
+<li><strong>CCPG数据集上的实验</strong>：文章在CCPG数据集上进行了系统的实验，比较了视频人体重识别和步态识别方法在不同衣服变化条件下的性能。实验结果表明，在衣服完全变化或者上半身变化的情况下，步态识别方法优于视频人体重识别方法；而在衣服部分变化或者携带包的情况下，视频人体重识别方法仍然有较好的表现。实验结果也显示了视频人体重识别方法对于面部和鞋子区域的信息过度依赖，而这些信息在实际场景中可能不可用或者不稳定。文章认为步态识别方法更能够提取与衣服无关的特征，因此对于衣服变化问题有更大的发展潜力。</li>
+</ul>
+<blockquote>
+<p>CCPG-A, CCPG-B, CCPG-C</p>
+</blockquote>
+<h3 id="ICCV-2023-4">ICCV 2023</h3>
+<h4 id="Person-Re-Identification-without-Identification-via-Event-Anonymization">Person Re-Identification without Identification via Event Anonymization</h4>
+<p>这篇论文的主要内容是：</p>
+<ul>
+<li><strong>事件匿名化</strong>: 一种基于学习的方法，目的是保护基于事件的视觉应用中的人的身份信息，防止事件到图像的重建攻击。该方法通过一个端到端的网络结构，同时优化事件流的匿名化和下游任务（如人员重识别）的性能。</li>
+<li><strong>事件到图像重建</strong>: 一种潜在的隐私威胁，可以从事件流中恢复出高质量的灰度图像，揭示人的外貌特征。该方法使用一个预训练的递归神经网络，将事件流分割成时空窗口，并生成对应的图像序列。</li>
+<li><strong>基于事件的人员重识别</strong>: 一种在非重叠视角的摄像机网络中识别同一人的任务，使用事件流作为输入而不是标准的RGB信号。该方法使用一个修改的ResNet-50网络，从事件流中提取特征向量，并使用分类损失和三元组损失进行训练。</li>
+<li><strong>联合优化框架</strong>: 一种将事件匿名化、事件到图像重建和基于事件的人员重识别结合在一起的方法，使用一个总的损失函数，包括结构相似性损失、图像重建损失和人员重识别损失。该方法在模拟的事件数据和一个新提出的真实事件数据集上进行了实验，验证了其在防止隐私攻击和保持重识别性能方面的有效性。</li>
+</ul>
+<blockquote>
+<p>Event-ReId</p>
+</blockquote>
+
+
+
+<div class="article-footer reveal fs14"><section id="license"><div class="header"><span>许可协议</span></div><div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div></section></div>
+
+</article>
+
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2023/11/05/note/ReID/RGB-IR/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91Shape-Erased%20Feature%20Learning%20for%20Visible-Infrared%20Person%20Re-Identification/">【论文笔记】Shape-Erased Feature Learning for Visible-Infrared Person Re-Identification</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2023/11/01/note/Gait/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91GaitSet-Regarding%20Gait%20as%20a%20Set%20for%20Cross-View%20Gait%20Recognition/">【论文笔记】GaitSet-Regarding Gait as a Set for Cross-View Gait Recognition</a></div></section></div>
+
+
+
+
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
