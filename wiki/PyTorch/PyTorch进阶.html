@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 7.0.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>PyTorch：PyTorch进阶 - MudSynth</title>
+
+  
+    <meta name="description" content="Broadcast自动扩展  维度扩展 扩展无需复制数据  broadcast原理图 对于一个shape为&#96;torch.size([x1,x2,x3,...,xn])&#96;的&#96;tensor&#96;,靠近x1那一端为大维度，靠近xn那一端为小维度。那么对于broadcast有： 小维度指定，大维度随意这一规律（因为在大维度上进行广播） 拼接与拆分  cat stack split chunk  cat 主要的">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PyTorch进阶">
+<meta property="og:url" content="http://example.com/wiki/PyTorch/PyTorch%E8%BF%9B%E9%98%B6.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="Broadcast自动扩展  维度扩展 扩展无需复制数据  broadcast原理图 对于一个shape为&#96;torch.size([x1,x2,x3,...,xn])&#96;的&#96;tensor&#96;,靠近x1那一端为大维度，靠近xn那一端为小维度。那么对于broadcast有： 小维度指定，大维度随意这一规律（因为在大维度上进行广播） 拼接与拆分  cat stack split chunk  cat 主要的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/imgimage-20220713165948286.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/imgimage-20220714135020075.webp">
+<meta property="article:published_time" content="2022-07-14T01:12:19.000Z">
+<meta property="article:modified_time" content="2023-12-07T08:23:12.279Z">
+<meta property="article:author" content="Mudrobot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/imgimage-20220713165948286.webp">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+    <script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+    <script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+  
+
+
+
+
+<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>所有项目</a><a class="title" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><div class="main" ff="title">PyTorch</div><div class="sub cap">The Greatest ML Framework!</div></a></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/PyTorch/" placeholder="在 /wiki/PyTorch/ 中搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
+
+
+
+
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">教程目录</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html#start"><span class="toc-text">PyTorch入门-简单BP全连接神经网络</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%E5%9F%BA%E7%A1%80.html"><span class="toc-text">PyTorch基础</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/PyTorch/PyTorch%E8%BF%9B%E9%98%B6.html"><span class="toc-text">PyTorch进阶</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Broadcast%E8%87%AA%E5%8A%A8%E6%89%A9%E5%B1%95"><span class="toc-text">Broadcast自动扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%BC%E6%8E%A5%E4%B8%8E%E6%8B%86%E5%88%86"><span class="toc-text">拼接与拆分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cat"><span class="toc-text">cat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#stack"><span class="toc-text">stack</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#split"><span class="toc-text">split</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chunck"><span class="toc-text">chunck</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97"><span class="toc-text">数学运算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97"><span class="toc-text">基本四则运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95"><span class="toc-text">矩阵乘法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BP%E5%85%A8%E8%BF%9E%E6%8E%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-text">BP全连接神经网络的一个例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%AB%98%E4%BA%8E2%E7%BB%B4%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-text">高于2维矩阵乘法的原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%98%E6%96%B9%E8%BF%90%E7%AE%97"><span class="toc-text">乘方运算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#exp%E5%92%8Clog%E5%92%8Clog2%E5%92%8Clog10"><span class="toc-text">exp和log和log2和log10</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%91%E4%BC%BC%E8%BF%90%E7%AE%97"><span class="toc-text">近似运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A2%AF%E5%BA%A6%E8%A3%81%E5%89%AA%E2%80%BB"><span class="toc-text">梯度裁剪※</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%9F%E8%AE%A1%E5%B1%9E%E6%80%A7"><span class="toc-text">统计属性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#norm"><span class="toc-text">norm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mean-max-min-sum-prod"><span class="toc-text">mean,max,min,sum,prod</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dim-keepdim"><span class="toc-text">dim&amp;keepdim</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#topk-kthvalue"><span class="toc-text">topk,kthvalue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%94%E8%BE%83"><span class="toc-text">比较</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E6%93%8D%E4%BD%9C"><span class="toc-text">高阶操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#where"><span class="toc-text">where</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gather"><span class="toc-text">gather</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%E6%A2%AF%E5%BA%A6.html"><span class="toc-text">PyTorch梯度</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%E8%BF%87%E6%8B%9F%E5%90%88.html"><span class="toc-text">PyTorch过拟合</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><span class="toc-text">PyTorch神经网络</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%20CNN.html"><span class="toc-text">PyTorch CNN</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%20CNN%E5%AE%9E%E6%88%98.html"><span class="toc-text">PyTorch CNN实战</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%20RNN&LSTM.html"><span class="toc-text">PyTorch RNN&LSTM</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86%E5%AE%9E%E6%88%98.html"><span class="toc-text">PyTorch 自定义数据集实战</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%20%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8.html"><span class="toc-text">PyTorch 自编码器</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/PyTorch/PyTorch%E7%BB%88%E7%AB%A0%EF%BC%9A%E5%BC%80GAN%EF%BC%81.html"><span class="toc-text">PyTorch终章：开GAN！</span></a></div></div></widget>
+
+
+
+
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">项目</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html">PyTorch</a></div><div id="post-meta">更新于&nbsp;<time datetime="2023-12-07T08:23:12.279Z">2023-12-07</time></div></div>
+
+  <article class='md-text content wiki'>
+  <h1 class="article-title"><span>PyTorch进阶</span></h1>
+  <h2 id="Broadcast自动扩展">Broadcast自动扩展</h2>
+<ul>
+<li>维度扩展</li>
+<li>扩展无需复制数据</li>
+</ul>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/imgimage-20220713165948286.webp" alt="broadcast原理图"/></div><div class="image-meta"><span class="image-caption center">broadcast原理图</span></div></div>
+<div class="tag-plugin note" ><div class="title">对于一个shape为`torch.size([x1,x2,x3,...,xn])`的`tensor`,靠近</div><div class="body"><p><code>x1</code>那一端为大维度，靠近<code>xn</code>那一端为小维度。那么对于broadcast有： <strong>小维度指定，大维度随意</strong>这一规律（因为在大维度上进行广播）</p></div></div>
+<h2 id="拼接与拆分">拼接与拆分</h2>
+<ul>
+<li><code>cat</code></li>
+<li><code>stack</code></li>
+<li><code>split</code></li>
+<li><code>chunk</code></li>
+</ul>
+<h3 id="cat"><code>cat</code></h3>
+<p>主要的功能是将<strong>tensor拼接起来</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.rand(<span class="number">4</span>,<span class="number">32</span>,<span class="number">8</span>)</span><br><span class="line">In [<span class="number">4</span>]: b=torch.rand(<span class="number">5</span>,<span class="number">32</span>,<span class="number">8</span>)</span><br><span class="line">In [<span class="number">5</span>]: torch.cat([a,b],dim=<span class="number">0</span>).shape</span><br><span class="line">Out[<span class="number">5</span>]: torch.Size([<span class="number">9</span>, <span class="number">32</span>, <span class="number">8</span>])</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin note" color="blue"><div class="title">`dim`参数表示的是在哪个维度上进行合并。如果是`n`维tensor则取值范围是</div><div class="body"><p>[0,n)</p></div></div>
+<h3 id="stack"><code>stack</code></h3>
+<p><code>stack</code>的功能和cat有些像，但是他要求的是所拼接的两个tensor的shape必须完全一样。并且拼接后会在拼接维度之前增加一个维度。</p>
+<div class="tag-plugin note" color="red"><div class="body"><p>注意：shape<strong>必须完全一样</strong>！</p></div></div>
+<div class="tag-plugin note" color="blue"><div class="body"><p>然后在所拼接维度之前会新增加一个维度，用于区分是拼接的哪一块（前一块或后一块）</p></div></div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a1=torch.rand(<span class="number">5</span>,<span class="number">3</span>,<span class="number">16</span>,<span class="number">32</span>)</span><br><span class="line">In [<span class="number">4</span>]: a2=torch.rand(<span class="number">5</span>,<span class="number">3</span>,<span class="number">16</span>,<span class="number">32</span>)</span><br><span class="line">In [<span class="number">5</span>]: torch.stack([a1,a2],dim=<span class="number">1</span>).shape</span><br><span class="line">Out[<span class="number">5</span>]: torch.Size([<span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">16</span>, <span class="number">32</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="split"><code>split</code></h3>
+<p><code>split</code>是<strong>按照长度</strong>对tensor进行拆分的函数，一般传入两个参数，第一个参数代表的是所拆维度的长度（长度不仅可以用标量表示固定的长度，也可以用list来表示不固定的长度，详情见下面的例子），第二个参数代表的是所拆的维度是第几维度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: c=torch.rand(<span class="number">3</span>,<span class="number">32</span>,<span class="number">8</span>)</span><br><span class="line">In [<span class="number">4</span>]: aa,bb,cc=c.split(<span class="number">1</span>,dim=<span class="number">0</span>)</span><br><span class="line">In [<span class="number">5</span>]: aa.shape,bb.shape,cc.shape</span><br><span class="line">Out[<span class="number">5</span>]: (torch.Size([<span class="number">1</span>, <span class="number">32</span>, <span class="number">8</span>]), torch.Size([<span class="number">1</span>, <span class="number">32</span>, <span class="number">8</span>]), torch.Size([<span class="number">1</span>, <span class="number">32</span>, <span class="number">8</span>]))</span><br><span class="line">In [<span class="number">6</span>]: aa,bb=c.split([<span class="number">2</span>,<span class="number">1</span>],dim=<span class="number">0</span>)</span><br><span class="line">In [<span class="number">7</span>]: aa.shape,bb.shape</span><br><span class="line">Out[<span class="number">7</span>]: (torch.Size([<span class="number">2</span>, <span class="number">32</span>, <span class="number">8</span>]), torch.Size([<span class="number">1</span>, <span class="number">32</span>, <span class="number">8</span>]))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="chunck"><code>chunck</code></h3>
+<p><code>chunck</code>是<strong>按照数量</strong>对tensor进行拆分的函数，一般传入两个参数，第一个参数代表的是所拆维度要拆出来的数量，第二个参数代表的是所拆的维度是第几维度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: d=torch.rand(<span class="number">6</span>,<span class="number">32</span>,<span class="number">8</span>)</span><br><span class="line">In [<span class="number">4</span>]: c=torch.rand(<span class="number">3</span>,<span class="number">32</span>,<span class="number">8</span>)</span><br><span class="line">In [<span class="number">5</span>]: aa,bb,cc=d.chunk(<span class="number">3</span>,dim=<span class="number">0</span>)</span><br><span class="line">In [<span class="number">6</span>]: aa.shape,bb.shape,cc.shape</span><br><span class="line">Out[<span class="number">6</span>]: (torch.Size([<span class="number">2</span>, <span class="number">32</span>, <span class="number">8</span>]), torch.Size([<span class="number">2</span>, <span class="number">32</span>, <span class="number">8</span>]), torch.Size([<span class="number">2</span>, <span class="number">32</span>, <span class="number">8</span>]))</span><br></pre></td></tr></table></figure>
+<h2 id="数学运算">数学运算</h2>
+<ul>
+<li>基本四则运算(add/minus/multiply/divide)</li>
+<li>矩阵乘法(Matmul)</li>
+<li>乘方运算(Pow)</li>
+<li>开方运算(Sqrt/rsqrt)</li>
+<li>近似运算(Round)</li>
+</ul>
+<h3 id="基本四则运算">基本四则运算</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.tensor([[<span class="number">2</span>,<span class="number">4</span>,<span class="number">6</span>],[<span class="number">8</span>,<span class="number">10</span>,<span class="number">12</span>]])</span><br><span class="line">In [<span class="number">4</span>]: b=torch.ones(<span class="number">2</span>,<span class="number">3</span>)*<span class="number">2</span></span><br><span class="line">In [<span class="number">5</span>]: a+b</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">tensor([[ <span class="number">4.</span>,  <span class="number">6.</span>,  <span class="number">8.</span>],</span><br><span class="line">        [<span class="number">10.</span>, <span class="number">12.</span>, <span class="number">14.</span>]])</span><br><span class="line">In [<span class="number">6</span>]: a-b</span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">tensor([[ <span class="number">0.</span>,  <span class="number">2.</span>,  <span class="number">4.</span>],</span><br><span class="line">        [ <span class="number">6.</span>,  <span class="number">8.</span>, <span class="number">10.</span>]])</span><br><span class="line">In [<span class="number">7</span>]: a*b</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">tensor([[ <span class="number">4.</span>,  <span class="number">8.</span>, <span class="number">12.</span>],</span><br><span class="line">        [<span class="number">16.</span>, <span class="number">20.</span>, <span class="number">24.</span>]])</span><br><span class="line">In [<span class="number">8</span>]: a/b</span><br><span class="line">Out[<span class="number">8</span>]: </span><br><span class="line">tensor([[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>],</span><br><span class="line">        [<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>]])</span><br><span class="line">In [<span class="number">9</span>]: a/(a/b)</span><br><span class="line">Out[<span class="number">9</span>]: </span><br><span class="line">tensor([[<span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>],</span><br><span class="line">        [<span class="number">2.</span>, <span class="number">2.</span>, <span class="number">2.</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>pytorch中还专门有定义好的四则运算的函数和以上这些运算符号所运算出来的效果相同，他们分别是。</p>
+<ul>
+<li><code>torch.add</code></li>
+<li><code>torch.minus</code></li>
+<li><code>torch.mul</code></li>
+<li><code>torch.div</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">10</span>]: torch.<span class="built_in">all</span>(torch.eq(a+b,torch.add(a,b)))</span><br><span class="line">Out[<span class="number">10</span>]: tensor(<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">11</span>]: torch.<span class="built_in">all</span>(torch.eq(a-b,torch.sub(a,b)))</span><br><span class="line">Out[<span class="number">11</span>]: tensor(<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">12</span>]: torch.<span class="built_in">all</span>(torch.eq(a*b,torch.mul(a,b)))</span><br><span class="line">Out[<span class="number">12</span>]: tensor(<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">13</span>]: torch.<span class="built_in">all</span>(torch.eq(a/b,torch.div(a,b)))</span><br><span class="line">Out[<span class="number">13</span>]: tensor(<span class="literal">True</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="tag-plugin note" color="red"><div class="body"><p>注意：这里的乘法和除法，不同于矩阵乘法和除法，只是将两个矩阵<strong>对应位置</strong>的数进行相乘或相除操作。</p></div></div>
+<div class="tag-plugin note" ><div class="body"><p>这里还有一个整除运算符号<code>//</code>没有讲到，好像并没有找到与他对应的函数</p></div></div>
+<h3 id="矩阵乘法">矩阵乘法</h3>
+<ul>
+<li><code>torch.mm</code>(只适用于二维tensor,不推荐)</li>
+<li><code>torch.matmul</code>(适用于任意维度的矩阵)</li>
+<li><code>@</code>(同上<code>torch.matmul</code>)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.tensor([[<span class="number">2</span>,<span class="number">4</span>],[<span class="number">8</span>,<span class="number">12</span>]])</span><br><span class="line">In [<span class="number">4</span>]: b=torch.tensor([[<span class="number">1</span>,<span class="number">2</span>],[<span class="number">3</span>,<span class="number">4</span>]])</span><br><span class="line">In [<span class="number">5</span>]: torch.mm(a,b)</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">tensor([[<span class="number">14</span>, <span class="number">20</span>],</span><br><span class="line">        [<span class="number">44</span>, <span class="number">64</span>]])</span><br><span class="line">In [<span class="number">6</span>]: torch.matmul(a,b)</span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">tensor([[<span class="number">14</span>, <span class="number">20</span>],</span><br><span class="line">        [<span class="number">44</span>, <span class="number">64</span>]])</span><br><span class="line">In [<span class="number">7</span>]: a@b</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">tensor([[<span class="number">14</span>, <span class="number">20</span>],</span><br><span class="line">        [<span class="number">44</span>, <span class="number">64</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="BP全连接神经网络的一个例子">BP全连接神经网络的一个例子</h4>
+<p class="katex-block math-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>x</mi><mi mathvariant="normal">@</mi><mi>w</mi><mi mathvariant="normal">.</mi><mi>t</mi><mo stretchy="false">(</mo><mo stretchy="false">)</mo><mo>+</mo><mi>b</mi></mrow><annotation encoding="application/x-tex">x@w.t()+b
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mord">@</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord">.</span><span class="mord mathnormal">t</span><span class="mopen">(</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span></span></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">4</span>]: x=torch.rand(<span class="number">4</span>,<span class="number">784</span>)</span><br><span class="line">In [<span class="number">5</span>]: w=torch.rand(<span class="number">512</span>,<span class="number">784</span>)</span><br><span class="line">In [<span class="number">6</span>]: (x@w.t()).shape</span><br><span class="line">Out[<span class="number">6</span>]: torch.Size([<span class="number">4</span>, <span class="number">512</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="高于2维矩阵乘法的原理">高于2维矩阵乘法的原理</h4>
+<p>取最小两个维度的内容进行矩阵乘法，保留高维度的的大小。<strong>其实相当于是支持了多个矩阵并行相乘</strong>。</p>
+<div class="tag-plugin note" color="yellow"><div class="body"><p>高维度大小不一定要完全一样，但是要符合broadcasting原则，具体见下面的例子</p></div></div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.rand(<span class="number">4</span>,<span class="number">3</span>,<span class="number">28</span>,<span class="number">64</span>)</span><br><span class="line">In [<span class="number">4</span>]: b=torch.rand(<span class="number">4</span>,<span class="number">3</span>,<span class="number">64</span>,<span class="number">32</span>)</span><br><span class="line">In [<span class="number">5</span>]: torch.matmul(a,b).shape</span><br><span class="line">Out[<span class="number">5</span>]: torch.Size([<span class="number">4</span>, <span class="number">3</span>, <span class="number">28</span>, <span class="number">32</span>])</span><br><span class="line">In [<span class="number">6</span>]: b=torch.rand(<span class="number">4</span>,<span class="number">1</span>,<span class="number">64</span>,<span class="number">32</span>)</span><br><span class="line">In [<span class="number">7</span>]: torch.matmul(a,b).shape</span><br><span class="line">Out[<span class="number">7</span>]: torch.Size([<span class="number">4</span>, <span class="number">3</span>, <span class="number">28</span>, <span class="number">32</span>])</span><br><span class="line">In [<span class="number">8</span>]: b=torch.rand(<span class="number">4</span>,<span class="number">2</span>,<span class="number">64</span>,<span class="number">32</span>)</span><br><span class="line">In [<span class="number">9</span>]: torch.matmul(a,b).shape</span><br><span class="line">Traceback</span><br></pre></td></tr></table></figure>
+<h3 id="乘方运算">乘方运算</h3>
+<ul>
+<li><code>.pow()</code>：括号中写次方数</li>
+<li><code>**</code>：同上面的<code>pow</code>函数，乘方运算符</li>
+<li><code>sqrt()</code>：开平方运算</li>
+<li><code>rsqrt()</code>：开平方后求倒数。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.full([<span class="number">2</span>,<span class="number">2</span>],<span class="number">3</span>)</span><br><span class="line">In [<span class="number">4</span>]: a</span><br><span class="line">Out[<span class="number">4</span>]: </span><br><span class="line">tensor([[<span class="number">3</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">3</span>, <span class="number">3</span>]])</span><br><span class="line">In [<span class="number">5</span>]: a.<span class="built_in">pow</span>(<span class="number">2</span>)</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">tensor([[<span class="number">9</span>, <span class="number">9</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">9</span>]])</span><br><span class="line">In [<span class="number">6</span>]: a**<span class="number">2</span></span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">tensor([[<span class="number">9</span>, <span class="number">9</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">9</span>]])</span><br><span class="line">In [<span class="number">7</span>]: torch.<span class="built_in">all</span>(torch.eq(a**<span class="number">2</span>,a.<span class="built_in">pow</span>(<span class="number">2</span>)))</span><br><span class="line">Out[<span class="number">7</span>]: tensor(<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">8</span>]: aa=a**<span class="number">2</span></span><br><span class="line">In [<span class="number">9</span>]: aa.sqrt()</span><br><span class="line">Out[<span class="number">9</span>]: </span><br><span class="line">tensor([[<span class="number">3.</span>, <span class="number">3.</span>],</span><br><span class="line">        [<span class="number">3.</span>, <span class="number">3.</span>]])</span><br><span class="line">In [<span class="number">10</span>]: aa.rsqrt()</span><br><span class="line">Out[<span class="number">10</span>]: </span><br><span class="line">tensor([[<span class="number">0.3333</span>, <span class="number">0.3333</span>],</span><br><span class="line">        [<span class="number">0.3333</span>, <span class="number">0.3333</span>]])</span><br><span class="line">In [<span class="number">11</span>]: aa**(<span class="number">0.5</span>)</span><br><span class="line">Out[<span class="number">11</span>]: </span><br><span class="line">tensor([[<span class="number">3.</span>, <span class="number">3.</span>],</span><br><span class="line">        [<span class="number">3.</span>, <span class="number">3.</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="exp和log和log2和log10">exp和log和log2和log10</h4>
+<p>看名字应该就大概明白功能了，这里不再赘述，直接上一个例子吧</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">14</span>]: a=torch.exp(torch.ones(<span class="number">2</span>,<span class="number">2</span>))</span><br><span class="line">In [<span class="number">15</span>]: a</span><br><span class="line">Out[<span class="number">15</span>]: </span><br><span class="line">tensor([[<span class="number">2.7183</span>, <span class="number">2.7183</span>],</span><br><span class="line">        [<span class="number">2.7183</span>, <span class="number">2.7183</span>]])</span><br><span class="line">In [<span class="number">16</span>]: torch.log(a)</span><br><span class="line">Out[<span class="number">16</span>]: </span><br><span class="line">tensor([[<span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">        [<span class="number">1.</span>, <span class="number">1.</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">18</span>]: a=torch.ones(<span class="number">2</span>,<span class="number">2</span>)*<span class="number">2</span></span><br><span class="line">In [<span class="number">19</span>]: torch.log2(a)</span><br><span class="line">Out[<span class="number">19</span>]: </span><br><span class="line">tensor([[<span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">        [<span class="number">1.</span>, <span class="number">1.</span>]])</span><br><span class="line">In [<span class="number">20</span>]: a=torch.ones(<span class="number">2</span>,<span class="number">2</span>)*<span class="number">100</span></span><br><span class="line">In [<span class="number">21</span>]: torch.log10(a)</span><br><span class="line">Out[<span class="number">21</span>]: </span><br><span class="line">tensor([[<span class="number">2.</span>, <span class="number">2.</span>],</span><br><span class="line">        [<span class="number">2.</span>, <span class="number">2.</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="近似运算">近似运算</h3>
+<ul>
+<li><code>.floor()</code>：向下取整</li>
+<li><code>.ceil()</code>：向上取整</li>
+<li><code>.round()</code>：四舍五入</li>
+<li><code>.trunc()</code>：裁剪——只保留整数部分</li>
+<li><code>/frac()</code>：裁剪——只保留小数部分</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.tensor(<span class="number">3.14</span>)</span><br><span class="line">In [<span class="number">4</span>]: a.floor(),a.ceil(),a.trunc(),a.frac()</span><br><span class="line">Out[<span class="number">4</span>]: (tensor(<span class="number">3.</span>), tensor(<span class="number">4.</span>), tensor(<span class="number">3.</span>), tensor(<span class="number">0.1400</span>))</span><br><span class="line">In [<span class="number">5</span>]: a=torch.tensor(<span class="number">3.499999</span>)</span><br><span class="line">In [<span class="number">6</span>]: a.<span class="built_in">round</span>()</span><br><span class="line">Out[<span class="number">6</span>]: tensor(<span class="number">3.</span>)</span><br><span class="line">In [<span class="number">7</span>]: a=torch.tensor(<span class="number">3.5</span>)</span><br><span class="line">In [<span class="number">8</span>]: a.<span class="built_in">round</span>()</span><br><span class="line">Out[<span class="number">8</span>]: tensor(<span class="number">4.</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="梯度裁剪※">梯度裁剪※</h3>
+<p>我们在做和机器学习相关的项目中时，有可能会碰到这种情况，就是梯度太大或太小（接近0）从而导致我们的训练结果并不是非常的理想，因此我们可以采用梯度裁剪的方法，将梯度现有梯度控制在一个范围内，有效避免这类问题。</p>
+<p>所使用的函数是<code>clamp</code>，一般传入一个或两个参数。</p>
+<p>如果之传入一个参数，该参数表示梯度的最小值，因此比该值小的梯度都会被强行增大到该值。</p>
+<p>如果传入两个参数，则两个参数分别表示最小值和最大值，比最小值小的值会强行变为设定的最小值，比最大值大的值会强行变为设定的最大值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: grad=torch.rand(<span class="number">2</span>,<span class="number">3</span>)*<span class="number">30</span>-<span class="number">15</span></span><br><span class="line">In [<span class="number">4</span>]: grad.<span class="built_in">max</span>()</span><br><span class="line">Out[<span class="number">4</span>]: tensor(<span class="number">6.2306</span>)</span><br><span class="line">In [<span class="number">5</span>]: grad.<span class="built_in">min</span>()</span><br><span class="line">Out[<span class="number">5</span>]: tensor(-<span class="number">11.8838</span>)</span><br><span class="line">In [<span class="number">6</span>]: grad.median()</span><br><span class="line">Out[<span class="number">6</span>]: tensor(-<span class="number">0.5767</span>)</span><br><span class="line">In [<span class="number">7</span>]: grad.clamp(<span class="number">5</span>)</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">tensor([[<span class="number">5.0000</span>, <span class="number">5.0000</span>, <span class="number">5.0000</span>],</span><br><span class="line">        [<span class="number">5.0000</span>, <span class="number">5.0000</span>, <span class="number">6.2306</span>]])</span><br><span class="line">In [<span class="number">8</span>]: grad</span><br><span class="line">Out[<span class="number">8</span>]: </span><br><span class="line">tensor([[  <span class="number">3.8570</span>,  -<span class="number">0.2229</span>, -<span class="number">11.8838</span>],</span><br><span class="line">        [ -<span class="number">8.5261</span>,  -<span class="number">0.5767</span>,   <span class="number">6.2306</span>]])</span><br><span class="line">In [<span class="number">9</span>]: grad.clamp(<span class="number">0</span>)</span><br><span class="line">Out[<span class="number">9</span>]: </span><br><span class="line">tensor([[<span class="number">3.8570</span>, <span class="number">0.0000</span>, <span class="number">0.0000</span>],</span><br><span class="line">        [<span class="number">0.0000</span>, <span class="number">0.0000</span>, <span class="number">6.2306</span>]])</span><br><span class="line">In [<span class="number">10</span>]: grad.clamp(<span class="number">0</span>,<span class="number">5</span>)</span><br><span class="line">Out[<span class="number">10</span>]: </span><br><span class="line">tensor([[<span class="number">3.8570</span>, <span class="number">0.0000</span>, <span class="number">0.0000</span>],</span><br><span class="line">        [<span class="number">0.0000</span>, <span class="number">0.0000</span>, <span class="number">5.0000</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="统计属性">统计属性</h2>
+<ul>
+<li><code>norm</code>：范数</li>
+<li><code>mean</code>,<code>sum</code>：平均值，和</li>
+<li><code>prod</code>：<strong>累乘</strong></li>
+<li><code>max</code>,<code>min</code>,<code>argmin</code>,<code>argmax</code>：最大值，最小值，最小值所在位置，最大值所在位置</li>
+<li><code>kthvalue</code>,<code>topk</code>：求第k个值，求前k个值</li>
+</ul>
+<h3 id="norm"><code>norm</code></h3>
+<p>一般是1范数和2范数使用的较多，但下面还是会将各个范数的含义进行简要的介绍。</p>
+<ul>
+<li><strong>0范数</strong>：矩阵中非零元素的个数</li>
+<li><strong>1范数</strong>：矩阵中各个元素的绝对值之和</li>
+<li><strong>2范数</strong>：矩阵中各个元素平方和的1/2次方，又被称为Euclidean范数或者Frobenius 范数。</li>
+<li><strong>p范数</strong>：为x向量（或矩阵）各个元素绝对值p次方和的1/p次方。</li>
+</ul>
+<p><code>norm</code>函数一般需要一个或者两个参数，如果只是提供一个参数，则该参数表示的是第几范数，如果提供2个参数，第一个参数意义同上，第二个参数的意义是在哪个维度上进行范数运算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.tensor([<span class="number">1.</span>,<span class="number">2.</span>,<span class="number">3.</span>,<span class="number">4.</span>,<span class="number">5.</span>,<span class="number">6.</span>,<span class="number">7.</span>,<span class="number">8.</span>])</span><br><span class="line">In [<span class="number">4</span>]: b=a.view(<span class="number">2</span>,<span class="number">4</span>)</span><br><span class="line">In [<span class="number">5</span>]: c=a.view(<span class="number">2</span>,<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line">In [<span class="number">6</span>]: b</span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">tensor([[<span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>, <span class="number">4.</span>],</span><br><span class="line">        [<span class="number">5.</span>, <span class="number">6.</span>, <span class="number">7.</span>, <span class="number">8.</span>]])</span><br><span class="line">In [<span class="number">7</span>]: c</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">tensor([[[<span class="number">1.</span>, <span class="number">2.</span>],</span><br><span class="line">         [<span class="number">3.</span>, <span class="number">4.</span>]],</span><br><span class="line">        [[<span class="number">5.</span>, <span class="number">6.</span>],</span><br><span class="line">         [<span class="number">7.</span>, <span class="number">8.</span>]]])</span><br><span class="line">In [<span class="number">8</span>]: a.norm(<span class="number">1</span>),b.norm(<span class="number">1</span>),c.norm(<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">8</span>]: (tensor(<span class="number">36.</span>), tensor(<span class="number">36.</span>), tensor(<span class="number">36.</span>))</span><br><span class="line">In [<span class="number">9</span>]: a.norm(<span class="number">2</span>),b.norm(<span class="number">2</span>),c.norm(<span class="number">2</span>)</span><br><span class="line">Out[<span class="number">9</span>]: (tensor(<span class="number">14.2829</span>), tensor(<span class="number">14.2829</span>), tensor(<span class="number">14.2829</span>))</span><br><span class="line">In [<span class="number">10</span>]: b.norm(<span class="number">1</span>,dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">10</span>]: tensor([<span class="number">10.</span>, <span class="number">26.</span>])</span><br><span class="line">In [<span class="number">11</span>]: b.norm(<span class="number">1</span>,dim=<span class="number">0</span>)</span><br><span class="line">Out[<span class="number">11</span>]: tensor([ <span class="number">6.</span>,  <span class="number">8.</span>, <span class="number">10.</span>, <span class="number">12.</span>])</span><br><span class="line">In [<span class="number">12</span>]: b.norm(<span class="number">2</span>,dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">12</span>]: tensor([ <span class="number">5.4772</span>, <span class="number">13.1909</span>])</span><br><span class="line">In [<span class="number">13</span>]: c.norm(<span class="number">1</span>,dim=<span class="number">0</span>)</span><br><span class="line">Out[<span class="number">13</span>]: </span><br><span class="line">tensor([[ <span class="number">6.</span>,  <span class="number">8.</span>],</span><br><span class="line">        [<span class="number">10.</span>, <span class="number">12.</span>]])</span><br><span class="line">In [<span class="number">14</span>]: c.norm(<span class="number">1</span>,dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">14</span>]: </span><br><span class="line">tensor([[ <span class="number">4.</span>,  <span class="number">6.</span>],</span><br><span class="line">        [<span class="number">12.</span>, <span class="number">14.</span>]])</span><br><span class="line">In [<span class="number">15</span>]: c.norm(<span class="number">1</span>,dim=<span class="number">2</span>)</span><br><span class="line">Out[<span class="number">15</span>]: </span><br><span class="line">tensor([[ <span class="number">3.</span>,  <span class="number">7.</span>],</span><br><span class="line">        [<span class="number">11.</span>, <span class="number">15.</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="mean-max-min-sum-prod"><code>mean,max,min,sum,prod</code></h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.arange(<span class="number">8</span>).view(<span class="number">2</span>,<span class="number">4</span>).<span class="built_in">float</span>()</span><br><span class="line">In [<span class="number">4</span>]: a</span><br><span class="line">Out[<span class="number">4</span>]: </span><br><span class="line">tensor([[<span class="number">0.</span>, <span class="number">1.</span>, <span class="number">2.</span>, <span class="number">3.</span>],</span><br><span class="line">        [<span class="number">4.</span>, <span class="number">5.</span>, <span class="number">6.</span>, <span class="number">7.</span>]])</span><br><span class="line">In [<span class="number">5</span>]: a.<span class="built_in">min</span>(),a.<span class="built_in">max</span>(),a.mean(),a.prod()</span><br><span class="line">Out[<span class="number">5</span>]: (tensor(<span class="number">0.</span>), tensor(<span class="number">7.</span>), tensor(<span class="number">3.5000</span>), tensor(<span class="number">0.</span>))</span><br><span class="line">In [<span class="number">6</span>]: a.<span class="built_in">sum</span>()</span><br><span class="line">Out[<span class="number">6</span>]: tensor(<span class="number">28.</span>)</span><br><span class="line">In [<span class="number">7</span>]: a.argmax(),a.argmin()</span><br><span class="line">Out[<span class="number">7</span>]: (tensor(<span class="number">7</span>), tensor(<span class="number">0</span>))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="tag-plugin note" color="yellow"><div class="body"><p>可以发现<code>argmax</code>和<code>argmin</code>在寻找最大最小值的时候，是将整个tensor变为了一个一维向量的！如果我们想求每一行的一个最大值或最小值的位置，我们可以采用以下的这种做法。</p></div></div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.randn(<span class="number">4</span>,<span class="number">10</span>)</span><br><span class="line">In [<span class="number">4</span>]: a.argmax(dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">4</span>]: tensor([<span class="number">3</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">9</span>])</span><br></pre></td></tr></table></figure>
+<h3 id="dim-keepdim"><code>dim&amp;keepdim</code></h3>
+<p>这两个都是函数中的参数，<code>dim</code>的作用在上面我们已经演示过了，这里就不再赘述。<code>keepdim</code>设置的是返回的答案是否要和原来的矩阵保持相同的维度信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.randn(<span class="number">4</span>,<span class="number">10</span>)</span><br><span class="line">In [<span class="number">4</span>]: a.argmax(dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">4</span>]: tensor([<span class="number">3</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">9</span>])</span><br><span class="line">In [<span class="number">5</span>]: a.<span class="built_in">max</span>(dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">torch.return_types.<span class="built_in">max</span>(</span><br><span class="line">values=tensor([<span class="number">2.2597</span>, <span class="number">1.0554</span>, <span class="number">0.9288</span>, <span class="number">1.1149</span>]),</span><br><span class="line">indices=tensor([<span class="number">3</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">9</span>]))</span><br><span class="line">In [<span class="number">6</span>]: a.argmax(dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">6</span>]: tensor([<span class="number">3</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">9</span>])</span><br><span class="line">In [<span class="number">7</span>]: a.<span class="built_in">max</span>(dim=<span class="number">1</span>,keepdim=<span class="literal">True</span>)</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">torch.return_types.<span class="built_in">max</span>(</span><br><span class="line">values=tensor([[<span class="number">2.2597</span>],</span><br><span class="line">        [<span class="number">1.0554</span>],</span><br><span class="line">        [<span class="number">0.9288</span>],</span><br><span class="line">        [<span class="number">1.1149</span>]]),</span><br><span class="line">indices=tensor([[<span class="number">3</span>],</span><br><span class="line">        [<span class="number">0</span>],</span><br><span class="line">        [<span class="number">6</span>],</span><br><span class="line">        [<span class="number">9</span>]]))</span><br><span class="line">In [<span class="number">8</span>]: a.argmax(dim=<span class="number">1</span>,keepdim=<span class="literal">True</span>)</span><br><span class="line">Out[<span class="number">8</span>]: </span><br><span class="line">tensor([[<span class="number">3</span>],</span><br><span class="line">        [<span class="number">0</span>],</span><br><span class="line">        [<span class="number">6</span>],</span><br><span class="line">        [<span class="number">9</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="topk-kthvalue"><code>topk,kthvalue</code></h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.randn(<span class="number">4</span>,<span class="number">10</span>)</span><br><span class="line">In [<span class="number">4</span>]: a.topk(<span class="number">3</span>,dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">4</span>]: </span><br><span class="line">torch.return_types.topk(</span><br><span class="line">values=tensor([[<span class="number">2.0085</span>, <span class="number">0.5275</span>, <span class="number">0.4304</span>],</span><br><span class="line">        [<span class="number">1.5748</span>, <span class="number">0.8510</span>, <span class="number">0.6699</span>],</span><br><span class="line">        [<span class="number">1.1440</span>, <span class="number">0.8921</span>, <span class="number">0.7946</span>],</span><br><span class="line">        [<span class="number">0.9630</span>, <span class="number">0.8487</span>, <span class="number">0.8158</span>]]),</span><br><span class="line">indices=tensor([[<span class="number">4</span>, <span class="number">0</span>, <span class="number">8</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">3</span>, <span class="number">5</span>],</span><br><span class="line">        [<span class="number">5</span>, <span class="number">9</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">6</span>, <span class="number">9</span>, <span class="number">4</span>]]))</span><br><span class="line">In [<span class="number">5</span>]: a.topk(<span class="number">3</span>,dim=<span class="number">1</span>,largest=<span class="literal">False</span>)</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">torch.return_types.topk(</span><br><span class="line">values=tensor([[-<span class="number">1.8353</span>, -<span class="number">1.5600</span>, -<span class="number">0.7452</span>],</span><br><span class="line">        [-<span class="number">1.1623</span>, -<span class="number">1.0671</span>, -<span class="number">0.2221</span>],</span><br><span class="line">        [-<span class="number">1.1269</span>, -<span class="number">0.3777</span>, -<span class="number">0.2676</span>],</span><br><span class="line">        [-<span class="number">2.1377</span>, -<span class="number">0.2639</span>, -<span class="number">0.0832</span>]]),</span><br><span class="line">indices=tensor([[<span class="number">2</span>, <span class="number">3</span>, <span class="number">9</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">8</span>, <span class="number">4</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">1</span>, <span class="number">5</span>]]))</span><br><span class="line">In [<span class="number">6</span>]: a.kthvalue(<span class="number">1</span>,dim=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">torch.return_types.kthvalue(</span><br><span class="line">values=tensor([-<span class="number">1.8353</span>, -<span class="number">1.1623</span>, -<span class="number">1.1269</span>, -<span class="number">2.1377</span>]),</span><br><span class="line">indices=tensor([<span class="number">2</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">8</span>]))</span><br><span class="line">In [<span class="number">7</span>]: a.kthvalue(<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">torch.return_types.kthvalue(</span><br><span class="line">values=tensor([-<span class="number">1.8353</span>, -<span class="number">1.1623</span>, -<span class="number">1.1269</span>, -<span class="number">2.1377</span>]),</span><br><span class="line">indices=tensor([<span class="number">2</span>, <span class="number">1</span>, <span class="number">7</span>, <span class="number">8</span>]))</span><br><span class="line">In [<span class="number">8</span>]: a.kthvalue(<span class="number">9</span>)</span><br><span class="line">Out[<span class="number">8</span>]: </span><br><span class="line">torch.return_types.kthvalue(</span><br><span class="line">values=tensor([<span class="number">0.5275</span>, <span class="number">0.8510</span>, <span class="number">0.8921</span>, <span class="number">0.8487</span>]),</span><br><span class="line">indices=tensor([<span class="number">0</span>, <span class="number">3</span>, <span class="number">9</span>, <span class="number">9</span>]))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="tag-plugin note" color="blue"><div class="body"><p>对于<code>topk</code>函数默认是<strong>从大到小</strong>，如果把largest改为False则是从小到大。<code>kthvalue</code>函数默认是<strong>从小到大</strong></p></div></div>
+<h3 id="比较">比较</h3>
+<ul>
+<li>
+<p><code>&gt;,&gt;=,&lt;=,!=,==</code></p>
+</li>
+<li>
+<p><code>torch.eq(a,b)</code></p>
+</li>
+</ul>
+<div class="tag-plugin note" color="blue"><div class="body"><p>以上两种都是比较矩阵对应位置的数，因此返回的值是一个同大小的矩阵。</p></div></div>
+<ul>
+<li><code>torch.equal(a,b)</code>：判断两个矩阵是否<strong>完全相等</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a=torch.randn(<span class="number">4</span>,<span class="number">10</span>)</span><br><span class="line">In [<span class="number">4</span>]: a&gt;<span class="number">0</span></span><br><span class="line">Out[<span class="number">4</span>]: </span><br><span class="line">tensor([[ <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">False</span>,  <span class="literal">True</span>,  <span class="literal">True</span>],</span><br><span class="line">        [ <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">False</span>],</span><br><span class="line">        [<span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>,  <span class="literal">True</span>, <span class="literal">False</span>],</span><br><span class="line">        [<span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>,  <span class="literal">True</span>,  <span class="literal">True</span>]])</span><br><span class="line">In [<span class="number">5</span>]: torch.gt(a,<span class="number">0</span>)</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">tensor([[ <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">False</span>,  <span class="literal">True</span>,  <span class="literal">True</span>],</span><br><span class="line">        [ <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">False</span>],</span><br><span class="line">        [<span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>,  <span class="literal">True</span>, <span class="literal">False</span>],</span><br><span class="line">        [<span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>,  <span class="literal">True</span>, <span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>,  <span class="literal">True</span>,  <span class="literal">True</span>]])</span><br><span class="line">In [<span class="number">6</span>]: a!=<span class="number">0</span></span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">tensor([[<span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>],</span><br><span class="line">        [<span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>],</span><br><span class="line">        [<span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>],</span><br><span class="line">        [<span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>]])</span><br><span class="line">In [<span class="number">7</span>]: a=torch.ones(<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line">In [<span class="number">8</span>]: b=torch.randn(<span class="number">2</span>,<span class="number">3</span>)</span><br><span class="line">In [<span class="number">9</span>]: torch.eq(a,b)</span><br><span class="line">Out[<span class="number">9</span>]: </span><br><span class="line">tensor([[<span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>],</span><br><span class="line">        [<span class="literal">False</span>, <span class="literal">False</span>, <span class="literal">False</span>]])</span><br><span class="line">In [<span class="number">10</span>]: torch.eq(a,a)</span><br><span class="line">Out[<span class="number">10</span>]: </span><br><span class="line">tensor([[<span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>],</span><br><span class="line">        [<span class="literal">True</span>, <span class="literal">True</span>, <span class="literal">True</span>]])</span><br><span class="line">In [<span class="number">11</span>]: torch.equal(a,a)</span><br><span class="line">Out[<span class="number">11</span>]: <span class="literal">True</span></span><br><span class="line">In [<span class="number">12</span>]: torch.equal(a,b)</span><br><span class="line">Out[<span class="number">12</span>]: <span class="literal">False</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="高阶操作">高阶操作</h2>
+<ul>
+<li><code>where</code></li>
+<li><code>gather</code></li>
+</ul>
+<h3 id="where"><code>where</code></h3>
+<blockquote>
+<p><code>torch.where(condition,x,y)</code></p>
+</blockquote>
+<p><code>where</code>函数返回一个tensor，这个tensor中的元素不是从x中选出来的就是从y中选出来的，选择判断条件如下所示：</p>
+<p class="katex-block math-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>o</mi><mi>u</mi><msub><mi>t</mi><mi>i</mi></msub><mo>=</mo><mrow><mo fence="true">{</mo><mtable rowspacing="0.36em" columnalign="left left" columnspacing="1em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>x</mi><mi>i</mi></msub><mspace width="1em"/><mi>i</mi><mi>f</mi><mtext> </mtext><mi>c</mi><mi>o</mi><mi>n</mi><mi>d</mi><mi>i</mi><mi>t</mi><mi>i</mi><mi>o</mi><msub><mi>n</mi><mi>i</mi></msub></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><msub><mi>y</mi><mi>i</mi></msub><mspace width="1em"/><mi>o</mi><mi>t</mi><mi>h</mi><mi>e</mi><mi>r</mi><mi>w</mi><mi>i</mi><mi>s</mi><mi>e</mi></mrow></mstyle></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">out_i=\begin{cases}
+x_i \quad if\ condition_i\\
+y_i\quad otherwise
+\end{cases}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3em;vertical-align:-1.25em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size4">{</span></span><span class="mord"><span class="mtable"><span class="col-align-l"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.69em;"><span style="top:-3.69em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:1em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mspace"> </span><span class="mord mathnormal">co</span><span class="mord mathnormal">n</span><span class="mord mathnormal">d</span><span class="mord mathnormal">i</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-2.25em;"><span class="pstrut" style="height:3.008em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:1em;"></span><span class="mord mathnormal">o</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal">i</span><span class="mord mathnormal">se</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.19em;"><span></span></span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<div class="tag-plugin note" color="blue"><div class="title">condition也是一个tensor，和x,y的大小一样。</div><div class="body"><p>如果对应位置的conditon值为1，则取x对应位置的数据，否则取y对应位置的数据</p></div></div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: cond=torch.rand(<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line">In [<span class="number">4</span>]: a=torch.zeros(<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line">In [<span class="number">5</span>]: b=torch.ones(<span class="number">2</span>,<span class="number">2</span>)</span><br><span class="line">In [<span class="number">6</span>]: cond</span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">tensor([[<span class="number">0.5486</span>, <span class="number">0.6658</span>],</span><br><span class="line">        [<span class="number">0.9244</span>, <span class="number">0.3691</span>]])</span><br><span class="line">In [<span class="number">7</span>]: a</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">tensor([[<span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">        [<span class="number">0.</span>, <span class="number">0.</span>]])</span><br><span class="line">In [<span class="number">8</span>]: b</span><br><span class="line">Out[<span class="number">8</span>]: </span><br><span class="line">tensor([[<span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">        [<span class="number">1.</span>, <span class="number">1.</span>]])</span><br><span class="line">In [<span class="number">9</span>]: torch.where(cond&gt;<span class="number">0.6</span>,a,b)</span><br><span class="line">Out[<span class="number">9</span>]: </span><br><span class="line">tensor([[<span class="number">1.</span>, <span class="number">0.</span>],</span><br><span class="line">        [<span class="number">0.</span>, <span class="number">1.</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="tag-plugin note" ><div class="body"><p>虽然我们也可以用Python自带的<code>for</code>循环和<code>if</code>语句来实现同样的功能，但是这样的话由于这些语句运行在CPU上，我们不能享受到PyTorch库中带来的GPU加速的优势，因此会运行的更慢一些。</p></div></div>
+<h3 id="gather"><code>gather</code></h3>
+<blockquote>
+<p><code>torch.gather(input,dim,index,out=None)</code></p>
+</blockquote>
+<p><code>gather</code>函数实现的功能类似于查表函数，给定一个初始表，再给定一个索引表，自动生成一张按照索引表查完初始表的表。</p>
+<div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/imgimage-20220714135020075.webp" alt="原理图"/></div><div class="image-meta"><span class="image-caption center">原理图</span></div></div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: prob=torch.randn(<span class="number">4</span>,<span class="number">10</span>)</span><br><span class="line">In [<span class="number">4</span>]: idx=prob.topk(dim=<span class="number">1</span>,k=<span class="number">3</span>)</span><br><span class="line">In [<span class="number">5</span>]: idx=idx[<span class="number">1</span>]</span><br><span class="line">In [<span class="number">6</span>]: idx</span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">tensor([[<span class="number">9</span>, <span class="number">6</span>, <span class="number">7</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">3</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">4</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>]])</span><br><span class="line">In [<span class="number">7</span>]: label=torch.arange(<span class="number">10</span>)+<span class="number">100</span></span><br><span class="line">In [<span class="number">8</span>]: label</span><br><span class="line">Out[<span class="number">8</span>]: tensor([<span class="number">100</span>, <span class="number">101</span>, <span class="number">102</span>, <span class="number">103</span>, <span class="number">104</span>, <span class="number">105</span>, <span class="number">106</span>, <span class="number">107</span>, <span class="number">108</span>, <span class="number">109</span>])</span><br><span class="line">In [<span class="number">9</span>]: torch.gather(label.expand(<span class="number">4</span>,<span class="number">10</span>),dim=<span class="number">1</span>,index=idx.long())</span><br><span class="line">Out[<span class="number">9</span>]: </span><br><span class="line">tensor([[<span class="number">109</span>, <span class="number">106</span>, <span class="number">107</span>],</span><br><span class="line">        [<span class="number">100</span>, <span class="number">103</span>, <span class="number">102</span>],</span><br><span class="line">        [<span class="number">101</span>, <span class="number">104</span>, <span class="number">102</span>],</span><br><span class="line">        [<span class="number">101</span>, <span class="number">105</span>, <span class="number">106</span>]])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
+<p>以上便是PyTorch中常用的操作了，后续就是实战环节了。</p>
+
+  
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/PyTorch/PyTorch%E5%9F%BA%E7%A1%80.html">PyTorch基础</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/PyTorch/PyTorch%E6%A2%AF%E5%BA%A6.html">PyTorch梯度</a></div></section></div>
+
+  
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
