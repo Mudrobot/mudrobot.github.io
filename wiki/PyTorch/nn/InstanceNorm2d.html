@@ -20,16 +20,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
   
-  <title>教程 - MudSynth</title>
+  <title>PyTorch：nn.InstanceNorm2d - MudSynth</title>
 
   
     <meta name="description" content="Exploring the Frontiers of AI and Technology!">
 <meta property="og:type" content="website">
-<meta property="og:title" content="教程">
-<meta property="og:url" content="http://example.com/wiki/tags/%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:title" content="nn.InstanceNorm2d">
+<meta property="og:url" content="http://example.com/wiki/PyTorch/nn/InstanceNorm2d.html">
 <meta property="og:site_name" content="MudSynth">
 <meta property="og:description" content="Exploring the Frontiers of AI and Technology!">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-19T12:38:28.911Z">
 <meta property="article:author" content="Mudrobot">
 <meta name="twitter:card" content="summary">
   
@@ -64,52 +66,42 @@
   
 
 
+
+
   <div class='l_body' id='start'>
-    <aside class='l_left' layout='wiki_index'>
+    <aside class='l_left' layout='wiki'>
     
 
   
 
-<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/assets/cat.jpg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title">MudSynth</div><div class="sub normal cap">Thinking</div><div class="sub hover cap" style="opacity:0"> Inspiring</div></a></div>
-
-<nav class="menu dis-select"><a class="nav-item" href="/">文章</a><a class="nav-item active" href="/wiki/">项目</a><a class="nav-item" href="/friends/">友链</a><a class="nav-item" href="/about/">关于</a></nav>
-</header>
 
 
-<div class="widgets">
-<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/" placeholder="文档搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
 
-<widget class="widget-wrapper recent"><div class="widget-header cap theme dis-select"><span class="name">最近更新</span></div><div class="widget-body related-posts fs14"><a class="item title" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2023%E5%B9%B412%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="title"><strong>LeetCode</strong><span class="dot"></span>2023年12月每日一题</span></a><a class="item title" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE.html"><span class="title"><strong>LeetCode</strong><span class="dot"></span>二分查找</span></a><a class="item title" href="/wiki/C++/max_element.html"><span class="title"><strong>C++</strong><span class="dot"></span>max_element</span></a><a class="item title" href="/wiki/C++/lower_bound.html"><span class="title"><strong>C++</strong><span class="dot"></span>lower_bound</span></a><a class="item title" href="/wiki/C++/upper_bound.html"><span class="title"><strong>C++</strong><span class="dot"></span>upper_bound</span></a></div></widget>
-
-
-</div>
+<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>所有项目</a><a class="title" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><div class="main" ff="title">PyTorch</div><div class="sub cap">The Greatest ML Framework!</div></a></div></widget></div>
 
 
     </aside>
     <div class='l_main list'>
       
-  
-
-<header class="header mobile-only"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/assets/cat.jpg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title">MudSynth</div><div class="sub normal cap">Thinking</div><div class="sub hover cap" style="opacity:0"> Inspiring</div></a></div></header>
-
-
 
       
 
   
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">项目</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html">PyTorch</a></div><div id="post-meta">更新于&nbsp;<time datetime="2023-12-19T12:38:28.911Z">2023-12-19</time></div></div>
 
-
+  <article class='md-text content wiki'>
+  <h1 class="article-title"><span>nn.InstanceNorm2d</span></h1>
+  
+  
   
 
-<div class="nav-wrap"><nav class="sub wiki cap"><a href="/wiki">所有项目</a></a><a class="active" href="/wiki/tags/%E6%95%99%E7%A8%8B/index.html">教程</a></a><a href="/wiki/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/index.html">深度学习</a></a><a href="/wiki/tags/OI/index.html">OI</a></a></nav></div>
 
-  <div class="post-list wiki filter"><a class="post-card wiki " href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html">
-<article class="md-text"><div class="preview"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/wiki/PyTorch/icon.png" alt="logo" height="90px"/></div><div class="excerpt"><div class="cap breadcrumb">教程</div><h2 class="post-title">PyTorch - 教程合集</h2><p>个人PyTorch学习过程中整理归纳的教程，适合入门学习使用✨</p></div></article>
-</a></div><div class="post-list wiki filter"><a class="post-card wiki " href="/wiki/Git/Git%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B.html">
-<article class="md-text"><div class="preview"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/wiki/Git/icon.png" alt="logo" height="90px"/></div><div class="excerpt"><div class="cap breadcrumb">教程</div><h2 class="post-title">Git - 教程合集</h2><p>Git手把手入门级教程🎉</p></div></article>
-</a></div><div class="post-list wiki filter"><a class="post-card wiki " href="/wiki/C++/max_element.html">
-<article class="md-text"><div class="preview"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/assets/wiki/C++/icon.png" alt="logo" height="90px"/></div><div class="excerpt"><div class="cap breadcrumb">教程</div><h2 class="post-title">C++ - 知识点合集</h2><p>C++零碎知识点整理🐣</p></div></article>
-</a></div>
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/PyTorch/PyTorch%E7%BB%88%E7%AB%A0%EF%BC%9A%E5%BC%80GAN%EF%BC%81.html">PyTorch终章：开GAN！</a></div><div class="item" id="next"></div></section></div>
+
+  
 
 
 

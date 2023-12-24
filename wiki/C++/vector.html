@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+
+<head>
+  <meta name="generator" content="Hexo 7.0.0">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0">
+  <meta charset="utf-8">
+  
+
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://gcore.jsdelivr.net'>
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin>
+  <link rel='dns-prefetch' href='//unpkg.com'>
+
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>C++：vector - MudSynth</title>
+
+  
+    <meta name="description" content="在 C++ 中，vector 是一个基于模板的序列容器，它封装了可以动态改变大小的数组。以下是关于 vector 的详细解释： 基本用法  定义和初始化: vector&lt;T&gt; 定义一个类型为 T 的向量。例如，vector&lt;int&gt; v; 创建一个空的整数向量。你也可以用初始化列表 vector&lt;int&gt; v &#x3D; &#123;1, 2, 3&#125;; 创建并">
+<meta property="og:type" content="website">
+<meta property="og:title" content="vector">
+<meta property="og:url" content="http://example.com/wiki/C++/vector.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="在 C++ 中，vector 是一个基于模板的序列容器，它封装了可以动态改变大小的数组。以下是关于 vector 的详细解释： 基本用法  定义和初始化: vector&lt;T&gt; 定义一个类型为 T 的向量。例如，vector&lt;int&gt; v; 创建一个空的整数向量。你也可以用初始化列表 vector&lt;int&gt; v &#x3D; &#123;1, 2, 3&#125;; 创建并">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-19T12:01:55.118Z">
+<meta property="article:author" content="Mudrobot">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/main.css">
+
+  
+
+  
+
+  
+
+  
+    <link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+    <script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+    <script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+  
+
+
+  
+</head>
+
+<body>
+  
+
+
+
+
+  <div class='l_body' id='start'>
+    <aside class='l_left' layout='wiki'>
+    
+
+  
+
+
+
+
+<div class="widgets"><widget class="widget-wrapper logo-wrap wiki"><div class="widget-body"><a style="filter: grayscale(100%)" class="wiki-home cap" href="/wiki"><svg aria-hidden="true" viewBox="0 0 16 16" width="1rem" height="1rem" fill="currentColor"><path fill-rule="evenodd" d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg>所有项目</a><a class="title" href="/wiki/C++/max_element.html"><div class="main" ff="title">C++</div><div class="sub cap">Unmatched in Speed and Power!</div></a></div></widget>
+<widget class="widget-wrapper search"><div class="widget-body"><div class="search-wrapper" id="search"><form class="search-form"><input type="text" class="search-input" id="search-input" data-filter="/wiki/C++/" placeholder="在 /wiki/C++/ 中搜索"><svg t="1670596976048" class="icon search-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2676" width="200" height="200"><path d="M938.2 832.6L723.8 618.1c-2.5-2.5-5.3-4.4-7.9-6.4 36.2-55.6 57.3-121.8 57.3-193.1C773.3 222.8 614.6 64 418.7 64S64 222.8 64 418.6c0 195.9 158.8 354.6 354.6 354.6 71.3 0 137.5-21.2 193.2-57.4 2 2.7 3.9 5.4 6.3 7.8L832.5 938c14.6 14.6 33.7 21.9 52.8 21.9 19.1 0 38.2-7.3 52.8-21.8 29.2-29.1 29.2-76.4 0.1-105.5M418.7 661.3C284.9 661.3 176 552.4 176 418.6 176 284.9 284.9 176 418.7 176c133.8 0 242.6 108.9 242.6 242.7 0 133.7-108.9 242.6-242.6 242.6" p-id="2677"></path></svg></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div></div></widget>
+
+
+
+
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">Algorithm Lib</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/max_element.html#start"><span class="toc-text">max_element</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/lower_bound.html"><span class="toc-text">lower_bound</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/sort.html"><span class="toc-text">sort</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/upper_bound.html"><span class="toc-text">upper_bound</span></a></div></div><div class="widget-header cap dis-select"><span class="name">STL</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/C++/vector.html"><span class="toc-text">vector</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">特点和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-text">示例代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-text">常用函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#emplace-back"><span class="toc-text">emplace_back</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95-2"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-2"><span class="toc-text">特点和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-2"><span class="toc-text">示例代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8Epush-back%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">与push_back的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#assign"><span class="toc-text">assign</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95-3"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-3"><span class="toc-text">特点和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-3"><span class="toc-text">示例代码</span></a></li></ol></li></ol></div></div></widget>
+
+
+
+<widget class="widget-wrapper related"><div class="widget-header cap theme dis-select"><span class="name">更多教程</span></div><div class="widget-body related-posts"><a class="item wiki" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><span class="title">PyTorch - 教程合集</span><span class="excerpt">个人PyTorch学习过程中整理归纳的教程，适合入门学习使用✨</span></a><a class="item wiki" href="/wiki/Git/Git%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B.html"><span class="title">Git - 教程合集</span><span class="excerpt">Git手把手入门级教程🎉</span></a><a class="item wiki" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%EF%BC%88%E5%9F%BA%E7%A1%80%E7%89%88%EF%BC%89.html"><span class="title">LeetCode - 刷题记录</span><span class="excerpt">个人LeetCode刷题之旅的记录，包含了个人的学习笔记和心得体会💕</span></a><a class="item wiki" href="/wiki/Luogu/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html"><span class="title">洛谷 - 刷题记录</span><span class="excerpt">个人洛谷刷题之旅的记录，包含了个人的学习笔记和心得体会💕</span></a></div></widget>
+</div>
+
+
+    </aside>
+    <div class='l_main'>
+      
+
+      
+
+  
+  
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">项目</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/C++/max_element.html">C++</a></div><div id="post-meta">更新于&nbsp;<time datetime="2023-12-19T12:01:55.118Z">2023-12-19</time></div></div>
+
+  <article class='md-text content wiki'>
+  <h1 class="article-title"><span>vector</span></h1>
+  <p>在 C++ 中，<code>vector</code> 是一个基于模板的序列容器，它封装了可以动态改变大小的数组。以下是关于 <code>vector</code> 的详细解释：</p>
+<h2 id="基本用法">基本用法</h2>
+<ol>
+<li><strong>定义和初始化</strong>: <code>vector&lt;T&gt;</code> 定义一个类型为 <code>T</code> 的向量。例如，<code>vector&lt;int&gt; v;</code> 创建一个空的整数向量。你也可以用初始化列表 <code>vector&lt;int&gt; v = &#123;1, 2, 3&#125;;</code> 创建并初始化向量。</li>
+<li><strong>添加元素</strong>: 使用 <code>push_back(value)</code> 在向量的末尾添加元素。</li>
+<li><strong>访问元素</strong>: 通过 <code>operator[]</code> 或 <code>at(index)</code> 访问元素。<code>at</code> 方法在越界时抛出异常，而 <code>operator[]</code> 不进行边界检查。</li>
+<li><strong>大小和容量</strong>: 使用 <code>size()</code> 来获取向量中的元素个数，<code>capacity()</code> 获取向量的当前容量。</li>
+<li><strong>迭代器</strong>: 提供迭代器（如 <code>begin()</code>, <code>end()</code>）来遍历向量中的元素。</li>
+</ol>
+<h3 id="特点和注意事项">特点和注意事项</h3>
+<ul>
+<li><strong>动态大小</strong>: 与普通数组不同，<code>vector</code> 可以根据需要动态增长和收缩。</li>
+<li><strong>内存管理</strong>: 当新元素添加到 <code>vector</code> 使得当前容量不足时，<code>vector</code> 会自动重新分配内存以容纳更多元素。</li>
+<li><strong>性能</strong>: <code>vector</code> 提供对尾部元素的快速访问和添加，但在中间或开始插入元素可能较慢，因为可能涉及元素的移动。</li>
+<li><strong>连续存储</strong>: <code>vector</code> 的元素存储在连续的内存位置上，这意味着你可以像使用数组一样，通过指针算术操作 <code>vector</code> 的元素。</li>
+</ul>
+<h3 id="示例代码">示例代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; vec;</span><br><span class="line">    vec.<span class="built_in">push_back</span>(<span class="number">10</span>);</span><br><span class="line">    vec.<span class="built_in">push_back</span>(<span class="number">20</span>);</span><br><span class="line">    vec.<span class="built_in">push_back</span>(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用索引访问元素</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;第一个元素: &quot;</span> &lt;&lt; vec[<span class="number">0</span>] &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用迭代器遍历向量</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> it = vec.<span class="built_in">begin</span>(); it != vec.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">        std::cout &lt;&lt; *it &lt;&lt; <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    std::cout &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个示例展示了如何创建 <code>vector</code>，向其中添加元素，访问元素以及使用迭代器遍历 <code>vector</code>。</p>
+<h2 id="常用函数">常用函数</h2>
+<h3 id="emplace-back"><code>emplace_back</code></h3>
+<p><code>std::vector</code> 的 <code>emplace_back</code> 方法是 C++11 引入的一项功能，它用于在向量的末尾直接构造新元素，而不是先构造然后复制或移动到向量中。这可以提高效率，尤其是对于那些不支持复制或效率较低的复制操作的对象。</p>
+<h3 id="基本用法-2">基本用法</h3>
+<ul>
+<li><code>emplace_back(args...)</code>：此方法接受与元素类型构造函数相同的参数集，并在向量末尾直接构造一个新元素。这意味着它可以避免额外的复制或移动操作。</li>
+</ul>
+<h3 id="特点和注意事项-2">特点和注意事项</h3>
+<ul>
+<li><strong>直接构造</strong>：与 <code>push_back</code> 不同，<code>emplace_back</code> 直接在向量的内存空间中构造元素，这可以提高性能，特别是对于大型对象或拥有复杂移动语义的对象。</li>
+<li><strong>参数转发</strong>：它将参数完美转发到元素的构造函数，意味着可以根据传递的参数自动选择合适的构造函数。</li>
+<li><strong>容量变化</strong>：如果当前向量的大小等于容量，<code>emplace_back</code> 会引起向量的重新分配，这可能导致所有现有的迭代器、引用和指针失效。</li>
+<li><strong>异常安全性</strong>：如果构造函数抛出异常，<code>emplace_back</code> 保证不会导致内存泄漏。</li>
+</ul>
+<h3 id="示例代码-2">示例代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line">    <span class="built_in">MyClass</span>(<span class="type">int</span> x, std::string y) : <span class="built_in">num</span>(x), <span class="built_in">str</span>(y) &#123;&#125;</span><br><span class="line">    <span class="type">int</span> num;</span><br><span class="line">    std::string str;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;MyClass&gt; vec;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 直接在向量末尾构造一个 MyClass 对象</span></span><br><span class="line">    vec.<span class="built_in">emplace_back</span>(<span class="number">10</span>, <span class="string">&quot;Hello&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; item : vec) &#123;</span><br><span class="line">        std::cout &lt;&lt; item.num &lt;&lt; <span class="string">&quot;, &quot;</span> &lt;&lt; item.str &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，<code>emplace_back</code> 被用来直接在 <code>vector</code> 末尾构造一个 <code>MyClass</code> 对象。这避免了先构造一个临时对象然后将其复制或移动到向量中的情况。</p>
+<h3 id="与push-back的区别">与<code>push_back</code>的区别</h3>
+<p><code>push_back</code> 和 <code>emplace_back</code> 都是用于向容器（如 <code>std::vector</code>）中添加元素的成员函数，但它们在添加新元素时的方式和性能有所不同。</p>
+<ol>
+<li>
+<p><strong><code>push_back</code></strong>: 这个函数用于在容器的末尾添加一个新元素。当使用 <code>push_back</code> 时，它会创建该元素的副本或移动，这取决于提供的参数。如果参数是一个对象，那么 <code>push_back</code> 会调用该对象的拷贝构造函数或移动构造函数（如果适用）。这可能会导致额外的性能开销，特别是当对象较大或复杂时。</p>
+</li>
+<li>
+<p><strong><code>emplace_back</code></strong>: 这个函数也用于在容器末尾添加新元素，但它的工作方式略有不同。<code>emplace_back</code> 会直接在容器的末尾构造元素，而不是首先创建一个临时对象然后拷贝或移动到容器中。它通过接受构造函数的参数来实现这一点，而不是一个已经构造好的对象。这意味着使用 <code>emplace_back</code> 可以减少不必要的拷贝或移动操作，从而提高效率。</p>
+</li>
+</ol>
+<p>简而言之，<code>emplace_back</code> 通常提供更好的性能，尤其是在添加复杂对象到容器中时，因为它减少了拷贝和移动的次数。然而，在某些情况下，使用 <code>push_back</code> 和 <code>emplace_back</code> 的效果可能是相同的，尤其是对于简单或小型数据类型。</p>
+<h3 id="assign"><code>assign</code></h3>
+<p>在C++中，<code>std::vector</code> 类的 <code>assign</code> 方法用于在向量中设置新内容，替换其当前内容。以下是详细的解释：</p>
+<h3 id="基本用法-3">基本用法</h3>
+<p><code>assign</code> 方法有几种重载形式，允许你用不同的方式设置 <code>vector</code> 的内容：</p>
+<ol>
+<li><code>assign(size_type n, const T&amp; val)</code>：将向量的内容替换为 <code>n</code> 个 <code>val</code> 的副本。</li>
+<li><code>assign(InputIterator first, InputIterator last)</code>：使用两个迭代器 <code>first</code> 和 <code>last</code> 指定的范围来替换向量的内容。</li>
+<li><code>assign(initializer_list&lt;T&gt; il)</code>：使用初始化列表 <code>il</code> 中的元素来替换向量的内容。</li>
+</ol>
+<h3 id="特点和注意事项-3">特点和注意事项</h3>
+<ul>
+<li><code>assign</code> 方法改变向量的大小和内容。</li>
+<li>如果新大小大于当前大小，会创建新元素。如果新大小小于当前大小，则多余的元素会被销毁。</li>
+<li>使用迭代器范围重载时，范围 <code>[first, last)</code> 应有效且不应指向同一 <code>vector</code> 中的元素。</li>
+<li>分配新内容可能导致所有现有的迭代器、引用和指针失效。</li>
+</ul>
+<h3 id="示例代码-3">示例代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; vec;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用初始值赋值</span></span><br><span class="line">    vec.<span class="built_in">assign</span>(<span class="number">4</span>, <span class="number">100</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : vec) &#123;</span><br><span class="line">        std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 100 100 100 100</span></span><br><span class="line">    &#125;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用迭代器赋值</span></span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; anotherVec&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line">    vec.<span class="built_in">assign</span>(anotherVec.<span class="built_in">begin</span>(), anotherVec.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : vec) &#123;</span><br><span class="line">        std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 1 2 3 4 5</span></span><br><span class="line">    &#125;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用初始化列表赋值</span></span><br><span class="line">    vec.<span class="built_in">assign</span>(&#123;<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>&#125;);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : vec) &#123;</span><br><span class="line">        std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 10 20 30</span></span><br><span class="line">    &#125;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，我们展示了如何使用不同的 <code>assign</code> 方法来设置 <code>vector</code> 的内容。每种方法都清除原有内容，并根据提供的新值设置 <code>vector</code>。</p>
+
+  
+  
+
+
+  </article>
+  
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/C++/max_element.html">max_element</a></div><div class="item" id="next"></div></section></div>
+
+  
+
+
+
+
+      
+<footer class="page-footer reveal fs12"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+
+      <div class='float-panel mobile-only blur' style='display:none'>
+  <button type='button' class='sidebar-toggle mobile' onclick='sidebar.toggle()'>
+    <svg class="icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="15301"><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 2.3 26.8 24.6 47.5 51.6 47.6h416.5v4z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15302"></path><path d="M566.407 808.3c26.9-0.1 49.3-20.8 51.6-47.6-1.9-27.7-23.9-49.7-51.6-51.6h-412.6c-28.2-1.4-52.6 19.5-55.5 47.6 1.9 27.7 23.9 49.7 51.6 51.6h416.5z m309.3-249.9c26.9-0.1 49.3-20.8 51.6-47.6-2.2-26.8-24.6-47.5-51.6-47.6h-721.9c-27.7-2.8-52.5 17.4-55.3 45.1-0.1 0.8-0.1 1.7-0.2 2.5 0.9 27.2 23.6 48.5 50.7 47.6H875.707z m-103.1-245.9c26.9-0.1 49.3-20.8 51.6-47.6-0.4-28.3-23.2-51.1-51.5-51.6h-618.9c-29.5-1.1-54.3 21.9-55.5 51.4v0.2c1.4 27.8 25.2 49.2 53 47.8 0.8 0 1.7-0.1 2.5-0.2h618.8z" p-id="15303"></path></svg>
+  </button>
+</div>
+
+    </div>
+  </div>
+  <div class='scripts'>
+    <script type="text/javascript">
+  const stellar = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    loadCSS: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    // 从 butterfly 和 volantis 获得灵感
+    loadScript: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = stellar.config.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    // https://github.com/jerryc127/hexo-theme-butterfly
+    jQuery: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        stellar.loadScript(stellar.plugins.jQuery).then(fn)
+      } else {
+        fn()
+      }
+    }
+  };
+  stellar.version = '1.19.0';
+  stellar.github = 'https://github.com/xaoxuu/hexo-theme-stellar/tree/1.19.0';
+  stellar.config = {
+    date_suffix: {
+      just: '刚刚',
+      min: '分钟前',
+      hour: '小时前',
+      day: '天前',
+      month: '个月前',
+    },
+    root : '/',
+  };
+
+  // required plugins (only load if needs)
+  stellar.plugins = {
+    jQuery: 'https://gcore.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js'
+  };
+
+  if ('local_search') {
+    stellar.search = {};
+    stellar.search.service = 'local_search';
+    if (stellar.search.service == 'local_search') {
+      let service_obj = Object.assign({}, {"field":"all","path":"/search.json","content":true,"sort":"-date"});
+      stellar.search[stellar.search.service] = service_obj;
+    }
+  }
+
+  // stellar js
+  stellar.plugins.stellar = Object.assign({"sites":"/js/plugins/sites.js","friends":"/js/plugins/friends.js","ghinfo":"/js/plugins/ghinfo.js","timeline":"/js/plugins/timeline.js","linkcard":"/js/plugins/linkcard.js","fcircle":"/js/plugins/fcircle.js","weibo":"/js/plugins/weibo.js"});
+
+  stellar.plugins.marked = Object.assign("https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js");
+  // optional plugins
+  if ('true' == 'true') {
+    stellar.plugins.lazyload = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js","transition":"blur"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.swiper = Object.assign({"enable":true,"css":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css","js":"https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js"});
+  }
+  if ('' == 'true') {
+    stellar.plugins.scrollreveal = Object.assign({"enable":null,"js":"https://gcore.jsdelivr.net/npm/scrollreveal@4.0.9/dist/scrollreveal.min.js","distance":"8px","duration":500,"interval":100,"scale":1});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.preload = Object.assign({"enable":true,"service":"flying_pages","instant_page":"https://gcore.jsdelivr.net/gh/volantis-x/cdn-volantis@4.1.2/js/instant_page.js","flying_pages":"https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.fancybox = Object.assign({"enable":true,"js":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js","css":"https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css","selector":".swiper-slide img"});
+  }
+  if ('false' == 'true') {
+    stellar.plugins.heti = Object.assign({"enable":false,"css":"https://unpkg.com/heti@0.9.2/umd/heti.min.css","js":"https://unpkg.com/heti@0.9.2/umd/heti-addon.min.js"});
+  }
+  if ('true' == 'true') {
+    stellar.plugins.copycode = Object.assign({"enable":true,"js":"/js/plugins/copycode.js","default_text":"Copy","success_text":"Copied"});
+  }
+</script>
+
+<!-- required -->
+
+  
+<script src="/js/main.js" async></script>
+
+
+
+<!-- optional -->
+
+
+
+<!-- inject -->
+
+
+  </div>
+</body>
+</html>
