@@ -20,18 +20,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
   
-  <title>C++：max_element - MudSynth</title>
+  <title>C++：assign - MudSynth</title>
 
   
-    <meta name="description" content="在 C++ 中，max_element 是一个来自 &lt;algorithm&gt; 头文件的函数，用于查找给定范围内的最大元素。以下是关于 max_element 的详细解释： 基本用法  函数原型: max_element 函数的基本原型为 max_element(Iterator first, Iterator last)，其中 Iterator 是指向容器元素的迭代器。 返回值: 它返回">
+    <meta name="description" content="在C++中，std::vector 类的 assign 方法用于在向量中设置新内容，替换其当前内容。以下是详细的解释： 基本用法 assign 方法有几种重载形式，允许你用不同的方式设置 vector 的内容：  assign(size_type n, const T&amp; val)：将向量的内容替换为 n 个 val 的副本。 assign(InputIterator first, Inpu">
 <meta property="og:type" content="website">
-<meta property="og:title" content="max_element">
-<meta property="og:url" content="http://example.com/wiki/C++/max_element.html">
+<meta property="og:title" content="assign">
+<meta property="og:url" content="http://example.com/wiki/C++/vector/assign.html">
 <meta property="og:site_name" content="MudSynth">
-<meta property="og:description" content="在 C++ 中，max_element 是一个来自 &lt;algorithm&gt; 头文件的函数，用于查找给定范围内的最大元素。以下是关于 max_element 的详细解释： 基本用法  函数原型: max_element 函数的基本原型为 max_element(Iterator first, Iterator last)，其中 Iterator 是指向容器元素的迭代器。 返回值: 它返回">
+<meta property="og:description" content="在C++中，std::vector 类的 assign 方法用于在向量中设置新内容，替换其当前内容。以下是详细的解释： 基本用法 assign 方法有几种重载形式，允许你用不同的方式设置 vector 的内容：  assign(size_type n, const T&amp; val)：将向量的内容替换为 n 个 val 的副本。 assign(InputIterator first, Inpu">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-12-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-12-24T03:01:37.136Z">
+<meta property="article:modified_time" content="2023-12-24T12:35:26.608Z">
 <meta property="article:author" content="Mudrobot">
 <meta name="twitter:card" content="summary">
   
@@ -83,7 +83,7 @@
 
 
 
-<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">Algorithm Library</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/lower_bound.html#start"><span class="toc-text">lower_bound</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/C++/max_element.html"><span class="toc-text">max_element</span></a><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">特点和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-text">示例代码</span></a></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/sort.html"><span class="toc-text">sort</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/upper_bound.html"><span class="toc-text">upper_bound</span></a></div></div><div class="widget-header cap dis-select"><span class="name">vector</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/vector%20%E5%9F%BA%E7%A1%80.html"><span class="toc-text">vector 基础</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/emplace_back.html"><span class="toc-text">emplace_back</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/assign.html"><span class="toc-text">assign</span></a></div></div></widget>
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">Algorithm Library</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/lower_bound.html#start"><span class="toc-text">lower_bound</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/max_element.html"><span class="toc-text">max_element</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/sort.html"><span class="toc-text">sort</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/upper_bound.html"><span class="toc-text">upper_bound</span></a></div></div><div class="widget-header cap dis-select"><span class="name">vector</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/vector%20%E5%9F%BA%E7%A1%80.html"><span class="toc-text">vector 基础</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/emplace_back.html"><span class="toc-text">emplace_back</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/C++/vector/assign.html"><span class="toc-text">assign</span></a><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">特点和注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-text">示例代码</span></a></li></ol></div></div></widget>
 
 
 
@@ -99,27 +99,28 @@
 
   
   
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">项目</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/C++/lower_bound.html">C++</a></div><div id="post-meta">更新于&nbsp;<time datetime="2023-12-24T03:01:37.136Z">2023-12-24</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">项目</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/C++/lower_bound.html">C++</a></div><div id="post-meta">更新于&nbsp;<time datetime="2023-12-24T12:35:26.608Z">2023-12-24</time></div></div>
 
   <article class='md-text content wiki'>
-  <h1 class="article-title"><span>max_element</span></h1>
-  <p>在 C++ 中，<code>max_element</code> 是一个来自 <code>&lt;algorithm&gt;</code> 头文件的函数，用于查找给定范围内的最大元素。以下是关于 <code>max_element</code> 的详细解释：</p>
-<h3 id="基本用法">基本用法</h3>
+  <h1 class="article-title"><span>assign</span></h1>
+  <p>在C++中，<code>std::vector</code> 类的 <code>assign</code> 方法用于在向量中设置新内容，替换其当前内容。以下是详细的解释：</p>
+<h2 id="基本用法">基本用法</h2>
+<p><code>assign</code> 方法有几种重载形式，允许你用不同的方式设置 <code>vector</code> 的内容：</p>
 <ol>
-<li><strong>函数原型</strong>: <code>max_element</code> 函数的基本原型为 <code>max_element(Iterator first, Iterator last)</code>，其中 <code>Iterator</code> 是指向容器元素的迭代器。</li>
-<li><strong>返回值</strong>: 它返回一个指向给定范围中最大元素的迭代器。如果有多个相同的最大元素，返回第一个这样的元素的迭代器。</li>
-<li><strong>范围</strong>: 第一个参数是范围的开始，第二个参数是范围的结束（不包括）。</li>
+<li><code>assign(size_type n, const T&amp; val)</code>：将向量的内容替换为 <code>n</code> 个 <code>val</code> 的副本。</li>
+<li><code>assign(InputIterator first, InputIterator last)</code>：使用两个迭代器 <code>first</code> 和 <code>last</code> 指定的范围来替换向量的内容。</li>
+<li><code>assign(initializer_list&lt;T&gt; il)</code>：使用初始化列表 <code>il</code> 中的元素来替换向量的内容。</li>
 </ol>
-<h3 id="特点和注意事项">特点和注意事项</h3>
+<h2 id="特点和注意事项">特点和注意事项</h2>
 <ul>
-<li><strong>容器类型</strong>: <code>max_element</code> 可以用于任何提供随机访问迭代器的容器，如 <code>vector</code>、<code>deque</code>、数组等。</li>
-<li><strong>比较函数</strong>: 可以提供自定义的比较函数来定义“最大”元素的条件。</li>
-<li><strong>空范围</strong>: 如果范围为空（即 <code>first</code> 等于 <code>last</code>），则返回 <code>last</code>。</li>
-<li><strong>性能</strong>: 时间复杂度通常是线性的，即 O(n)，其中 n 是范围内元素的数量。</li>
+<li><code>assign</code> 方法改变向量的大小和内容。</li>
+<li>如果新大小大于当前大小，会创建新元素。如果新大小小于当前大小，则多余的元素会被销毁。</li>
+<li>使用迭代器范围重载时，范围 <code>[first, last)</code> 应有效且不应指向同一 <code>vector</code> 中的元素。</li>
+<li>分配新内容可能导致所有现有的迭代器、引用和指针失效。</li>
 </ul>
-<h3 id="示例代码">示例代码</h3>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; v = &#123;<span class="number">1</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">8</span>, <span class="number">5</span>&#125;;</span><br><span class="line">    <span class="keyword">auto</span> max_it = std::<span class="built_in">max_element</span>(v.<span class="built_in">begin</span>(), v.<span class="built_in">end</span>());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (max_it != v.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;最大元素: &quot;</span> &lt;&lt; *max_it &lt;&lt; std::endl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;向量为空&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在这个例子中，<code>max_element</code> 用于查找 <code>vector</code> 中的最大元素。如果找到，它打印出该元素的值。</p>
+<h2 id="示例代码">示例代码</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; vec;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用初始值赋值</span></span><br><span class="line">    vec.<span class="built_in">assign</span>(<span class="number">4</span>, <span class="number">100</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : vec) &#123;</span><br><span class="line">        std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 100 100 100 100</span></span><br><span class="line">    &#125;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用迭代器赋值</span></span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; anotherVec&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line">    vec.<span class="built_in">assign</span>(anotherVec.<span class="built_in">begin</span>(), anotherVec.<span class="built_in">end</span>());</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : vec) &#123;</span><br><span class="line">        std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 1 2 3 4 5</span></span><br><span class="line">    &#125;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用初始化列表赋值</span></span><br><span class="line">    vec.<span class="built_in">assign</span>(&#123;<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>&#125;);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : vec) &#123;</span><br><span class="line">        std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 10 20 30</span></span><br><span class="line">    &#125;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，我们展示了如何使用不同的 <code>assign</code> 方法来设置 <code>vector</code> 的内容。每种方法都清除原有内容，并根据提供的新值设置 <code>vector</code>。</p>
 
   
   
@@ -127,7 +128,7 @@
 
   </article>
   
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/C++/vector/vector%20%E5%9F%BA%E7%A1%80.html">vector 基础</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/C++/vector/emplace_back.html">emplace_back</a></div><div class="item" id="next"></div></section></div>
 
   
 
