@@ -20,18 +20,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" content="#f8f8f8">
   
-  <title>C++：resize - MudSynth</title>
+  <title>C++：unordered_map 基础 - MudSynth</title>
 
   
-    <meta name="description" content="基本用法 在 C++ 中，std::vector 类的 resize 方法用于改变向量的大小。当你调用 resize(n) 时，它会将向量的大小调整为 n。如果 n 大于当前向量的大小，则新元素将被添加到向量的末尾，这些新元素会被初始化为默认值。如果 n 小于当前向量的大小，向量将被缩减，多余的元素会被丢弃。 特点和注意事项   改变大小的影响：当 resize 增加向量大小时，新添加的元素会被默">
+    <meta name="description" content="unordered_map 是 C++ 标准模板库（STL）中的一个非常有用的容器。它被用来存储键值对，其中每个键都是唯一的。这个容器使用哈希表来实现，因此其在平均情况下为键的查找、插入和删除操作提供了常数时间复杂度（O(1)）。下面是关于 unordered_map 的详细介绍： 基本用法  初始化：可以通过直接声明或使用初始化列表来创建 unordered_map。 插入元素：使用 inser">
 <meta property="og:type" content="website">
-<meta property="og:title" content="resize">
-<meta property="og:url" content="http://example.com/wiki/C++/vector/resize.html">
+<meta property="og:title" content="unordered_map 基础">
+<meta property="og:url" content="http://example.com/wiki/C++/unordered_map/unordered_map%20%E5%9F%BA%E7%A1%80.html">
 <meta property="og:site_name" content="MudSynth">
-<meta property="og:description" content="基本用法 在 C++ 中，std::vector 类的 resize 方法用于改变向量的大小。当你调用 resize(n) 时，它会将向量的大小调整为 n。如果 n 大于当前向量的大小，则新元素将被添加到向量的末尾，这些新元素会被初始化为默认值。如果 n 小于当前向量的大小，向量将被缩减，多余的元素会被丢弃。 特点和注意事项   改变大小的影响：当 resize 增加向量大小时，新添加的元素会被默">
+<meta property="og:description" content="unordered_map 是 C++ 标准模板库（STL）中的一个非常有用的容器。它被用来存储键值对，其中每个键都是唯一的。这个容器使用哈希表来实现，因此其在平均情况下为键的查找、插入和删除操作提供了常数时间复杂度（O(1)）。下面是关于 unordered_map 的详细介绍： 基本用法  初始化：可以通过直接声明或使用初始化列表来创建 unordered_map。 插入元素：使用 inser">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-12-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-12-31T11:14:09.023Z">
+<meta property="article:published_time" content="2024-01-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-08T04:33:49.221Z">
 <meta property="article:author" content="Mudrobot">
 <meta name="twitter:card" content="summary">
   
@@ -83,7 +83,7 @@
 
 
 
-<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">algorithm</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/algorithm/lower_bound.html#start"><span class="toc-text">lower_bound</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/algorithm/max_element.html"><span class="toc-text">max_element</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/algorithm/sort.html"><span class="toc-text">sort</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/algorithm/upper_bound.html"><span class="toc-text">upper_bound</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/insert.html"><span class="toc-text">insert</span></a></div></div><div class="widget-header cap dis-select"><span class="name">numeric</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/numeric/accumulate.html"><span class="toc-text">accumulate</span></a></div></div><div class="widget-header cap dis-select"><span class="name">vector</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/emplace_back.html"><span class="toc-text">emplace_back</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/assign.html"><span class="toc-text">assign</span></a></div><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/C++/vector/resize.html"><span class="toc-text">resize</span></a><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">特点和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-text">示例代码</span></a></li></ol></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/vector%20%E5%9F%BA%E7%A1%80.html"><span class="toc-text">vector 基础</span></a></div></div><div class="widget-header cap dis-select"><span class="name">unordered_map</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/unordered_map/unordered_map%20%E5%9F%BA%E7%A1%80.html"><span class="toc-text">unordered_map 基础</span></a></div></div></widget>
+<widget class="widget-wrapper toc multi" id="data-toc"><div class="widget-header cap dis-select"><span class="name">algorithm</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/algorithm/lower_bound.html#start"><span class="toc-text">lower_bound</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/algorithm/max_element.html"><span class="toc-text">max_element</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/algorithm/sort.html"><span class="toc-text">sort</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/algorithm/upper_bound.html"><span class="toc-text">upper_bound</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/insert.html"><span class="toc-text">insert</span></a></div></div><div class="widget-header cap dis-select"><span class="name">numeric</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/numeric/accumulate.html"><span class="toc-text">accumulate</span></a></div></div><div class="widget-header cap dis-select"><span class="name">vector</span></div><div class="widget-body fs14"><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/emplace_back.html"><span class="toc-text">emplace_back</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/assign.html"><span class="toc-text">assign</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/resize.html"><span class="toc-text">resize</span></a></div><div class="doc-tree"><a class="doc-tree-link" href="/wiki/C++/vector/vector%20%E5%9F%BA%E7%A1%80.html"><span class="toc-text">vector 基础</span></a></div></div><div class="widget-header cap dis-select"><span class="name">unordered_map</span></div><div class="widget-body fs14"><div class="doc-tree active"><a class="doc-tree-link active" href="/wiki/C++/unordered_map/unordered_map%20%E5%9F%BA%E7%A1%80.html"><span class="toc-text">unordered_map 基础</span></a><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">特点和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-text">示例代码</span></a></li></ol></div></div></widget>
 
 
 
@@ -99,30 +99,31 @@
 
   
   
-<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">项目</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/C++/algorithm/lower_bound.html">C++</a></div><div id="post-meta">更新于&nbsp;<time datetime="2023-12-31T11:14:09.023Z">2023-12-31</time></div></div>
+<div class="bread-nav fs12"><div id="breadcrumb"><a class="cap breadcrumb" id="home" href="/">主页</a><span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki/">项目</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/C++/algorithm/lower_bound.html">C++</a></div><div id="post-meta">更新于&nbsp;<time datetime="2024-01-08T04:33:49.221Z">2024-01-08</time></div></div>
 
   <article class='md-text content wiki'>
-  <h1 class="article-title"><span>resize</span></h1>
-  <h3 id="基本用法">基本用法</h3>
-<p>在 C++ 中，<code>std::vector</code> 类的 <code>resize</code> 方法用于改变向量的大小。当你调用 <code>resize(n)</code> 时，它会将向量的大小调整为 <code>n</code>。如果 <code>n</code> 大于当前向量的大小，则新元素将被添加到向量的末尾，这些新元素会被初始化为默认值。如果 <code>n</code> 小于当前向量的大小，向量将被缩减，多余的元素会被丢弃。</p>
+  <h1 class="article-title"><span>unordered_map 基础</span></h1>
+  <p><code>unordered_map</code> 是 C++ 标准模板库（STL）中的一个非常有用的容器。它被用来存储键值对，其中每个键都是唯一的。这个容器使用哈希表来实现，因此其在平均情况下为键的查找、插入和删除操作提供了常数时间复杂度（O(1)）。下面是关于 <code>unordered_map</code> 的详细介绍：</p>
+<h3 id="基本用法">基本用法</h3>
+<ol>
+<li><strong>初始化</strong>：可以通过直接声明或使用初始化列表来创建 <code>unordered_map</code>。</li>
+<li><strong>插入元素</strong>：使用 <code>insert</code> 方法或 <code>[]</code> 操作符来插入新元素。</li>
+<li><strong>访问元素</strong>：使用 <code>[]</code> 操作符或 <code>at</code> 方法来访问元素。</li>
+<li><strong>删除元素</strong>：使用 <code>erase</code> 方法来删除元素。</li>
+<li><strong>查找元素</strong>：使用 <code>find</code> 方法来查找特定键的元素。</li>
+<li><strong>大小和容量</strong>：使用 <code>size</code> 方法获取元素个数，<code>empty</code> 检查是否为空。</li>
+</ol>
 <h3 id="特点和注意事项">特点和注意事项</h3>
 <ol>
-<li>
-<p><strong>改变大小的影响</strong>：当 <code>resize</code> 增加向量大小时，新添加的元素会被默认初始化。对于基本数据类型（如 <code>int</code>、<code>double</code> 等），这意味着新元素的初始值不确定。对于类对象，将调用默认构造函数。</p>
-</li>
-<li>
-<p><strong>效率考虑</strong>：频繁调用 <code>resize</code> 可能影响性能，因为每次大小改变可能涉及内存分配和元素复制或销毁。</p>
-</li>
-<li>
-<p><strong>安全性</strong>：与 <code>reserve</code> 方法不同，<code>resize</code> 会改变向量的实际元素数量，而 <code>reserve</code> 只改变容量。</p>
-</li>
-<li>
-<p><strong>重载版本</strong>：<code>resize</code> 还有一个重载版本 <code>resize(n, value)</code>，可以指定新添加元素的初始值。</p>
-</li>
+<li><strong>性能</strong>：在平均情况下，插入、删除和查找操作的时间复杂度都是 O(1)。但在最坏情况下，这些操作的时间复杂度可能退化为 O(n)。</li>
+<li><strong>哈希函数</strong>：<code>unordered_map</code> 使用哈希函数将键映射到哈希表中的桶。对于自定义类型，可能需要定义自己的哈希函数。</li>
+<li><strong>碰撞处理</strong>：当两个键映射到同一个桶时，<code>unordered_map</code> 通过链表来处理碰撞。</li>
+<li><strong>无序性</strong>：如其名所示，<code>unordered_map</code> 中的元素是无序存储的，不保证元素的顺序。</li>
+<li><strong>唯一键</strong>：每个键在 <code>unordered_map</code> 中必须是唯一的。</li>
 </ol>
 <h3 id="示例代码">示例代码</h3>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;<span class="type">int</span>&gt; v = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 增加大小到 5，默认初始化新元素</span></span><br><span class="line">    v.<span class="built_in">resize</span>(<span class="number">5</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : v) std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 1 2 3 0 0</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 减小大小到 2，移除多余元素</span></span><br><span class="line">    v.<span class="built_in">resize</span>(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : v) std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 1 2</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 再次增加大小，并指定新元素的初始值为 99</span></span><br><span class="line">    v.<span class="built_in">resize</span>(<span class="number">4</span>, <span class="number">99</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i : v) std::cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出: 1 2 99 99</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在这个例子中，你可以看到如何使用 <code>resize</code> 来增加和减少向量的大小，以及如何指定新元素的初始化值。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unordered_map&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::unordered_map&lt;std::string, <span class="type">int</span>&gt; umap;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入元素</span></span><br><span class="line">    umap[<span class="string">&quot;apple&quot;</span>] = <span class="number">5</span>;</span><br><span class="line">    umap[<span class="string">&quot;banana&quot;</span>] = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 访问元素</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;apple count: &quot;</span> &lt;&lt; umap[<span class="string">&quot;apple&quot;</span>] &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找元素</span></span><br><span class="line">    <span class="keyword">if</span> (umap.<span class="built_in">find</span>(<span class="string">&quot;banana&quot;</span>) != umap.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;banana found&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除元素</span></span><br><span class="line">    umap.<span class="built_in">erase</span>(<span class="string">&quot;apple&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历元素</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; item : umap) &#123;</span><br><span class="line">        std::cout &lt;&lt; item.first &lt;&lt; <span class="string">&quot; =&gt; &quot;</span> &lt;&lt; item.second &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个示例展示了 <code>unordered_map</code> 的基本用法，包括如何插入、访问、查找和删除元素。使用 <code>unordered_map</code> 可以有效地处理大量的数据，尤其是在需要快速查找和更新数据的场合。</p>
 
   
   
@@ -130,7 +131,7 @@
 
   </article>
   
-<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/C++/vector/assign.html">assign</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/C++/vector/vector%20%E5%9F%BA%E7%A1%80.html">vector 基础</a></div></section></div>
+<div class="related-wrap reveal" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/C++/vector/vector%20%E5%9F%BA%E7%A1%80.html">vector 基础</a></div><div class="item" id="next"></div></section></div>
 
   
 
