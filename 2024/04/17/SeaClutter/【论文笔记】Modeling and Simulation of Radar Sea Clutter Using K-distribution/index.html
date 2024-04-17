@@ -26,15 +26,15 @@
 <meta property="og:site_name" content="MudSynth">
 <meta property="og:description" content="Abstract 本文讨论了k分布海杂波的建模与仿真，以帮助从统计的角度理解杂波特征，这种模拟将导致优化固定阈值以提高检测性能的方法。  Introduction 传统的基于高斯分布的方法，因为简化假设，在很多实际情境下都失效了，特别是这种海洋环境。因为杂波概率密度函数(PDF)的振幅表现出较长的尾巴。 在这样的环境下，提出了一种考虑分布长尾的双参数模型，通常称为K分布模型[2，3]。除了振幅统">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="c:%5CUsers%5CMudrobot%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20240417103700412.png">
-<meta property="og:image" content="c:%5CUsers%5CMudrobot%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20240417110505125.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/image-20240417103700412.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/image-20240417110505125.png">
 <meta property="article:published_time" content="2024-04-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-04-17T03:11:14.028Z">
+<meta property="article:modified_time" content="2024-04-17T05:49:39.084Z">
 <meta property="article:author" content="Mudrobot">
 <meta property="article:tag" content="SeaClutter">
 <meta property="article:tag" content="K distribution">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="c:%5CUsers%5CMudrobot%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20240417103700412.png">
+<meta name="twitter:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/image-20240417103700412.png">
   
   
   
@@ -80,7 +80,7 @@
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
 <span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/SeaClutter/">SeaClutter</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-04-16T16:00:00.000Z">2024-04-17</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-04-17T03:11:14.028Z">2024-04-17</time></span></div></div></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-04-16T16:00:00.000Z">2024-04-17</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-04-17T05:49:39.084Z">2024-04-17</time></span></div></div></div>
     
     <div class="bottom only-title">
       
@@ -169,7 +169,7 @@ M1001 80h400000v40h-400000z'/></svg></span></span></span><span class="vlist-s">�
 <p>将经验公式与结果的散点进行比较，得出的均方根误差为log v的0.24。注意上式是单雷达测量得到的，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi></mrow><annotation encoding="application/x-tex">\nu</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.06366em;">ν</span></span></span></span>似乎应该随海况有一定的变化，因为实验表明海杂波的概率密度函数随海况而变化[7]。不过,上式可用于了解雷达各参数与海况之间相互关系的公允知识。在任何其他情况下，情况将与上式略有不同。虽然以上大部分信息是基于X波段的数据，但在S波段和K波段也观察到参数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi></mrow><annotation encoding="application/x-tex">\nu</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.06366em;">ν</span></span></span></span>的类似行为[8]。</p>
 <h3 id="experimental-results"><a class="markdownIt-Anchor" href="#experimental-results"></a> Experimental Results</h3>
 <p>本段主要讨论了雷达系统性能，特别是使用K分布模型在海洋场景中对海杂波的模拟。文章指出使用高分辨率雷达通常能得到更好的性能，尤其是在保持K分布模型参数的情况下。海杂波的振幅可以根据方程5模拟不同的海洋环境。参数v的倒数（1/v）的值域是从0到10，而参数c仅描述平均功率回波并假设为1。文章中的图2展示了模拟的振幅杂波数据的直方图和对于较小v值的理论概率密度函数（PDF），假设v=0.5来近似更小的入射角度。如果涌浪既不是顺流也不是横流（即介于两者之间的方向），它对应于中等v值。图3展示了特定情况下v=5的模拟情况。图4展示了较大v值对应的横流及较大斑块尺寸的情景，这里v=10。模拟的振幅样本数（N）是1000，但可以根据应用场景调整。在雷达案例中，N的值是181，用来覆盖从-90度到+90度的方位角，每个距离单元。</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="C:%5CUsers%5CMudrobot%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20240417103700412.png" alt="image-20240417103700412" /></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/image-20240417103700412.png" alt="Experimental Results" /></p>
 <h2 id="data-validation"><a class="markdownIt-Anchor" href="#data-validation"></a> Data Validation</h2>
 <p>在本节中，我们将讨论确保生成数据样本的底层分布的方式。概率建模和测试程序需要一个统计上显着且统计上独立的样本数据库。为了满足这一要求，必须采取足够的数据样本来准确表示数据库，并且在连续的数据样本之间可能不存在显著的相关性。如果数据可以限定为平稳，则可以使用时间自相关函数来估计时间样本之间的相关性程度。如果发现存在显着相关性，则可以通过将数据库采样为由最小相关时间分隔的区间来产生不相关的数据。然后可以从不相关的数据中估计统计数据。</p>
 <p>为了验证生成杂波数据库的概率模型，将Kolmogorov-Smirov (K-S)非参数拟合优度测试程序应用于数据[9]。K-S 测试程序和计算机实现的简要讨论如下。</p>
@@ -182,7 +182,7 @@ M1001 80h400000v40h-400000z'/></svg></span></span></span><span class="vlist-s">�
 <p>原假设(Null hypothesis)成立的情况是，方程10中得到的差值D小于给定样本数N和显著性水平α的情况下，从统计表中查得的D的临界值。</p>
 <h3 id="experimental-results-2"><a class="markdownIt-Anchor" href="#experimental-results-2"></a> Experimental results</h3>
 <p>作为这项技术应用的一个示例，考虑图5，它代表了对1000个独立模拟雷达杂波数据样本进行的K-S检验，其中c=1且v=1。从图5可以看出，在100次蒙特卡罗运算中，最大的绝对差值D总是小于N=1000和α=0.05时统计表中的D的临界值（除了少数情况）。这确保了模拟的海杂波幅度统计数据遵循K分布，该分布模拟了尖峰海洋环境。</p>
-<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="C:%5CUsers%5CMudrobot%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20240417110505125.png" alt="image-20240417110505125" /></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/image-20240417110505125.png" alt="Test Result" /></p>
 <h2 id="conclusion"><a class="markdownIt-Anchor" href="#conclusion"></a> Conclusion</h2>
 <p>这篇文章描述了K分布模型在海杂波中的应用，并展示了模拟杂波的方法，并确保了合理化底层密度函数的方式。K分布函数能解释观察到的实验行为，并且可以方便地用于海洋应用。这种建模还可以帮助设定阈值极限，以更好地提高目标的检测和预测概率。建模复杂杂波的振幅分布需要估计平稳均值、相关函数和概率分布函数。K-S非参数检验提供了一种评估数据遵循特定理论分布的原假设的方法，该理论分布是根据样本数据估计的参数构建的。数据的PDF和直方图与假定模型的对比图可以提供一个“好”或“最佳”拟合的视觉证据。</p>
 <p>所采用的算法简单、快速，在 MATLAB 中进行了仿真。上述工作可能在未来启发一个简单的方法跟踪和分析更复杂的现代雷达的统计方法。</p>
