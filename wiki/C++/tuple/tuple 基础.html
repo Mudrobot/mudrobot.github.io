@@ -19,12 +19,12 @@
   <title>C++：tuple 基础 - MudSynth</title>
 
   
-    <meta name="description" content="在C++中，tuple是一个非常有用的工具，它允许你将不同类型的元素组合成单一的复合类型。这里，我将根据你的要求，依次介绍tuple的基本用法、特点和注意事项，以及提供一些示例代码。  基本用法 tuple是标准模板库（STL）的一部分，位于&lt;tuple&gt;头文件中。它可以存储任意数量和类型的元素，每个元素都有其对应的类型和位置。tuple的元素可以通过std::get函数访问，其索引是">
+    <meta name="description" content="在C++中，tuple是一个非常有用的工具，它允许你将不同类型的元素组合成单一的复合类型。这里，我将根据你的要求，依次介绍tuple的基本用法、特点和注意事项，以及提供一些示例代码。 基本用法 tuple是标准模板库（STL）的一部分，位于&lt;tuple&gt;头文件中。它可以存储任意数量和类型的元素，每个元素都有其对应的类型和位置。tuple的元素可以通过std::get函数访问，其索引是从">
 <meta property="og:type" content="website">
 <meta property="og:title" content="tuple 基础">
 <meta property="og:url" content="http://example.com/wiki/C++/tuple/tuple%20%E5%9F%BA%E7%A1%80.html">
 <meta property="og:site_name" content="MudSynth">
-<meta property="og:description" content="在C++中，tuple是一个非常有用的工具，它允许你将不同类型的元素组合成单一的复合类型。这里，我将根据你的要求，依次介绍tuple的基本用法、特点和注意事项，以及提供一些示例代码。  基本用法 tuple是标准模板库（STL）的一部分，位于&lt;tuple&gt;头文件中。它可以存储任意数量和类型的元素，每个元素都有其对应的类型和位置。tuple的元素可以通过std::get函数访问，其索引是">
+<meta property="og:description" content="在C++中，tuple是一个非常有用的工具，它允许你将不同类型的元素组合成单一的复合类型。这里，我将根据你的要求，依次介绍tuple的基本用法、特点和注意事项，以及提供一些示例代码。 基本用法 tuple是标准模板库（STL）的一部分，位于&lt;tuple&gt;头文件中。它可以存储任意数量和类型的元素，每个元素都有其对应的类型和位置。tuple的元素可以通过std::get函数访问，其索引是从">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-02-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-02-13T13:59:47.713Z">
@@ -90,9 +90,9 @@
     
   </div>
   </div><article class="md-text content"><p>在C++中，<code>tuple</code>是一个非常有用的工具，它允许你将不同类型的元素组合成单一的复合类型。这里，我将根据你的要求，依次介绍<code>tuple</code>的基本用法、特点和注意事项，以及提供一些示例代码。</p>
-<h3 id="基本用法"><a class="markdownIt-Anchor" href="#基本用法"></a> 基本用法</h3>
+<h3 id="%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95" tabindex="-1" id="基本用法"><a class="headerlink" href="#基本用法"></a>基本用法</h3>
 <p><code>tuple</code>是标准模板库（STL）的一部分，位于<code>&lt;tuple&gt;</code>头文件中。它可以存储任意数量和类型的元素，每个元素都有其对应的类型和位置。<code>tuple</code>的元素可以通过<code>std::get</code>函数访问，其索引是从0开始的。</p>
-<h3 id="特点和注意事项"><a class="markdownIt-Anchor" href="#特点和注意事项"></a> 特点和注意事项</h3>
+<h3 id="%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" tabindex="-1" id="特点和注意事项"><a class="headerlink" href="#特点和注意事项"></a>特点和注意事项</h3>
 <ol>
 <li><strong>类型安全</strong>：与数组或结构体相比，<code>tuple</code>提供了更强的类型安全性，因为它可以存储不同类型的元素。</li>
 <li><strong>不定长</strong>：<code>tuple</code>可以包含任意数量的元素，使得它非常灵活。</li>
@@ -100,7 +100,7 @@
 <li><strong>与结构体的比较</strong>：对于简单的数据聚合，结构体可能是更好的选择，因为它们提供了更清晰的语义。然而，对于需要存储不同类型数据或数据结构在运行时才能确定的情况，<code>tuple</code>则更加适用。</li>
 <li><strong>性能考虑</strong>：尽管<code>tuple</code>提供了很大的灵活性，但使用不当可能会导致性能下降。特别是频繁访问<code>tuple</code>元素时，应考虑是否有更合适的数据结构。</li>
 </ol>
-<h3 id="示例代码"><a class="markdownIt-Anchor" href="#示例代码"></a> 示例代码</h3>
+<h3 id="%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81" tabindex="-1" id="示例代码"><a class="headerlink" href="#示例代码"></a>示例代码</h3>
 <p>创建一个<code>tuple</code>并访问其元素：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;tuple&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 创建一个包含整数、字符串和浮点数的tuple</span></span><br><span class="line">    std::tuple&lt;<span class="type">int</span>, std::string, <span class="type">double</span>&gt; myTuple = std::<span class="built_in">make_tuple</span>(<span class="number">10</span>, <span class="string">&quot;Test&quot;</span>, <span class="number">3.14</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 访问并打印tuple的元素</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;整数: &quot;</span> &lt;&lt; std::<span class="built_in">get</span>&lt;<span class="number">0</span>&gt;(myTuple) &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;字符串: &quot;</span> &lt;&lt; std::<span class="built_in">get</span>&lt;<span class="number">1</span>&gt;(myTuple) &lt;&lt; std::endl;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;浮点数: &quot;</span> &lt;&lt; std::<span class="built_in">get</span>&lt;<span class="number">2</span>&gt;(myTuple) &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这段代码首先包含了必要的头文件，然后创建了一个<code>tuple</code>对象<code>myTuple</code>，它包含了一个<code>int</code>类型、一个<code>std::string</code>类型和一个<code>double</code>类型的元素。随后通过<code>std::get</code>函数访问并打印了每个元素的值。</p>
@@ -119,7 +119,7 @@
 
 
 
-<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text"> 基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text"> 特点和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-text"> 示例代码</span></a></li></ol></div><div class="widget-footer">
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-text">基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%E5%92%8C%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">特点和注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-text">示例代码</span></a></li></ol></div><div class="widget-footer">
 
 <a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
 </div></aside><div class='float-panel blur'>

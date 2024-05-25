@@ -27,7 +27,7 @@
 <meta property="og:description" content="脚本作用：将给定PNG图像中透明部分填充为白色 123456789101112131415161718192021from PIL import Imageoriginal_path &#x3D; &#x27;xxxx&#x27;original_file &#x3D; &#x27;cc.png&#x27;target_path &#x3D; &#x27;xxx&#x27;# 打开原始PNG图像image &#x3D; Image.op">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-05-23T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-05-24T08:31:23.990Z">
+<meta property="article:modified_time" content="2024-05-25T15:04:46.412Z">
 <meta property="article:author" content="Mudrobot">
 <meta name="twitter:card" content="summary">
   
@@ -63,7 +63,7 @@
 </div>
 <div class="widgets">
 
-<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">脚本</span></div></widget>
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">脚本</span></div><div class="widget-body fs14"><a class="link active" href="/wiki/Others/png%E5%9B%BE%E7%89%87%E5%A1%AB%E5%85%85%E8%84%9A%E6%9C%AC.html#start"><span class="toc-text">png图片填充脚本</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a></div><div class="widget-header dis-select"><span class="name">Stellar 教程</span></div><div class="widget-body fs14"><a class="link" href="/wiki/Others/Stellar/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3%E7%B3%BB%E7%BB%9F.html"><span class="toc-text">如何使用文档系统</span></a><a class="link" href="/wiki/Others/Stellar/topic.html"><span class="toc-text">实现博客专栏/专题</span></a><a class="link" href="/wiki/Others/Stellar/Katex%E5%85%AC%E5%BC%8F%E9%85%8D%E7%BD%AE.html"><span class="toc-text">Katex公式配置</span></a></div></widget>
 
 <widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：教程</span></div><div class="widget-body"><a class="item wiki" href="/wiki/C++/algorithm/sort.html"><span class="title">C++ - 知识点合集</span><span class="excerpt">C++零碎知识点整理🐣</span></a><a class="item wiki" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><span class="title">PyTorch - 教程合集</span><span class="excerpt">个人PyTorch学习过程中整理归纳的教程，适合入门学习使用✨</span></a></div></widget><widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：技巧</span></div><div class="widget-body"><a class="item wiki" href="/wiki/DL-Techniques/hello-world.html"><span class="title">DeepLearning - Techniques</span><span class="excerpt">记录一些深度学习中使用的零散小技巧📖</span></a></div></widget>
 </div>
@@ -78,7 +78,7 @@
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
 <span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/Others/png%E5%9B%BE%E7%89%87%E5%A1%AB%E5%85%85%E8%84%9A%E6%9C%AC.html">Others</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2024-05-24T08:31:23.990Z">2024-05-24</time></span></div></div></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2024-05-25T15:04:46.412Z">2024-05-25</time></span></div></div></div>
     
     <div class="bottom only-title">
       
@@ -92,7 +92,7 @@
   </div><article class="md-text content"><p>脚本作用：将给定PNG图像中透明部分填充为白色</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"></span><br><span class="line">original_path = <span class="string">&#x27;xxxx&#x27;</span></span><br><span class="line">original_file = <span class="string">&#x27;cc.png&#x27;</span></span><br><span class="line">target_path = <span class="string">&#x27;xxx&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打开原始PNG图像</span></span><br><span class="line">image = Image.<span class="built_in">open</span>(original_path+original_file).convert(<span class="string">&quot;RGBA&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个白色背景</span></span><br><span class="line">white_background = Image.new(<span class="string">&quot;RGBA&quot;</span>, image.size, <span class="string">&quot;WHITE&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将原始图像粘贴到白色背景上，透明部分将被白色填充</span></span><br><span class="line">white_background.paste(image, (<span class="number">0</span>, <span class="number">0</span>), image)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将结果转换为RGB模式并保存</span></span><br><span class="line">final_image = white_background.convert(<span class="string">&quot;RGB&quot;</span>)</span><br><span class="line">final_image.save(target_path+original_file)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示结果图像（可选）</span></span><br><span class="line">final_image.show()</span><br></pre></td></tr></table></figure>
 </article>
-
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/Others/Stellar/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3%E7%B3%BB%E7%BB%9F.html">如何使用文档系统</a></div></section></div>
 
 
 
