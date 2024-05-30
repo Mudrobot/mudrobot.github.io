@@ -1,0 +1,582 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.27.0" theme-name="Stellar" theme-version="1.27.0">
+  
+  <meta name="generator" content="Hexo 7.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>Others：编写文章以及独立页面 - MudSynth</title>
+
+  
+    <meta name="description" content="文章类型 文章类型决定布局风格，有两种风格可选，tech: 默认技术类文章, story: 图文类文章，文字和段落间增距大。 blog&#x2F;_config.stellar.yml12article:  type: tech # tech&#x2F;story 可以在 front-matter&#x2F;topic&#x2F;wiki 中覆盖此参数。 文章封面 在文章列表页面或者其他位置显示的文章摘要卡片上面的图片称之为「文章封面」">
+<meta property="og:type" content="website">
+<meta property="og:title" content="编写文章以及独立页面">
+<meta property="og:url" content="http://example.com/wiki/Others/Stellar/%E7%BC%96%E5%86%99%E6%96%87%E7%AB%A0%E4%BB%A5%E5%8F%8A%E7%8B%AC%E7%AB%8B%E9%A1%B5%E9%9D%A2.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="文章类型 文章类型决定布局风格，有两种风格可选，tech: 默认技术类文章, story: 图文类文章，文字和段落间增距大。 blog&#x2F;_config.stellar.yml12article:  type: tech # tech&#x2F;story 可以在 front-matter&#x2F;topic&#x2F;wiki 中覆盖此参数。 文章封面 在文章列表页面或者其他位置显示的文章摘要卡片上面的图片称之为「文章封面」">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.imgdb.cn/item/63bc16f2be43e0d30eb899d1.jpg">
+<meta property="og:image" content="https://pic1.imgdb.cn/item/635aa9d016f2c2beb1fe4f53.jpg">
+<meta property="og:image" content="https://pic1.imgdb.cn/item/635aaa8116f2c2beb1ffdd19.jpg">
+<meta property="article:published_time" content="2024-05-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-05-30T12:21:33.879Z">
+<meta property="article:author" content="Mudrobot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/63bc16f2be43e0d30eb899d1.jpg">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.27.0">
+
+  
+
+  
+
+  
+</head>
+<body>
+
+
+
+<div class="l_body s:aa content tech" id="start" layout="page" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/%E6%9D%82%E9%A1%B9-pre.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></div><a class="title" href="/wiki/Others/png%E5%9B%BE%E7%89%87%E5%A1%AB%E5%85%85%E8%84%9A%E6%9C%AC.html"><div class="main" ff="title">Others</div><div class="sub cap">一些零碎技术知识点整理🛠️</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/Others/" placeholder="在 Others 中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="文档" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">脚本</span></div><div class="widget-body fs14"><a class="link" href="/wiki/Others/png%E5%9B%BE%E7%89%87%E5%A1%AB%E5%85%85%E8%84%9A%E6%9C%AC.html#start"><span class="toc-text">png图片填充脚本</span></a></div><div class="widget-header dis-select"><span class="name">Stellar 教程</span></div><div class="widget-body fs14"><a class="link active" href="/wiki/Others/Stellar/%E7%BC%96%E5%86%99%E6%96%87%E7%AB%A0%E4%BB%A5%E5%8F%8A%E7%8B%AC%E7%AB%8B%E9%A1%B5%E9%9D%A2.html"><span class="toc-text">编写文章以及独立页面</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/Others/Stellar/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3%E7%B3%BB%E7%BB%9F.html"><span class="toc-text">如何使用文档系统</span></a><a class="link" href="/wiki/Others/Stellar/topic.html"><span class="toc-text">实现博客专栏/专题</span></a><a class="link" href="/wiki/Others/Stellar/Katex%E5%85%AC%E5%BC%8F%E9%85%8D%E7%BD%AE.html"><span class="toc-text">Katex公式配置</span></a></div><div class="widget-header dis-select"><span class="name">Windows 小技巧</span></div><div class="widget-body fs14"><a class="link" href="/wiki/Others/Windows/mklink%E6%8C%87%E4%BB%A4.html"><span class="toc-text">mklink指令</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：教程</span></div><div class="widget-body"><a class="item wiki" href="/wiki/C++/algorithm/sort.html"><span class="title">C++ - 知识点合集</span><span class="excerpt">C++零碎知识点整理🐣</span></a><a class="item wiki" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><span class="title">PyTorch - 教程合集</span><span class="excerpt">个人PyTorch学习过程中整理归纳的教程，适合入门学习使用✨</span></a></div></widget><widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：技巧</span></div><div class="widget-body"><a class="item wiki" href="/wiki/DL-Techniques/hello-world.html"><span class="title">DeepLearning - Techniques</span><span class="excerpt">记录一些深度学习中使用的零散小技巧📖</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/Others/png%E5%9B%BE%E7%89%87%E5%A1%AB%E5%85%85%E8%84%9A%E6%9C%AC.html">Others</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2024-05-30T12:21:33.879Z">2024-05-30</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>编写文章以及独立页面</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="%E6%96%87%E7%AB%A0%E7%B1%BB%E5%9E%8B" tabindex="-1" id="文章类型"><a class="headerlink" href="#文章类型"></a>文章类型</h2>
+<p>文章类型决定布局风格，有两种风格可选，<code>tech</code>: 默认技术类文章, <code>story</code>: 图文类文章，文字和段落间增距大。</p>
+<figure class="highlight yaml"><figcaption><span>blog/_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">article:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">tech</span> <span class="comment"># tech/story</span></span><br></pre></td></tr></table></figure>
+<p>可以在 <code>front-matter/topic/wiki</code> 中覆盖此参数。</p>
+<h2 id="%E6%96%87%E7%AB%A0%E5%B0%81%E9%9D%A2" tabindex="-1" id="文章封面"><a class="headerlink" href="#文章封面"></a>文章封面</h2>
+<p>在文章列表页面或者其他位置显示的文章摘要卡片上面的图片称之为「文章封面」</p>
+<h3 id="%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E5%B0%81%E9%9D%A2" tabindex="-1" id="自动生成封面"><a class="headerlink" href="#自动生成封面"></a>自动生成封面</h3>
+<p>根据 <code>tags</code> 作为关键词为每一篇文章在线搜索封面：</p>
+<figure class="highlight yaml"><figcaption><span>blog/_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">article:</span></span><br><span class="line">  <span class="attr">auto_cover:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h3 id="%E5%BC%95%E7%94%A8%E5%A4%96%E9%83%A8%E5%9B%BE%E7%89%87" tabindex="-1" id="引用外部图片"><a class="headerlink" href="#引用外部图片"></a>引用外部图片</h3>
+<p>在文章的 <code>front-matter</code> 中写上 <code>cover: xxx</code> 即可。例如：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="comment"># 本地图片路径为 blog/source/assets/xaoxuu/blog/2020-0927a@1x.svg</span></span><br><span class="line"><span class="comment"># 也可以直接引用图片直链 https://xxx.jpg</span></span><br><span class="line"><span class="attr">cover:</span> <span class="string">/assets/xaoxuu/blog/2020-0927a@1x.svg</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<details class="tag-plugin colorful folding" ><summary><span>显示效果</span></summary><div class="body"><div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic.imgdb.cn/item/63bc16f2be43e0d30eb899d1.jpg" style="width:600px;"/></div></div></div></details>
+<p>上面这种方式会显示title与description或者摘要，若你想要图片全显示，可以加入如下参数：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">cover:</span> <span class="string">/assets/xaoxuu/blog/2020-0927a@1x.svg</span> <span class="comment"># 必选</span></span><br><span class="line"><span class="attr">poster:</span> <span class="comment"># 海报（可选，全图封面卡片）</span></span><br><span class="line">  <span class="attr">topic:</span> <span class="string">标题上方的小字</span> <span class="comment"># 可选</span></span><br><span class="line">  <span class="attr">headline:</span> <span class="string">大标题</span> <span class="comment"># 必选</span></span><br><span class="line">  <span class="attr">caption:</span> <span class="string">标题下方的小字</span> <span class="comment"># 可选</span></span><br><span class="line">  <span class="attr">color:</span> <span class="string">标题颜色</span> <span class="comment"># 可选，默认为跟随主题的动态颜色 # white,red...</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<p>Stellar <mark class="tag-plugin colorful mark" color="dark">v1.14.0</mark> 更换 <code>cover-title</code> <code>cover-cat</code> <code>cover-subtitle</code> <code>cover-text-color</code> 为 <code>poster</code></p>
+<blockquote>
+<p>为了显示美观，建议 <code>topic</code> 和 <code>caption</code> 选择其一与 <code>headline</code> 搭配使用。</p>
+</blockquote>
+<details class="tag-plugin colorful folding" ><summary><span>显示效果</span></summary><div class="body"><p>填写 <code>topic</code> 与 <code>headline</code> 时大标题位于上方</p><div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic1.imgdb.cn/item/635aa9d016f2c2beb1fe4f53.jpg" style="width:600px;"/></div></div><p>只填写 <code>headline</code> 或填写 <code>headline</code> 与 <code>caption</code> 时大标题位于下方</p><div class="tag-plugin image"><div class="image-bg"><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic1.imgdb.cn/item/635aaa8116f2c2beb1ffdd19.jpg" style="width:600px;"/></div></div></div></details>
+<p>如果您想使用 Unsplash 搜索图片作为封面，可以在 <code>cover</code> 设置搜索关键词（用英文逗号隔开）：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">cover:</span> <span class="string">workout,strava</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<h2 id="%E5%86%85%E5%AE%B9%E6%91%98%E8%A6%81" tabindex="-1" id="内容摘要"><a class="headerlink" href="#内容摘要"></a>内容摘要</h2>
+<h3 id="%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E6%91%98%E8%A6%81" tabindex="-1" id="自动生成摘要"><a class="headerlink" href="#自动生成摘要"></a>自动生成摘要</h3>
+<p>建议您通过 <code>description</code> 或者 <code>excerpt</code> 方式生成摘要，但如果您希望自动从文章内容截取一定字数的文字作为摘要，可以这样设置：</p>
+<figure class="highlight yaml"><figcaption><span>blog/_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">article:</span></span><br><span class="line">  <span class="attr">auto_excerpt:</span> <span class="number">200</span></span><br></pre></td></tr></table></figure>
+<h3 id="%E6%89%8B%E5%8A%A8%E8%AE%BE%E7%BD%AE%E6%91%98%E8%A6%81" tabindex="-1" id="手动设置摘要"><a class="headerlink" href="#手动设置摘要"></a>手动设置摘要</h3>
+<p>一篇文章开头一段文字描述就是摘要，摘要和正文用 <code>&lt;!-- more --&gt;</code> 隔开，前后一定要有空行。例如：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">cover:</span> <span class="string">/assets/xaoxuu/blog/2020-0927a@1x.svg</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="string">在心率管家默默无闻地上线了一年多之后，现在终于打算来好好聊聊关于手机摄像头测量心率的那些事。本文参考了很多前辈的文章，将在文末列出。</span></span><br><span class="line"></span><br><span class="line"><span class="string">&lt;!--</span> <span class="string">more</span> <span class="string">--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="string">后面是正文部分，在主页看不到。</span></span><br></pre></td></tr></table></figure>
+<h3 id="ai%E6%91%98%E8%A6%81" tabindex="-1" id="AI摘要"><a class="headerlink" href="#AI摘要"></a>AI摘要</h3>
+<p>基于 <code>tianli_gpt</code> 前端项目 <a target="_blank" rel="noopener" href="https://github.com/qxchuckle/Post-Summary-AI">Post-Summary-AI</a></p>
+<figure class="highlight yaml"><figcaption><span>_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># AI 摘要</span></span><br><span class="line"><span class="comment"># https://github.com/qxchuckle/Post-Summary-AI</span></span><br><span class="line"><span class="attr">tianli_gpt:</span> </span><br><span class="line">  <span class="attr">enable:</span> <span class="comment">#true</span></span><br><span class="line">  <span class="attr">js:</span> <span class="string">https://jsd.onmicrosoft.cn/gh/qxchuckle/Post-Summary-AI@6.0/chuckle-post-ai.min.js</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span> <span class="comment"># all, post, wiki</span></span><br><span class="line">  <span class="attr">key:</span> <span class="string">5Q5mpqRK5DkwT1X9Gi5e</span> <span class="comment"># tianli_gpt key</span></span><br><span class="line">  <span class="attr">total_length:</span> <span class="number">1000</span> <span class="comment"># 设置提交的字数限制，默认为1000字，上限为5000，超过5000字符将被截断</span></span><br><span class="line">  <span class="attr">typewriter:</span> <span class="literal">true</span> <span class="comment"># 打字机动画 </span></span><br><span class="line">  <span class="attr">summary_directly:</span> <span class="literal">true</span> <span class="comment"># 是否直接显示摘要，否则显示 AI 简介</span></span><br><span class="line">  <span class="attr">rec_method:</span> <span class="string">all</span> <span class="comment"># all, web # 文章推荐方式，all：匹配数据库内所有文章进行推荐，web：仅当前站内的文章，默认all</span></span><br><span class="line">  <span class="attr">hide_shuttle:</span> <span class="literal">true</span> <span class="comment"># 是否隐藏矩阵穿梭</span></span><br><span class="line">  <span class="attr">summary_toggle:</span> <span class="literal">false</span> <span class="comment"># 是否开启切换简介功能，经过一些处理后，重新生成一份简介，这将消耗key字数</span></span><br><span class="line">  <span class="attr">interface:</span> <span class="comment"># AI 信息展示</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">AI摘要</span></span><br><span class="line">    <span class="attr">introduce:</span> <span class="string">&#x27;我是文章辅助AI: QX-AI，点击下方的按钮，让我生成本文简介、推荐相关文章等。&#x27;</span></span><br><span class="line">    <span class="attr">version:</span> <span class="string">TianliGPT</span></span><br><span class="line">    <span class="attr">button:</span> [<span class="string">&quot;介绍自己&quot;</span>, <span class="string">&quot;推荐文章&quot;</span>, <span class="string">&quot;生成摘要&quot;</span>, <span class="string">&quot;矩阵穿梭&quot;</span>] <span class="comment"># 底部按钮文字</span></span><br></pre></td></tr></table></figure>
+<p>如何获取 <code>tianliGPT_key</code>：到 <a target="_blank" rel="noopener" href="https://afdian.net/item/f18c2e08db4411eda2f25254001e7c00">爱发电</a> 中购买，购买完成后，进入 <a target="_blank" rel="noopener" href="https://summary.zhheo.com">网页后台管理</a> 绑定key并添加自己的站点</p>
+<blockquote>
+<p>key与博客地址为绑定状态，所以本地调试时是无法接收到数据的。</p>
+</blockquote>
+<h2 id="%E6%96%87%E7%AB%A0%E6%A8%A1%E6%9D%BF" tabindex="-1" id="文章模板"><a class="headerlink" href="#文章模板"></a>文章模板</h2>
+<p>使用 Hexo 自带模板实现命令行创建新文章时自动生成相关信息。</p>
+<p>根目录下 <code>scaffolds</code> 文件夹中编辑 <code>post.md</code> 的 <code>font-matter</code> ，根据自己的需要增加你想要配置的内容</p>
+<figure class="highlight yaml"><figcaption><span>blog/scaffolds/post.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="comment"># 基本信息</span></span><br><span class="line"><span class="attr">title:</span> &#123;&#123; <span class="string">title</span> &#125;&#125;</span><br><span class="line"><span class="attr">date:</span> &#123;&#123; <span class="string">date</span> &#125;&#125;</span><br><span class="line"><span class="attr">tags:</span> []</span><br><span class="line"><span class="attr">categories:</span> []</span><br><span class="line"><span class="attr">description:</span> <span class="comment"># excerpt 也可 </span></span><br><span class="line"><span class="comment"># 封面</span></span><br><span class="line"><span class="attr">cover:</span> </span><br><span class="line"><span class="attr">banner:</span> </span><br><span class="line"><span class="attr">poster:</span> <span class="comment"># 海报（可选，全图封面卡片）</span></span><br><span class="line">  <span class="attr">topic:</span> <span class="string">标题上方的小字</span> <span class="comment"># 可选</span></span><br><span class="line">  <span class="attr">headline:</span> <span class="string">大标题</span> <span class="comment"># 必选</span></span><br><span class="line">  <span class="attr">caption:</span> <span class="string">标题下方的小字</span> <span class="comment"># 可选</span></span><br><span class="line">  <span class="attr">color:</span> <span class="string">标题颜色</span> <span class="comment"># 可选</span></span><br><span class="line"><span class="comment"># 插件</span></span><br><span class="line"><span class="attr">sticky:</span> <span class="comment"># 数字越大越靠前</span></span><br><span class="line"><span class="attr">mermaid:</span></span><br><span class="line"><span class="attr">katex:</span> </span><br><span class="line"><span class="attr">mathjax:</span> </span><br><span class="line"><span class="comment"># 可选</span></span><br><span class="line"><span class="attr">topic:</span> <span class="comment"># 专栏 id</span></span><br><span class="line"><span class="attr">author:</span> </span><br><span class="line"><span class="attr">references:</span></span><br><span class="line"><span class="attr">comments:</span> <span class="comment"># 设置 false 禁止评论</span></span><br><span class="line"><span class="attr">indexing:</span> <span class="comment"># 设置 false 避免被搜索</span></span><br><span class="line"><span class="attr">breadcrumb:</span> <span class="comment"># 设置 false 隐藏面包屑导航</span></span><br><span class="line"><span class="attr">leftbar:</span> </span><br><span class="line"><span class="attr">rightbar:</span></span><br><span class="line"><span class="attr">h1:</span> <span class="comment"># 设置为 &#x27;&#x27; 隐藏标题</span></span><br><span class="line"><span class="attr">type:</span> <span class="comment"># tech/story</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<h2 id="%E6%96%87%E7%AB%A0%E9%A1%B5" tabindex="-1" id="文章页"><a class="headerlink" href="#文章页"></a>文章页</h2>
+<h3 id="%E6%A8%AA%E5%B9%85%E5%9B%BE%E7%89%87" tabindex="-1" id="横幅图片"><a class="headerlink" href="#横幅图片"></a>横幅图片</h3>
+<p>文章页面顶部区域可以显示长长的横幅图片，设置方法如下：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">banner:</span> <span class="string">/assets/xaoxuu/blog/2020-0927a@1x.svg</span></span><br></pre></td></tr></table></figure>
+<p>如果您想使用 Unsplash 搜索图片作为横幅，可以在 <code>banner</code> 中设置搜索关键词（用英文逗号隔开）：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">banner:</span> <span class="string">workout,strava</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<h3 id="%E6%8C%87%E5%AE%9A%E4%B8%80%E7%BA%A7%E6%A0%87%E9%A2%98" tabindex="-1" id="指定一级标题"><a class="headerlink" href="#指定一级标题"></a>指定一级标题</h3>
+<p>默认的一级标题是文章的 <code>title</code>，如果希望使用别的文字作为一级标题，可以指定 <code>h1</code>，例如：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">h1:</span> <span class="string">快速开始</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<h3 id="%E9%9A%90%E8%97%8F%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98" tabindex="-1" id="隐藏文章标题"><a class="headerlink" href="#隐藏文章标题"></a>隐藏文章标题</h3>
+<p>同上述操作，但是 <code>h1</code> 设置为空字符串即可：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">h1:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<h2 id="%E6%96%87%E7%AB%A0%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%8E%A8%E8%8D%90" tabindex="-1" id="文章索引与推荐"><a class="headerlink" href="#文章索引与推荐"></a>文章索引与推荐</h2>
+<p>文章如果有分类和标签就会自动在主页出现「分类」、「标签」选项卡实现分类浏览，不需要手动添加页面。</p>
+<h3 id="%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB" tabindex="-1" id="文章分类"><a class="headerlink" href="#文章分类"></a>文章分类</h3>
+<p>在文章列表页面会显示文章所属的第一级分类，例如：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">categories:</span> [<span class="string">设计开发</span>, <span class="string">iOS开发</span>]</span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<p>这样写就只会显示「设计开发」一级分类，而在文章页面顶部则会显示完整的面包屑导航。</p>
+<h3 id="%E6%96%87%E7%AB%A0%E6%A0%87%E7%AD%BE" tabindex="-1" id="文章标签"><a class="headerlink" href="#文章标签"></a>文章标签</h3>
+<p>文章标签目前不可见，用于关键词、搜索、按标签检索、相关文章推荐等功能，例如：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">tags:</span> [<span class="string">iOS</span>, <span class="string">心率</span>]</span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<h3 id="%E7%9B%B8%E5%85%B3%E6%96%87%E7%AB%A0%E6%8E%A8%E8%8D%90" tabindex="-1" id="相关文章推荐"><a class="headerlink" href="#相关文章推荐"></a>相关文章推荐</h3>
+<p>要实现相关文章推荐功能，您需要安装插件：</p>
+<div class="tag-plugin copy"><input class="copy-area" id="copy_1" value="npm i hexo-related-popular-posts"><button class="copy-btn" onclick="util.copy(&quot;copy_1&quot;,&quot;复制成功&quot;)"><svg class="icon copy-btn" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M5.75 1a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75v-3a.75.75 0 00-.75-.75h-4.5zm.75 3V2.5h3V4h-3zm-2.874-.467a.75.75 0 00-.752-1.298A1.75 1.75 0 002 3.75v9.5c0 .966.784 1.75 1.75 1.75h8.5A1.75 1.75 0 0014 13.25v-9.5a1.75 1.75 0 00-.874-1.515.75.75 0 10-.752 1.298.25.25 0 01.126.217v9.5a.25.25 0 01-.25.25h-8.5a.25.25 0 01-.25-.25v-9.5a.25.25 0 01.126-.217z"></path></svg></button></div>
+<p>然后在主题配置文件中开启：</p>
+<figure class="highlight yaml"><figcaption><span>blog/_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">article:</span></span><br><span class="line">  <span class="comment"># npm i hexo-related-popular-posts</span></span><br><span class="line">  <span class="attr">related_posts:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">title:</span> <span class="string">您可能感兴趣的文章</span></span><br></pre></td></tr></table></figure>
+<p>开启后会在每篇文章的下方推荐相同类型的文章。</p>
+<h2 id="%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99" tabindex="-1" id="参考资料"><a class="headerlink" href="#参考资料"></a>参考资料</h2>
+<p>用 markdown 格式填写引用的文章，注意要写在引号中：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">references:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&#x27;[心跳之旅—💗—iOS用手机摄像头检测心率(PPG)](https://punmy.cn/2016/07/28/15231176397746.html)&#x27;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&#x27;[PPG光电容积脉搏波描记法技术概况](https://www.jianshu.com/p/695c131abfa5)&#x27;</span></span><br><span class="line">  <span class="string">...</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<p>效果见这篇文章：</p>
+<div class="tag-plugin link dis-select"><a class="link-card plain" title="" href="https://xaoxuu.com/blog/20200927/#references" target="_blank" rel="external nofollow noopener noreferrer" cardlink autofill="title,icon"><div class="left"><span class="title">https://xaoxuu.com/blog/20200927/#references</span><span class="cap link footnote">https://xaoxuu.com/blog/20200927/#references</span></div><div class="right"><div class="lazy img" data-bg="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<h2 id="%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE" tabindex="-1" id="许可协议"><a class="headerlink" href="#许可协议"></a>许可协议</h2>
+<p>你可以更改协议内容或者自定义其他选项，支持 MarkDown 语法。</p>
+<figure class="highlight yaml"><figcaption><span>blog/_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">article:</span></span><br><span class="line">  <span class="attr">license:</span> <span class="string">&#x27;本文采用 [署名-非商业性使用-相同方式共享 4.0 国际](https://creativecommons.org/licenses/by-nc-sa/4.0/) 许可协议，转载请注明出处。&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>若你配置了作者数据 <code>_data/authors.yml</code> 和文章作者，可以在 license 中使用 <code>&#123;author.name&#125;</code> 来自动替换为当前文章作者名字。</p>
+<figure class="highlight yaml"><figcaption><span>blog/_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">article:</span></span><br><span class="line">  <span class="attr">license:</span> <span class="string">&#x27;本文由&#123;author.name&#125;编写，采用...&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5" tabindex="-1" id="分享链接"><a class="headerlink" href="#分享链接"></a>分享链接</h2>
+<p>分享至微信会生成对应的页面二维码，weibo 和 email 会自动跳转到对应软件或网页，link 会拷贝当前页面链接至剪切板。</p>
+<figure class="highlight yaml"><figcaption><span>blog/_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">article:</span></span><br><span class="line">  <span class="attr">share:</span> <span class="comment"># [wechat, weibo, email, link]</span></span><br></pre></td></tr></table></figure>
+<h2 id="%E8%A6%86%E7%9B%96-opengraph" tabindex="-1" id="覆盖-OpenGraph"><a class="headerlink" href="#覆盖-OpenGraph"></a>覆盖 OpenGraph</h2>
+<p>如果分享到社交平台的缩略图不理想，可以通过这个特性覆盖为自己想要的：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/_posts/xxx.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">open_graph:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">/assets/xaoxuu/blog/2022-1029a@2x.webp</span></span><br></pre></td></tr></table></figure>
+<h2 id="%E6%9B%B4%E5%A4%9A%E7%9A%84%E7%8B%AC%E7%AB%8B%E9%A1%B5%E9%9D%A2" tabindex="-1" id="更多的独立页面"><a class="headerlink" href="#更多的独立页面"></a>更多的独立页面</h2>
+<p>Stellar 同时具有博客和 Wiki 两个大模块，为了能够正确进行导航栏高亮，引入了 <code>menu_id</code> 来进行区分，可以在 <code>front-matter</code> 中指定 <code>menu_id</code> 来使某个菜单按钮处于选中状态。</p>
+<p>例如您有关于、友链两个页面，都希望高亮「更多」按钮：</p>
+<figure class="highlight yaml"><figcaption><span>blog/source/about/index.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">menu_id:</span> <span class="string">more</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">关于</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><figcaption><span>blog/source/friends/index.md</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">menu_id:</span> <span class="string">more</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">友链</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+<p>在主题配置文件中设置导航栏：</p>
+<figure class="highlight yaml"><figcaption><span>blog/_config.stellar.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">menubar:</span></span><br><span class="line">  <span class="attr">columns:</span> <span class="number">4</span> <span class="comment"># 一行多少个</span></span><br><span class="line">  <span class="attr">items:</span> <span class="comment"># 可按照自己需求增加，符合以下格式即可</span></span><br><span class="line">    <span class="string">...</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">more</span></span><br><span class="line">      <span class="attr">theme:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">      <span class="attr">title:</span> <span class="string">更多</span></span><br><span class="line">      <span class="attr">icon:</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">      <span class="attr">url:</span> <span class="string">/more/</span></span><br></pre></td></tr></table></figure>
+<h2 id="%E5%8F%8B%E9%93%BE%E9%A1%B5%E9%9D%A2" tabindex="-1" id="友链页面"><a class="headerlink" href="#友链页面"></a>友链页面</h2>
+<p>友链被设计成标签，您可以在任何页面任何位置插入友链，详见：</p>
+<div class="tag-plugin link dis-select"><a class="link-card plain" title="#友链标签" href="https://xaoxuu.com/wiki/stellar/tag-plugins/#友链标签" target="_blank" rel="external nofollow noopener noreferrer" cardlink autofill="icon"><div class="left"><span class="title">#友链标签</span><span class="cap link footnote">https://xaoxuu.com/wiki/stellar/tag-plugins/#友链标签</span></div><div class="right"><div class="lazy img" data-bg="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/link/8f277b4ee0ecd.svg"></div></div></a></div>
+<h2 id="%E5%85%B3%E4%BA%8E%E9%A1%B5%E9%9D%A2" tabindex="-1" id="关于页面"><a class="headerlink" href="#关于页面"></a>关于页面</h2>
+<p>没有单独的关于页面布局，您可以自由组合丰富的标签来实现个性化的关于页面，例如：<code>about</code>、<code>tabs</code>、<code>navbar</code>、<code>quot</code>、<code>timeline</code> 标签。</p>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/Others/png%E5%9B%BE%E7%89%87%E5%A1%AB%E5%85%85%E8%84%9A%E6%9C%AC.html">png图片填充脚本</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/Others/Stellar/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3%E7%B3%BB%E7%BB%9F.html">如何使用文档系统</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E7%B1%BB%E5%9E%8B"><span class="toc-text">文章类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E5%B0%81%E9%9D%A2"><span class="toc-text">文章封面</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E5%B0%81%E9%9D%A2"><span class="toc-text">自动生成封面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E5%A4%96%E9%83%A8%E5%9B%BE%E7%89%87"><span class="toc-text">引用外部图片</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AE%B9%E6%91%98%E8%A6%81"><span class="toc-text">内容摘要</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E6%91%98%E8%A6%81"><span class="toc-text">自动生成摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E8%AE%BE%E7%BD%AE%E6%91%98%E8%A6%81"><span class="toc-text">手动设置摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ai%E6%91%98%E8%A6%81"><span class="toc-text">AI摘要</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E6%A8%A1%E6%9D%BF"><span class="toc-text">文章模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E9%A1%B5"><span class="toc-text">文章页</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%AA%E5%B9%85%E5%9B%BE%E7%89%87"><span class="toc-text">横幅图片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E5%AE%9A%E4%B8%80%E7%BA%A7%E6%A0%87%E9%A2%98"><span class="toc-text">指定一级标题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E7%AB%A0%E6%A0%87%E9%A2%98"><span class="toc-text">隐藏文章标题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%8E%A8%E8%8D%90"><span class="toc-text">文章索引与推荐</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E5%88%86%E7%B1%BB"><span class="toc-text">文章分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E6%A0%87%E7%AD%BE"><span class="toc-text">文章标签</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E6%96%87%E7%AB%A0%E6%8E%A8%E8%8D%90"><span class="toc-text">相关文章推荐</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%B8%E5%8F%AF%E5%8D%8F%E8%AE%AE"><span class="toc-text">许可协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5"><span class="toc-text">分享链接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A6%86%E7%9B%96-opengraph"><span class="toc-text">覆盖 OpenGraph</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E5%A4%9A%E7%9A%84%E7%8B%AC%E7%AB%8B%E9%A1%B5%E9%9D%A2"><span class="toc-text">更多的独立页面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8B%E9%93%BE%E9%A1%B5%E9%9D%A2"><span class="toc-text">友链页面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E9%A1%B5%E9%9D%A2"><span class="toc-text">关于页面</span></a></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js`,
+    marked: `https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.27.0" async></script>
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script><script defer src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.swiper-slide img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || null
+        }
+      });
+    })
+  }
+</script><script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script><link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
