@@ -1,97 +1,739 @@
-.l_body {
-  display: grid;
-  grid-template-columns: 1fr minmax(200px, var(--width-main)) 1fr;
-  grid-gap: var(--gap-margin);
-  margin: auto;
-  font-size: var(--fsp);
-}
-.l_body aside {
-  z-index: 8;
-  flex-shrink: 0;
-  position: sticky;
-  position: -webkit-sticky;
-  --width-sidebar: calc(var(--gap-margin) * 2 + var(--gap-padding) * 2 + var(--side-content-width));
-  width: var(--width-sidebar);
-}
-.l_body .l_left {
-  justify-self: right;
-  top: 8px;
-}
-.l_body .l_right {
-  justify-self: left;
-  --gap-margin: 0px;
-  max-height: calc(100% - 8px * 2);
-}
-.l_body .l_right .widgets {
-  height: 100%;
-  overflow: visible;
-}
-@media screen and (max-width: $device-laptop) {
-  .l_body .l_right {
-    --gap-margin: 16px;
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.27.0" theme-name="Stellar" theme-version="1.27.0">
+  
+  <meta name="generator" content="Hexo 7.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>PyTorch：PyTorch CNN - MudSynth</title>
+
+  
+    <meta name="description" content="卷积神经网络结构介绍 如果用全连接神经网络处理大尺寸图像具有三个明显的缺点： （1）首先将图像展开为向量会丢失空间信息； （2）其次参数过多效率低下，训练困难； （3）同时大量的参数也很快会导致网络过拟合。 而使用卷积神经网络可以很好地解决上面的三个问题。 卷积神经网络的提出参考了人眼的局部相关性，人眼用于识别物体也是先看一个局部，根据一些特称才能辨别这个物体是什么，特征的识别和像素点的排列位置和">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PyTorch CNN">
+<meta property="og:url" content="http://example.com/wiki/PyTorch/PyTorch%20CNN.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="卷积神经网络结构介绍 如果用全连接神经网络处理大尺寸图像具有三个明显的缺点： （1）首先将图像展开为向量会丢失空间信息； （2）其次参数过多效率低下，训练困难； （3）同时大量的参数也很快会导致网络过拟合。 而使用卷积神经网络可以很好地解决上面的三个问题。 卷积神经网络的提出参考了人眼的局部相关性，人眼用于识别物体也是先看一个局部，根据一些特称才能辨别这个物体是什么，特征的识别和像素点的排列位置和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722103455769.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722103548801.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2conv.gif">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2test.gif">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722105938979.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722110610283.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722110657438.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722111157430.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722143727049.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722164540153.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722164732362.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722164540153.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722203102599.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220723090343418.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220723090631251.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220723151052469.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2960a304e251f95cad1c811fc2046683e6709c93df465.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2format,f_auto.webp">
+<meta property="og:image" content="https://www.mdpi.com/remotesensing/remotesensing-09-00848/article_deploy/html/images/remotesensing-09-00848-g001-550.jpg">
+<meta property="og:image" content="https://static.fuxi.netease.com/fuxi-official/web/20230116/4e63666299636e950913f9ef5620dda1.jpg">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2format,f_auto-165856207539010.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2v2-5e98ec97def099a4e6fb6b7ce3b1d460_r.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2v2-031311969e1fb22b12281f1b0e926df0_r.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724093520009.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724095644397.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724103024965.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724103417099.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img299A9099562CD7E4AB515C021899078BB.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724104933170.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img25EB1E0AA71BC9B36951E3BEA4CF31ED2.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724110011294.webp">
+<meta property="article:published_time" content="2022-07-23T00:44:55.000Z">
+<meta property="article:modified_time" content="2024-05-24T05:40:01.572Z">
+<meta property="article:author" content="Mudrobot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722103455769.webp">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.27.0">
+
+  
+
+  
+
+  
+</head>
+<body>
+
+
+
+<div class="l_body s:aa content tech" id="start" layout="page" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/icon.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></div><a class="title" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><div class="main" ff="title">PyTorch</div><div class="sub cap">The Greatest ML Framework!</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/PyTorch/" placeholder="在 PyTorch 中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="文档" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">基础教程</span></div><div class="widget-body fs14"><a class="link" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html#start"><span class="toc-text">PyTorch入门-简单BP全连接神经网络</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E5%9F%BA%E7%A1%80.html"><span class="toc-text">PyTorch基础</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E8%BF%9B%E9%98%B6.html"><span class="toc-text">PyTorch进阶</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E6%A2%AF%E5%BA%A6.html"><span class="toc-text">PyTorch梯度</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E8%BF%87%E6%8B%9F%E5%90%88.html"><span class="toc-text">PyTorch过拟合</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><span class="toc-text">PyTorch神经网络</span></a><a class="link active" href="/wiki/PyTorch/PyTorch%20CNN.html"><span class="toc-text">PyTorch CNN</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/PyTorch/PyTorch%20CNN%E5%AE%9E%E6%88%98.html"><span class="toc-text">PyTorch CNN实战</span></a><a class="link" href="/wiki/PyTorch/PyTorch%20RNN&LSTM.html"><span class="toc-text">PyTorch RNN&LSTM</span></a><a class="link" href="/wiki/PyTorch/PyTorch%20%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86%E5%AE%9E%E6%88%98.html"><span class="toc-text">PyTorch 自定义数据集实战</span></a><a class="link" href="/wiki/PyTorch/PyTorch%20%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8.html"><span class="toc-text">PyTorch 自编码器</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E7%BB%88%E7%AB%A0%EF%BC%9A%E5%BC%80GAN%EF%BC%81.html"><span class="toc-text">PyTorch终章：开GAN！</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：教程</span></div><div class="widget-body"><a class="item wiki" href="/wiki/Others/png%E5%9B%BE%E7%89%87%E5%A1%AB%E5%85%85%E8%84%9A%E6%9C%AC.html"><span class="title">Others - 杂项合集</span><span class="excerpt">一些零碎技术知识点整理🛠️</span></a><a class="item wiki" href="/wiki/C++/algorithm/sort.html"><span class="title">C++ - 知识点合集</span><span class="excerpt">C++零碎知识点整理🐣</span></a></div></widget><widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：深度学习</span></div><div class="widget-body"><a class="item wiki" href="/wiki/DL-Techniques/%E4%BA%A4%E5%B9%B6%E6%AF%94%20(IOU).html"><span class="title">DeepLearning - Techniques</span><span class="excerpt">记录一些深度学习中使用的零散小技巧📖</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html">PyTorch</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2024-05-24T05:40:01.572Z">2024-05-24</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>PyTorch CNN</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84%E4%BB%8B%E7%BB%8D" tabindex="-1" id="卷积神经网络结构介绍"><a class="headerlink" href="#卷积神经网络结构介绍"></a>卷积神经网络结构介绍</h2>
+<p>如果用全连接神经网络处理大尺寸图像具有三个明显的缺点：</p>
+<p>（1）首先将图像展开为向量会丢失空间信息；</p>
+<p>（2）其次参数过多效率低下，训练困难；</p>
+<p>（3）同时大量的参数也很快会导致网络过拟合。</p>
+<p>而使用卷积神经网络可以很好地解决上面的三个问题。</p>
+<p>卷积神经网络的提出参考了人眼的<strong>局部相关性</strong>，人眼用于识别物体也是先看一个局部，根据一些特称才能辨别这个物体是什么，特征的识别和像素点的排列位置和情况有关。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722103455769.webp" alt="人眼识别物体局部相关性" /></p>
+<p>根据<strong>局部相关性</strong>提出的卷积神经网络结构</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722103548801.webp" alt="卷积神经网络结构" /></p>
+<h3 id="%E5%8D%B7%E7%A7%AF%E8%BF%90%E7%AE%97" tabindex="-1" id="卷积运算"><a class="headerlink" href="#卷积运算"></a>卷积运算</h3>
+<p>首先我们使用几张图来直观感受一下卷积是如何运算的</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2conv.gif" alt="卷积运算" /></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2test.gif" alt="卷积运算Ⅱ" /></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722105938979.webp" alt="卷积运算示意图" /></p>
+<div class="tag-plugin colorful note" color="red"><div class="body"><p>最左边的那个叫做卷积核</p></div></div>
+<blockquote>
+<p>更多更详细关于卷积神经网络的基础知识可以访问如下这篇博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/ShadyPi/article/details/122801738">深度学习：卷积神经网络（CNN</a></p>
+</blockquote>
+<h3 id="%E5%B8%B8%E7%94%A8%E5%8D%B7%E7%A7%AF%E6%A0%B8" tabindex="-1" id="常用卷积核"><a class="headerlink" href="#常用卷积核"></a>常用卷积核</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722110610283.webp" alt="锐化" /></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722110657438.webp" alt="模糊" /></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722111157430.webp" alt="边缘检测" /></p>
+<h3 id="%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%9E%90" tabindex="-1" id="概念解析"><a class="headerlink" href="#概念解析"></a>概念解析</h3>
+<p><strong>输入通道（Input_channels）</strong>:输入有多少个通道（多少层输入），比如如果我们使用的是黑白照片，那么就只有一个通道；如果我们使用的是rgb彩色照片那么就有三个通道。</p>
+<p>**核通道（Kernel_channels）:**卷积核有多少个通道数量。</p>
+<p><strong>核大小（Kernel_size）</strong>:卷积核的大小，一般是3×3</p>
+<p><strong>步长（Stride）</strong>:每次卷积核移动的步长，一般默认是1</p>
+<p><strong>填充（Padding）</strong>:为了保证卷积运算每次卷积完成以后输入输出图片大小相同，我们可能需要在图片周围填充一圈0。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722143727049.webp" alt="打Padding的效果" /></p>
+<div class="tag-plugin colorful note" color="red"><div class="title">对于每一个卷积核，其所包含的通道数必须和输入的卷积层的通道数一样！所以上面核通道有两种含义，一种是指每一个卷积核中所含的通道数，还有一种含义是指有多少个卷积核。</div><div class="body"><p><strong>但是一般情况下都是指后者。</strong></p></div></div>
+<p>因此对于b个28×28，3通道的输入<code>x: [b,3,28,28]</code>如果我们采用16个3*3的卷积核，则对于一个卷积核他的size是<code>one-k: [3,3,3]</code>,对于16个k的总size是<code>multi-k: [16,3,3,3]</code>,因为有16个卷积核所以偏置也有16个<code>bias: [16]</code>(这里运用了广播)。最终的输出是<code>out: [b,16,28,28]</code>（考虑了padding）</p>
+<h3 id="pytorch%E5%AE%9E%E7%8E%B0" tabindex="-1" id="PyTorch实现"><a class="headerlink" href="#PyTorch实现"></a>PyTorch实现</h3>
+<p>了解了基本的卷积神经网络后，下面我们尝试使用PyTorch简单的实现一个简单的二维卷积神经网络，所使用的函数是<code>nn.Conv2d</code>其中第一个参数表示的是输入的通道数，后面的参数表示的是输出的通道数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: <span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line">In [<span class="number">4</span>]: layer=nn.Conv2d(<span class="number">1</span>,<span class="number">3</span>,kernel_size=<span class="number">3</span>,stride=<span class="number">1</span>,padding=<span class="number">0</span>)</span><br><span class="line">In [<span class="number">5</span>]: x=torch.rand(<span class="number">123</span>,<span class="number">1</span>,<span class="number">28</span>,<span class="number">28</span>)</span><br><span class="line">In [<span class="number">6</span>]: out=layer.forward(x)</span><br><span class="line">In [<span class="number">7</span>]: out.shape</span><br><span class="line">Out[<span class="number">7</span>]: torch.Size([<span class="number">123</span>, <span class="number">3</span>, <span class="number">26</span>, <span class="number">26</span>])</span><br><span class="line">In [<span class="number">8</span>]: layer=nn.Conv2d(<span class="number">1</span>,<span class="number">12</span>,kernel_size=<span class="number">3</span>,stride=<span class="number">1</span>,padding=<span class="number">1</span>)</span><br><span class="line">In [<span class="number">9</span>]: out=layer.forward(x)</span><br><span class="line">In [<span class="number">10</span>]: out.shape</span><br><span class="line">Out[<span class="number">10</span>]: torch.Size([<span class="number">123</span>, <span class="number">12</span>, <span class="number">28</span>, <span class="number">28</span>])</span><br><span class="line">In [<span class="number">11</span>]: layer=nn.Conv2d(<span class="number">1</span>,<span class="number">12</span>,kernel_size=<span class="number">3</span>,stride=<span class="number">2</span>,padding=<span class="number">1</span>)</span><br><span class="line">In [<span class="number">12</span>]: out=layer.forward(x)</span><br><span class="line">In [<span class="number">13</span>]: out.shape</span><br><span class="line">Out[<span class="number">13</span>]: torch.Size([<span class="number">123</span>, <span class="number">12</span>, <span class="number">14</span>, <span class="number">14</span>])</span><br><span class="line">In [<span class="number">14</span>]: out=layer(x) <span class="comment"># 强烈推荐这一种不使用forward的方法</span></span><br><span class="line">In [<span class="number">15</span>]: out.shape</span><br><span class="line">Out[<span class="number">15</span>]: torch.Size([<span class="number">123</span>, <span class="number">12</span>, <span class="number">14</span>, <span class="number">14</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>我们也可以使用下面的代码来看看最后一次这个layer中存放了什么样的weight和bias(接上面的代码)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">16</span>]: layer.weight</span><br><span class="line">Out[<span class="number">16</span>]: </span><br><span class="line">Parameter containing:</span><br><span class="line">tensor([[[[-<span class="number">0.2432</span>, -<span class="number">0.2371</span>,  <span class="number">0.2480</span>],</span><br><span class="line">          [-<span class="number">0.2706</span>, -<span class="number">0.2552</span>, -<span class="number">0.0627</span>],</span><br><span class="line">          [ <span class="number">0.1960</span>, -<span class="number">0.3049</span>, -<span class="number">0.0273</span>]]],</span><br><span class="line">        [[[-<span class="number">0.3008</span>,  <span class="number">0.1268</span>,  <span class="number">0.0518</span>],</span><br><span class="line">          [ <span class="number">0.0673</span>,  <span class="number">0.2716</span>, -<span class="number">0.1481</span>],</span><br><span class="line">          [ <span class="number">0.1075</span>, -<span class="number">0.2905</span>,  <span class="number">0.1106</span>]]],</span><br><span class="line">        [[[ <span class="number">0.1498</span>, -<span class="number">0.0681</span>, -<span class="number">0.1162</span>],</span><br><span class="line">          [ <span class="number">0.3015</span>,  <span class="number">0.1400</span>,  <span class="number">0.0372</span>],</span><br><span class="line">          [-<span class="number">0.1401</span>,  <span class="number">0.1158</span>, -<span class="number">0.0872</span>]]],</span><br><span class="line">        [[[ <span class="number">0.1543</span>, -<span class="number">0.0323</span>, -<span class="number">0.2023</span>],</span><br><span class="line">          [ <span class="number">0.2972</span>, -<span class="number">0.0344</span>,  <span class="number">0.3114</span>],</span><br><span class="line">          [ <span class="number">0.2141</span>, -<span class="number">0.0388</span>, -<span class="number">0.0352</span>]]],</span><br><span class="line">        [[[ <span class="number">0.1029</span>,  <span class="number">0.0184</span>, -<span class="number">0.2372</span>],</span><br><span class="line">          [ <span class="number">0.2758</span>, -<span class="number">0.1239</span>,  <span class="number">0.2429</span>],</span><br><span class="line">          [-<span class="number">0.0263</span>, -<span class="number">0.2977</span>, -<span class="number">0.2075</span>]]],</span><br><span class="line">        [[[ <span class="number">0.2166</span>, -<span class="number">0.1031</span>, -<span class="number">0.2122</span>],</span><br><span class="line">          [ <span class="number">0.2123</span>, -<span class="number">0.1492</span>, -<span class="number">0.0831</span>],</span><br><span class="line">          [-<span class="number">0.0155</span>, -<span class="number">0.0572</span>, -<span class="number">0.2485</span>]]],</span><br><span class="line">        [[[-<span class="number">0.0441</span>, -<span class="number">0.3298</span>,  <span class="number">0.2896</span>],</span><br><span class="line">          [ <span class="number">0.1438</span>,  <span class="number">0.1364</span>, -<span class="number">0.2721</span>],</span><br><span class="line">          [ <span class="number">0.0076</span>,  <span class="number">0.0919</span>, -<span class="number">0.1219</span>]]],</span><br><span class="line">        [[[ <span class="number">0.3241</span>,  <span class="number">0.1343</span>,  <span class="number">0.0140</span>],</span><br><span class="line">          [ <span class="number">0.2732</span>, -<span class="number">0.1690</span>, -<span class="number">0.3122</span>],</span><br><span class="line">          [ <span class="number">0.2933</span>,  <span class="number">0.0007</span>,  <span class="number">0.1548</span>]]],</span><br><span class="line">        [[[ <span class="number">0.2695</span>,  <span class="number">0.3256</span>,  <span class="number">0.0424</span>],</span><br><span class="line">          [-<span class="number">0.2905</span>, -<span class="number">0.1272</span>, -<span class="number">0.1482</span>],</span><br><span class="line">          [-<span class="number">0.1993</span>,  <span class="number">0.1244</span>,  <span class="number">0.1924</span>]]],</span><br><span class="line">        [[[ <span class="number">0.1136</span>, -<span class="number">0.0931</span>, -<span class="number">0.2240</span>],</span><br><span class="line">          [-<span class="number">0.0278</span>, -<span class="number">0.1714</span>, -<span class="number">0.0614</span>],</span><br><span class="line">          [-<span class="number">0.0067</span>, -<span class="number">0.1385</span>, -<span class="number">0.2265</span>]]],</span><br><span class="line">        [[[ <span class="number">0.3065</span>,  <span class="number">0.1684</span>, -<span class="number">0.0113</span>],</span><br><span class="line">          [-<span class="number">0.0534</span>,  <span class="number">0.0034</span>,  <span class="number">0.0194</span>],</span><br><span class="line">          [-<span class="number">0.1013</span>,  <span class="number">0.0573</span>, -<span class="number">0.2356</span>]]],</span><br><span class="line">        [[[-<span class="number">0.1154</span>, -<span class="number">0.0406</span>,  <span class="number">0.0382</span>],</span><br><span class="line">          [-<span class="number">0.3318</span>, -<span class="number">0.2613</span>,  <span class="number">0.0636</span>],</span><br><span class="line">          [-<span class="number">0.2066</span>,  <span class="number">0.3052</span>, -<span class="number">0.2338</span>]]]], requires_grad=<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">17</span>]: layer.weight.shape</span><br><span class="line">Out[<span class="number">17</span>]: torch.Size([<span class="number">12</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>])</span><br><span class="line">In [<span class="number">18</span>]: layer.bias.shape</span><br><span class="line">Out[<span class="number">18</span>]: torch.Size([<span class="number">12</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>以上是类API的写法，PyTorch也提供函数API，具体代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: <span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line">In [<span class="number">4</span>]: w=torch.rand(<span class="number">16</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">5</span>,requires_grad=<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">5</span>]: b=torch.rand(<span class="number">16</span>,requires_grad=<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">6</span>]: x=torch.rand(<span class="number">321</span>,<span class="number">3</span>,<span class="number">28</span>,<span class="number">28</span>)</span><br><span class="line">In [<span class="number">7</span>]: out=F.conv2d(x,w,b,stride=<span class="number">1</span>,padding=<span class="number">1</span>)</span><br><span class="line">In [<span class="number">8</span>]: out.shape</span><br><span class="line">Out[<span class="number">8</span>]: torch.Size([<span class="number">321</span>, <span class="number">16</span>, <span class="number">26</span>, <span class="number">26</span>])</span><br><span class="line">In [<span class="number">9</span>]: out=F.conv2d(x,w,b,stride=<span class="number">2</span>,padding=<span class="number">2</span>)</span><br><span class="line">In [<span class="number">10</span>]: out.shape</span><br><span class="line">Out[<span class="number">10</span>]: torch.Size([<span class="number">321</span>, <span class="number">16</span>, <span class="number">14</span>, <span class="number">14</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="%E6%B1%A0%E5%8C%96%E5%B1%82%E4%B8%8E%E9%87%87%E6%A0%B7" tabindex="-1" id="池化层与采样"><a class="headerlink" href="#池化层与采样"></a>池化层与采样</h2>
+<h3 id="%E4%B8%8B%E9%87%87%E6%A0%B7%EF%BC%88downsample%EF%BC%89" tabindex="-1" id="下采样（Downsample）"><a class="headerlink" href="#下采样（Downsample）"></a>下采样（Downsample）</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722164540153.webp" alt="下采样示意图" /></p>
+<p>就是将下面的这个大矩阵变成上面的那个小矩阵，其实下采样和是缩小图片有点像</p>
+<h3 id="max-pooling" tabindex="-1" id="Max-Pooling"><a class="headerlink" href="#Max-Pooling"></a>Max Pooling</h3>
+<p>Max Pooling和下采样类似，但是是每次观察一个区域后取该区域值最大的值为该区域的采样值</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722164732362.webp" alt="Max Pooling原理图（stride=2）" /></p>
+<div class="tag-plugin colorful note" color="blue"><div class="title">类似的还有Avg</div><div class="body"><p>Pooling</p></div></div>
+<h4 id="pytorch-%E5%AE%9E%E7%8E%B0" tabindex="-1" id="PyTorch-实现"><a class="headerlink" href="#PyTorch-实现"></a>PyTorch 实现</h4>
+<p>PyTorch同样提供两种类型的API，这里所使用的函数是<code>nn.MaxPool2d</code>和<code>nn.AvgPool2d</code>和<code>avg_pool2d</code>和<code>max_pool2d</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: <span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line">In [<span class="number">4</span>]: x=torch.rand(<span class="number">123</span>,<span class="number">16</span>,<span class="number">14</span>,<span class="number">14</span>)</span><br><span class="line">In [<span class="number">5</span>]: layer=nn.MaxPool2d(<span class="number">2</span>,stride=<span class="number">2</span>)</span><br><span class="line">In [<span class="number">6</span>]: out=layer(x)</span><br><span class="line">In [<span class="number">7</span>]: out.shape</span><br><span class="line">Out[<span class="number">7</span>]: torch.Size([<span class="number">123</span>, <span class="number">16</span>, <span class="number">7</span>, <span class="number">7</span>])</span><br><span class="line">In [<span class="number">8</span>]: layer=nn.AvgPool2d(<span class="number">2</span>,stride=<span class="number">2</span>)</span><br><span class="line">In [<span class="number">9</span>]: out=layer(x)</span><br><span class="line">In [<span class="number">10</span>]: out.shape</span><br><span class="line">Out[<span class="number">10</span>]: torch.Size([<span class="number">123</span>, <span class="number">16</span>, <span class="number">7</span>, <span class="number">7</span>])</span><br><span class="line">In [<span class="number">11</span>]: <span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line">In [<span class="number">12</span>]: out=F.max_pool2d(x,<span class="number">2</span>,stride=<span class="number">2</span>)</span><br><span class="line">In [<span class="number">13</span>]: out.shape</span><br><span class="line">Out[<span class="number">13</span>]: torch.Size([<span class="number">123</span>, <span class="number">16</span>, <span class="number">7</span>, <span class="number">7</span>])</span><br><span class="line">In [<span class="number">14</span>]: out=F.avg_pool2d(x,<span class="number">2</span>,stride=<span class="number">2</span>)</span><br><span class="line">In [<span class="number">15</span>]: out.shape</span><br><span class="line">Out[<span class="number">15</span>]: torch.Size([<span class="number">123</span>, <span class="number">16</span>, <span class="number">7</span>, <span class="number">7</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="%E4%B8%8A%E9%87%87%E6%A0%B7%EF%BC%88upsample%EF%BC%89" tabindex="-1" id="上采样（Upsample）"><a class="headerlink" href="#上采样（Upsample）"></a>上采样（Upsample）</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722164540153.webp" alt="上采样示意图" /></p>
+<p>就是将上面的这个小矩阵变成下面的那个大矩阵，相当于图片的放大，和下采样正好相反</p>
+<h4 id="pytorch-%E5%AE%9E%E7%8E%B0-1" tabindex="-1" id="PyTorch-实现-2"><a class="headerlink" href="#PyTorch-实现-2"></a>PyTorch 实现</h4>
+<p>上采样所使用的函数是<code>interpolate</code>函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: <span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line">In [<span class="number">4</span>]: x=torch.rand(<span class="number">1</span>,<span class="number">1</span>,<span class="number">3</span>,<span class="number">3</span>)</span><br><span class="line">In [<span class="number">5</span>]: x</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">tensor([[[[<span class="number">0.0565</span>, <span class="number">0.2834</span>, <span class="number">0.3705</span>],</span><br><span class="line">          [<span class="number">0.4337</span>, <span class="number">0.8775</span>, <span class="number">0.8109</span>],</span><br><span class="line">          [<span class="number">0.8081</span>, <span class="number">0.8048</span>, <span class="number">0.3552</span>]]]])</span><br><span class="line">In [<span class="number">6</span>]: out=F.interpolate(x,scale_factor=<span class="number">2</span>,mode=<span class="string">&#x27;nearest&#x27;</span>)</span><br><span class="line">In [<span class="number">7</span>]: out</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">tensor([[[[<span class="number">0.0565</span>, <span class="number">0.0565</span>, <span class="number">0.2834</span>, <span class="number">0.2834</span>, <span class="number">0.3705</span>, <span class="number">0.3705</span>],</span><br><span class="line">          [<span class="number">0.0565</span>, <span class="number">0.0565</span>, <span class="number">0.2834</span>, <span class="number">0.2834</span>, <span class="number">0.3705</span>, <span class="number">0.3705</span>],</span><br><span class="line">          [<span class="number">0.4337</span>, <span class="number">0.4337</span>, <span class="number">0.8775</span>, <span class="number">0.8775</span>, <span class="number">0.8109</span>, <span class="number">0.8109</span>],</span><br><span class="line">          [<span class="number">0.4337</span>, <span class="number">0.4337</span>, <span class="number">0.8775</span>, <span class="number">0.8775</span>, <span class="number">0.8109</span>, <span class="number">0.8109</span>],</span><br><span class="line">          [<span class="number">0.8081</span>, <span class="number">0.8081</span>, <span class="number">0.8048</span>, <span class="number">0.8048</span>, <span class="number">0.3552</span>, <span class="number">0.3552</span>],</span><br><span class="line">          [<span class="number">0.8081</span>, <span class="number">0.8081</span>, <span class="number">0.8048</span>, <span class="number">0.8048</span>, <span class="number">0.3552</span>, <span class="number">0.3552</span>]]]])</span><br><span class="line">In [<span class="number">8</span>]: out.shape</span><br><span class="line">Out[<span class="number">8</span>]: torch.Size([<span class="number">1</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">6</span>])</span><br><span class="line">In [<span class="number">9</span>]: out=F.interpolate(x,scale_factor=<span class="number">3</span>,mode=<span class="string">&#x27;nearest&#x27;</span>)</span><br><span class="line">In [<span class="number">10</span>]: out</span><br><span class="line">Out[<span class="number">10</span>]: </span><br><span class="line">tensor([[[[<span class="number">0.0565</span>, <span class="number">0.0565</span>, <span class="number">0.0565</span>, <span class="number">0.2834</span>, <span class="number">0.2834</span>, <span class="number">0.2834</span>, <span class="number">0.3705</span>, <span class="number">0.3705</span>, <span class="number">0.3705</span>],</span><br><span class="line">          [<span class="number">0.0565</span>, <span class="number">0.0565</span>, <span class="number">0.0565</span>, <span class="number">0.2834</span>, <span class="number">0.2834</span>, <span class="number">0.2834</span>, <span class="number">0.3705</span>, <span class="number">0.3705</span>, <span class="number">0.3705</span>],</span><br><span class="line">          [<span class="number">0.0565</span>, <span class="number">0.0565</span>, <span class="number">0.0565</span>, <span class="number">0.2834</span>, <span class="number">0.2834</span>, <span class="number">0.2834</span>, <span class="number">0.3705</span>, <span class="number">0.3705</span>, <span class="number">0.3705</span>],</span><br><span class="line">          [<span class="number">0.4337</span>, <span class="number">0.4337</span>, <span class="number">0.4337</span>, <span class="number">0.8775</span>, <span class="number">0.8775</span>, <span class="number">0.8775</span>, <span class="number">0.8109</span>, <span class="number">0.8109</span>, <span class="number">0.8109</span>],</span><br><span class="line">          [<span class="number">0.4337</span>, <span class="number">0.4337</span>, <span class="number">0.4337</span>, <span class="number">0.8775</span>, <span class="number">0.8775</span>, <span class="number">0.8775</span>, <span class="number">0.8109</span>, <span class="number">0.8109</span>, <span class="number">0.8109</span>],</span><br><span class="line">          [<span class="number">0.4337</span>, <span class="number">0.4337</span>, <span class="number">0.4337</span>, <span class="number">0.8775</span>, <span class="number">0.8775</span>, <span class="number">0.8775</span>, <span class="number">0.8109</span>, <span class="number">0.8109</span>, <span class="number">0.8109</span>],</span><br><span class="line">          [<span class="number">0.8081</span>, <span class="number">0.8081</span>, <span class="number">0.8081</span>, <span class="number">0.8048</span>, <span class="number">0.8048</span>, <span class="number">0.8048</span>, <span class="number">0.3552</span>, <span class="number">0.3552</span>, <span class="number">0.3552</span>],</span><br><span class="line">          [<span class="number">0.8081</span>, <span class="number">0.8081</span>, <span class="number">0.8081</span>, <span class="number">0.8048</span>, <span class="number">0.8048</span>, <span class="number">0.8048</span>, <span class="number">0.3552</span>, <span class="number">0.3552</span>, <span class="number">0.3552</span>],</span><br><span class="line">          [<span class="number">0.8081</span>, <span class="number">0.8081</span>, <span class="number">0.8081</span>, <span class="number">0.8048</span>, <span class="number">0.8048</span>, <span class="number">0.8048</span>, <span class="number">0.3552</span>, <span class="number">0.3552</span>, <span class="number">0.3552</span>]]]])</span><br><span class="line">In [<span class="number">11</span>]: out.shape</span><br><span class="line">Out[<span class="number">11</span>]: torch.Size([<span class="number">1</span>, <span class="number">1</span>, <span class="number">9</span>, <span class="number">9</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="relu" tabindex="-1" id="ReLU"><a class="headerlink" href="#ReLU"></a>ReLU</h3>
+<p>卷积神经网络的ReLU函数和之前全连接神经网络所说的ReLU函数一样，在这里是被用于去除响应过小的点。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220722203102599.webp" alt="ReLU函数原理" /></p>
+<h4 id="pytorch%E5%AE%9E%E7%8E%B0-1" tabindex="-1" id="PyTorch实现-2"><a class="headerlink" href="#PyTorch实现-2"></a>PyTorch实现</h4>
+<p>和原来全连接神经网络使用的函数一模一样</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: <span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line">In [<span class="number">4</span>]: <span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line">In [<span class="number">5</span>]: x=torch.rand(<span class="number">1</span>,<span class="number">16</span>,<span class="number">7</span>,<span class="number">7</span>)</span><br><span class="line">In [<span class="number">6</span>]: layer=nn.ReLU(inplace=<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">7</span>]: out=layer(x)</span><br><span class="line">In [<span class="number">8</span>]: out.shape</span><br><span class="line">Out[<span class="number">8</span>]: torch.Size([<span class="number">1</span>, <span class="number">16</span>, <span class="number">7</span>, <span class="number">7</span>])</span><br><span class="line">In [<span class="number">9</span>]: out=F.relu(x)</span><br><span class="line">In [<span class="number">10</span>]: out.shape</span><br><span class="line">Out[<span class="number">10</span>]: torch.Size([<span class="number">1</span>, <span class="number">16</span>, <span class="number">7</span>, <span class="number">7</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="batch-norm%EF%BC%88%E5%BD%92%E4%B8%80%E5%8C%96%EF%BC%89" tabindex="-1" id="Batch-Norm（归一化）"><a class="headerlink" href="#Batch-Norm（归一化）"></a>Batch-Norm（归一化）</h2>
+<p>norm其实归一化就是特征缩放（feature scaling），一般情况我们将特征缩放成以0为均值1为方差的情况。</p>
+<p>Batch norm在卷积神经网络中是指，对<strong>所有样本的相同层</strong>进行归一化处理。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220723090343418.webp" alt="不同类型的norm原理图" /></p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220723090631251.webp" alt="Batch norm 原理图" /></p>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo separator="true">,</mo><mi>β</mi></mrow><annotation encoding="application/x-tex">\gamma,\beta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span></span>是要参与反向传播的，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo separator="true">,</mo><mi>α</mi></mrow><annotation encoding="application/x-tex">\mu,\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">μ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>是不参与反向传播的，是运行中统计出来的数据。当前<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo separator="true">,</mo><mi>α</mi></mrow><annotation encoding="application/x-tex">\mu,\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">μ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>的计算也和上一次<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo separator="true">,</mo><mi>α</mi></mrow><annotation encoding="application/x-tex">\mu,\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">μ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>的值有关（指数加权平均）</p></div></div>
+<h3 id="pytorch-%E5%AE%9E%E7%8E%B0-2" tabindex="-1" id="PyTorch-实现-3"><a class="headerlink" href="#PyTorch-实现-3"></a>PyTorch 实现</h3>
+<p>下面实现一个全连接层的Batchnorm，所使用的函数是<code>torch.nn.BatchNorm1d</code>,输入参数表示有多少个特征，在下面的例子中是有16个特征</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: x=torch.rand(<span class="number">100</span>,<span class="number">16</span>)+<span class="number">0.5</span></span><br><span class="line">In [<span class="number">4</span>]: layer=torch.nn.BatchNorm1d(<span class="number">16</span>)</span><br><span class="line">In [<span class="number">5</span>]: layer.running_mean,layer.running_var</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">(tensor([<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>]),</span><br><span class="line"> tensor([<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>]))</span><br><span class="line">In [<span class="number">6</span>]: out=layer(x)</span><br><span class="line">In [<span class="number">7</span>]: layer.running_mean,layer.running_var</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">(tensor([<span class="number">0.0961</span>, <span class="number">0.0963</span>, <span class="number">0.1018</span>, <span class="number">0.1019</span>, <span class="number">0.1005</span>, <span class="number">0.1021</span>, <span class="number">0.1000</span>, <span class="number">0.1006</span>, <span class="number">0.0965</span>,</span><br><span class="line">         <span class="number">0.1005</span>, <span class="number">0.1054</span>, <span class="number">0.0996</span>, <span class="number">0.0940</span>, <span class="number">0.1024</span>, <span class="number">0.0938</span>, <span class="number">0.1022</span>]),</span><br><span class="line"> tensor([<span class="number">0.9089</span>, <span class="number">0.9086</span>, <span class="number">0.9073</span>, <span class="number">0.9105</span>, <span class="number">0.9075</span>, <span class="number">0.9087</span>, <span class="number">0.9068</span>, <span class="number">0.9079</span>, <span class="number">0.9096</span>,</span><br><span class="line">         <span class="number">0.9084</span>, <span class="number">0.9087</span>, <span class="number">0.9086</span>, <span class="number">0.9073</span>, <span class="number">0.9090</span>, <span class="number">0.9072</span>, <span class="number">0.9097</span>]))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p><code>running_mean,running_var</code>统计的是当前输入的数据的均值和方差的</p></div></div>
+<div class="tag-plugin colorful note" color="red"><div class="body"><p>可以发现<code>running_mean</code>一开始并没有直接到真实数据的均值，这就是因为每一次计算的均值和前一次的均值是有关系的缘故。所以当我们这样计算多次后<code>running_mean</code>才会逐渐接近真实的均值（见下面的代码）</p></div></div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: x=torch.randn(<span class="number">100</span>,<span class="number">16</span>)+<span class="number">0.5</span></span><br><span class="line">In [<span class="number">4</span>]: layer=torch.nn.BatchNorm1d(<span class="number">16</span>) </span><br><span class="line">In [<span class="number">5</span>]: <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>): out=layer(x)</span><br><span class="line">In [<span class="number">6</span>]: layer.running_mean</span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">tensor([<span class="number">0.5601</span>, <span class="number">0.4520</span>, <span class="number">0.2556</span>, <span class="number">0.4875</span>, <span class="number">0.4371</span>, <span class="number">0.3810</span>, <span class="number">0.4296</span>, <span class="number">0.4426</span>, <span class="number">0.5163</span>,</span><br><span class="line">        <span class="number">0.5468</span>, <span class="number">0.4442</span>, <span class="number">0.3907</span>, <span class="number">0.4959</span>, <span class="number">0.5350</span>, <span class="number">0.5775</span>, <span class="number">0.3721</span>])</span><br><span class="line">In [<span class="number">7</span>]: layer.running_var</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">tensor([<span class="number">0.8751</span>, <span class="number">0.9497</span>, <span class="number">0.8256</span>, <span class="number">0.9304</span>, <span class="number">0.9371</span>, <span class="number">0.8656</span>, <span class="number">0.8312</span>, <span class="number">0.9728</span>, <span class="number">0.9176</span>,</span><br><span class="line">        <span class="number">0.9641</span>, <span class="number">1.2020</span>, <span class="number">0.8723</span>, <span class="number">1.3406</span>, <span class="number">0.8414</span>, <span class="number">0.9326</span>, <span class="number">0.9007</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>下面我们进一步来看看BatchNorm对于2d的数据是如何进行操作的，这里所使用的函数是<code>BatchNorm2d</code>，参数代表的含义是有多少个通道。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: <span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line">In [<span class="number">4</span>]: x=torch.randn(<span class="number">3</span>,<span class="number">16</span>,<span class="number">7</span>,<span class="number">7</span>)</span><br><span class="line">In [<span class="number">5</span>]: layer=nn.BatchNorm2d(<span class="number">16</span>)</span><br><span class="line">In [<span class="number">6</span>]: out=layer(x)</span><br><span class="line">In [<span class="number">7</span>]: out.shape</span><br><span class="line">Out[<span class="number">7</span>]: torch.Size([<span class="number">3</span>, <span class="number">16</span>, <span class="number">7</span>, <span class="number">7</span>])</span><br><span class="line">In [<span class="number">8</span>]: layer.weight</span><br><span class="line">Out[<span class="number">8</span>]: </span><br><span class="line">Parameter containing:</span><br><span class="line">tensor([<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">       requires_grad=<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">9</span>]: layer.bias</span><br><span class="line">Out[<span class="number">9</span>]: </span><br><span class="line">Parameter containing:</span><br><span class="line">tensor([<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">       requires_grad=<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">10</span>]: layer.running_mean</span><br><span class="line">Out[<span class="number">10</span>]: </span><br><span class="line">tensor([-<span class="number">3.1731e-03</span>, -<span class="number">1.3501e-03</span>, -<span class="number">2.2491e-03</span>,  <span class="number">9.6934e-05</span>, -<span class="number">2.5191e-03</span>,</span><br><span class="line">        -<span class="number">4.5400e-03</span>, -<span class="number">1.0107e-02</span>,  <span class="number">1.9353e-03</span>, -<span class="number">1.2692e-02</span>,  <span class="number">8.8569e-03</span>,</span><br><span class="line">         <span class="number">9.0268e-04</span>, -<span class="number">1.6005e-03</span>, -<span class="number">8.5016e-03</span>, -<span class="number">9.6128e-03</span>,  <span class="number">1.5821e-03</span>,</span><br><span class="line">         <span class="number">1.9608e-02</span>])</span><br><span class="line">In [<span class="number">11</span>]: layer.running_var</span><br><span class="line">Out[<span class="number">11</span>]: </span><br><span class="line">tensor([<span class="number">1.0157</span>, <span class="number">0.9935</span>, <span class="number">0.9906</span>, <span class="number">1.0245</span>, <span class="number">1.0056</span>, <span class="number">1.0123</span>, <span class="number">1.0102</span>, <span class="number">1.0013</span>, <span class="number">0.9842</span>,</span><br><span class="line">        <span class="number">0.9849</span>, <span class="number">0.9979</span>, <span class="number">0.9973</span>, <span class="number">1.0035</span>, <span class="number">0.9945</span>, <span class="number">0.9796</span>, <span class="number">1.0021</span>])</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="blue"><div class="title">`layer.weight`代表的是上面原理图中的$\gamma$,`layer.bias`代表的是上面原理图中的$\beta$，`layer.running_mean`代表的是$\mu$，`layer.running_var`代表的是</div><div class="body"><p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span></span></span></span></p></div></div>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p>使用<code>vars</code>可以打出层的所有信息。</p></div></div>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">12</span>]: <span class="built_in">vars</span>(layer)</span><br><span class="line">Out[<span class="number">12</span>]: </span><br><span class="line">&#123;<span class="string">&#x27;training&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line"> <span class="string">&#x27;_parameters&#x27;</span>: OrderedDict([(<span class="string">&#x27;weight&#x27;</span>, Parameter containing:</span><br><span class="line">               tensor([<span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>],</span><br><span class="line">                      requires_grad=<span class="literal">True</span>)),</span><br><span class="line">              (<span class="string">&#x27;bias&#x27;</span>,</span><br><span class="line">               Parameter containing:</span><br><span class="line">               tensor([<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>],</span><br><span class="line">                      requires_grad=<span class="literal">True</span>))]),</span><br><span class="line"> <span class="string">&#x27;_buffers&#x27;</span>: OrderedDict([(<span class="string">&#x27;running_mean&#x27;</span>,</span><br><span class="line">               tensor([-<span class="number">3.1731e-03</span>, -<span class="number">1.3501e-03</span>, -<span class="number">2.2491e-03</span>,  <span class="number">9.6934e-05</span>, -<span class="number">2.5191e-03</span>,</span><br><span class="line">                       -<span class="number">4.5400e-03</span>, -<span class="number">1.0107e-02</span>,  <span class="number">1.9353e-03</span>, -<span class="number">1.2692e-02</span>,  <span class="number">8.8569e-03</span>,</span><br><span class="line">                        <span class="number">9.0268e-04</span>, -<span class="number">1.6005e-03</span>, -<span class="number">8.5016e-03</span>, -<span class="number">9.6128e-03</span>,  <span class="number">1.5821e-03</span>,</span><br><span class="line">                        <span class="number">1.9608e-02</span>])),</span><br><span class="line">              (<span class="string">&#x27;running_var&#x27;</span>,</span><br><span class="line">               tensor([<span class="number">1.0157</span>, <span class="number">0.9935</span>, <span class="number">0.9906</span>, <span class="number">1.0245</span>, <span class="number">1.0056</span>, <span class="number">1.0123</span>, <span class="number">1.0102</span>, <span class="number">1.0013</span>, <span class="number">0.9842</span>,</span><br><span class="line">                       <span class="number">0.9849</span>, <span class="number">0.9979</span>, <span class="number">0.9973</span>, <span class="number">1.0035</span>, <span class="number">0.9945</span>, <span class="number">0.9796</span>, <span class="number">1.0021</span>])),</span><br><span class="line">              (<span class="string">&#x27;num_batches_tracked&#x27;</span>, tensor(<span class="number">1</span>))]),</span><br><span class="line"> <span class="string">&#x27;_non_persistent_buffers_set&#x27;</span>: <span class="built_in">set</span>(),</span><br><span class="line"> <span class="string">&#x27;_backward_hooks&#x27;</span>: OrderedDict(),</span><br><span class="line"> <span class="string">&#x27;_is_full_backward_hook&#x27;</span>: <span class="literal">None</span>,</span><br><span class="line"> <span class="string">&#x27;_forward_hooks&#x27;</span>: OrderedDict(),</span><br><span class="line"> <span class="string">&#x27;_forward_pre_hooks&#x27;</span>: OrderedDict(),</span><br><span class="line"> <span class="string">&#x27;_state_dict_hooks&#x27;</span>: OrderedDict(),</span><br><span class="line"> <span class="string">&#x27;_load_state_dict_pre_hooks&#x27;</span>: OrderedDict(),</span><br><span class="line"> <span class="string">&#x27;_modules&#x27;</span>: OrderedDict(),</span><br><span class="line"> <span class="string">&#x27;num_features&#x27;</span>: <span class="number">16</span>,</span><br><span class="line"> <span class="string">&#x27;eps&#x27;</span>: <span class="number">1e-05</span>,</span><br><span class="line"> <span class="string">&#x27;momentum&#x27;</span>: <span class="number">0.1</span>,</span><br><span class="line"> <span class="string">&#x27;affine&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line"> <span class="string">&#x27;track_running_stats&#x27;</span>: <span class="literal">True</span>&#125;</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="red"><div class="body"><p>因为Batchnorm层在训练模式和测试模式下的行为有所差别，所以在进行测试时，要使用<code>eval</code>把Batchnorm层的状态转换过来（从训练模式转换为测试模式）。因为test的时候只有一个样本，所以<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mo separator="true">,</mo><msup><mi>σ</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\mu,\sigma^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0085em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">μ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>是无法被统计的。一般这个时候这两个值会被赋值为全局的值。</p></div></div>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p>合理使用BatchNorm可以<strong>加快收敛速度</strong>并且<strong>提高准确度</strong>，而且使用了以后模型的<strong>鲁棒性会提升（模型更加稳定）</strong></p></div></div>
+<h2 id="%E7%BB%8F%E5%85%B8%E7%9A%84%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" tabindex="-1" id="经典的卷积神经网络"><a class="headerlink" href="#经典的卷积神经网络"></a>经典的卷积神经网络</h2>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220723151052469.webp" alt="经典CNN错误率比较" /></p>
+<p>其中几个转折点</p>
+<ul>
+<li>AlexNet(2012)</li>
+<li>ZFNet(2013)</li>
+<li>VGG(2014)</li>
+<li>GoogLeNet(2014)</li>
+<li>ResNet※</li>
+</ul>
+<h3 id="lenet-5" tabindex="-1" id="LeNet-5"><a class="headerlink" href="#LeNet-5"></a>LeNet-5</h3>
+<p>LeNet由Yann Lecun 提出，是一种<strong>经典</strong>的卷积神经网络，是现代卷积神经网络的起源之一。Yann将该网络用于邮局的邮政的邮政编码识别，有着良好的学习和识别能力。LeNet又称LeNet-5,具有一个输入层，两个卷积层，两个池化层，3个全连接层（其中最后一个全连接层为输出层）。</p>
+<p>LeNet-5是一种经典的卷积神经网络结构，于1998年投入实际使用中。该网络最早应用于手写体字符识别应用中。普遍认为，卷积神经网络的出现开始于LeCun 等提出的LeNet 网络（LeCun et al., 1998），可以说LeCun 等是CNN 的缔造者，而LeNet-5 则是LeCun 等创造的CNN 经典之作 。</p>
+<img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2960a304e251f95cad1c811fc2046683e6709c93df465.webp" alt="Yann Lecun" style="zoom:50%;" />
+<p>网络结构如下图所示，先是一个卷积层，然后是一个下采样，然后又是一个卷积层，然后又是一个下采样，最后三个就是三个全连接层。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2format,f_auto.webp" alt="LeNet-5" /></p>
+<h3 id="alexnet" tabindex="-1" id="AlexNet"><a class="headerlink" href="#AlexNet"></a>AlexNet</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://www.mdpi.com/remotesensing/remotesensing-09-00848/article_deploy/html/images/remotesensing-09-00848-g001-550.jpg" alt="AlexNet" /></p>
+<p>AlexNet是2012年<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/ImageNet/17752829">ImageNet</a>竞赛冠军获得者Hinton和他的学生Alex Krizhevsky设计的。也是在那年之后，更多的更深的神经网络被提出，比如优秀的VGG，GoogLeNet。 这对于传统的机器学习分类算法而言，已经相当的出色。</p>
+<p>AlexNet中包含了几个比较新的技术点，也首次在CNN中成功应用了ReLU、Dropout和LRN等Trick。同时AlexNet也使用了GPU进行运算加速。</p>
+<p>AlexNet将LeNet的思想发扬光大，把CNN的基本原理应用到了很深很宽的网络中。AlexNet主要使用到的新技术点如下：</p>
+<p>（1）成功使用ReLU作为CNN的激活函数，并验证其效果在较深的网络超过了Sigmoid，成功解决了Sigmoid在网络较深时的梯度弥散问题。虽然ReLU激活函数在很久之前就被提出了，但是直到AlexNet的出现才将其发扬光大。</p>
+<p>（2）训练时使用Dropout随机忽略一部分神经元，以避免模型过拟合。Dropout虽有单独的论文论述，但是AlexNet将其实用化，通过实践证实了它的效果。在AlexNet中主要是最后几个全连接层使用了Dropout。</p>
+<p>（3）在CNN中使用重叠的<strong>最大池化</strong>。此前CNN中普遍使用平均池化，AlexNet全部使用最大池化，避免平均池化的模糊化效果。并且AlexNet中提出让步长比池化核的尺寸小，这样池化层的输出之间会有重叠和覆盖，提升了特征的丰富性。</p>
+<p>（4）提出了LRN层，对局部神经元的活动创建竞争机制，使得其中响应比较大的值变得相对更大，并抑制其他反馈较小的神经元，增强了模型的泛化能力。</p>
+<p>（5）使用CUDA加速深度卷积网络的训练，利用GPU强大的并行计算能力，处理神经网络训练时大量的矩阵运算。AlexNet使用了两块GTX 580 GPU进行训练，单个GTX 580只有3GB显存，这限制了可训练的网络的最大规模。因此作者将AlexNet分布在两个GPU上，在每个GPU的显存中储存一半的神经元的参数。因为GPU之间通信方便，可以互相访问显存，而不需要通过主机内存，所以同时使用多块GPU也是非常高效的。同时，AlexNet的设计让GPU之间的通信只在网络的某些层进行，控制了通信的性能损耗。</p>
+<p>（6）数据增强，随机地从256<em>256的原始图像中截取224</em>224大小的区域（以及水平翻转的镜像），相当于增加了2*(256-224)^2=2048倍的数据量。如果没有数据增强，仅靠原始的数据量，参数众多的CNN会陷入过拟合中，使用了数据增强后可以大大减轻过拟合，提升泛化能力。进行预测时，则是取图片的四个角加中间共5个位置，并进行左右翻转，一共获得10张图片，对他们进行预测并对10次结果求均值。同时，AlexNet论文中提到了会对图像的RGB数据进行PCA处理，并对主成分做一个标准差为0.1的高斯扰动，增加一些噪声，这个Trick可以让错误率再下降1%。</p>
+<h4 id="%E6%A8%A1%E5%9E%8B%E7%89%B9%E7%82%B9" tabindex="-1" id="模型特点"><a class="headerlink" href="#模型特点"></a>模型特点</h4>
+<ul>
+<li>使用了ReLU激活函数</li>
+<li>使用了最大池化层</li>
+<li>标准化</li>
+<li>Dropout</li>
+</ul>
+<h3 id="vgg" tabindex="-1" id="VGG"><a class="headerlink" href="#VGG"></a>VGG</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://static.fuxi.netease.com/fuxi-official/web/20230116/4e63666299636e950913f9ef5620dda1.jpg" alt="VGG" /></p>
+<p>VGG模型是2014年ILSVRC竞赛的第二名，第一名是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/GoogLeNet/22689587">GoogLeNet</a>。但是VGG模型在多个迁移学习任务中的表现要优于GoogLeNet。而且，从图像中提取CNN特征，VGG模型是首选算法。它的缺点在于，参数量有140M之多，需要更大的存储空间。但是这个模型很有研究价值。</p>
+<p>模型的名称——“VGG”代表了牛津大学的Oxford Visual Geometry Group，该小组隶属于1985年成立的Robotics Research Group，该Group研究范围包括了机器学习到移动机器人。下面是一段来自网络对同年GoogLeNet和VGG的描述：</p>
+<p>“GoogLeNet和VGG的Classification模型从原理上并没有与传统的CNN模型有太大不同。大家所用的Pipeline也都是：训练时候：各种数据Augmentation（剪裁，不同大小，调亮度，饱和度，对比度，偏色），剪裁送入CNN模型，Softmax，Backprop。测试时候：尽量把测试数据又各种Augmenting（剪裁，不同大小），把测试数据各种Augmenting后在训练的不同模型上的结果再继续Averaging出最后的结果。”</p>
+<p>需要注意的是，在VGGNet的6组实验中，后面的4个网络均使用了pre-trained model A的某些层来做参数初始化。虽然提出者没有提该方法带来的性能增益。先来看看VGG的特点：</p>
+<ul>
+<li>小卷积核。作者将卷积核全部替换为3x3（极少用了1x1）；</li>
+<li>小池化核。相比AlexNet的3x3的池化核，VGG全部为2x2的池化核；</li>
+<li>层数更深特征图更宽。基于前两点外，由于卷积核专注于扩大通道数、池化专注于缩小宽和高，使得模型架构上更深更宽的同时，计算量的增加放缓；</li>
+<li>全连接转卷积。网络测试阶段将训练阶段的三个全连接替换为三个卷积，测试重用训练时的参数，使得测试得到的全卷积网络因为没有全连接的限制，因而可以接收任意宽或高为的输入。</li>
+</ul>
+<h3 id="googlenet" tabindex="-1" id="GoogLeNet"><a class="headerlink" href="#GoogLeNet"></a>GoogLeNet</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2format,f_auto-165856207539010.webp" alt="GoogLeNet" /></p>
+<p>GoogLeNet是2014年Christian Szegedy提出的一种全新的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/3729729">深度学习</a>结构，在这之前的AlexNet、VGG等结构都是通过增大网络的深度（层数）来获得更好的训练效果，但层数的增加会带来很多负作用，比如overfit、梯度消失、梯度爆炸等。inception的提出则从另一种角度来提升训练结果：能更高效的利用计算资源，在相同的计算量下能提取到更多的特征，从而提升训练结果。</p>
+<h4 id="%E6%A8%A1%E5%9E%8B%E7%89%B9%E7%82%B9-1" tabindex="-1" id="模型特点-2"><a class="headerlink" href="#模型特点-2"></a>模型特点</h4>
+<ul>
+<li>使用不同大小的卷积核，从而感受不同范围的视野</li>
+</ul>
+<h2 id="resnet%EF%BC%88%E6%B7%B1%E5%BA%A6%E6%AE%8B%E5%B7%AE%E7%BD%91%E7%BB%9C%EF%BC%89%E2%80%BB" tabindex="-1" id="ResNet（深度残差网络）※"><a class="headerlink" href="#ResNet（深度残差网络）※"></a>ResNet（深度残差网络）※</h2>
+<p>这里单独将ResNet新开一个章节，已经表明了他在这一领域的重要性。首先来看看ResNet在2015年的战绩：</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2v2-5e98ec97def099a4e6fb6b7ce3b1d460_r.webp" alt="ResNet战绩" /></p>
+<p>从经验来看，网络的深度对模型的性能至关重要，当增加网络层数后，网络可以进行更加复杂的特征模式的提取，所以当模型更深时理论上可以取得更好的结果，但是更深的网络其性能一定会更好吗？实验发现深度网络出现了退化问题（Degradation problem）：网络深度增加时，网络准确度出现饱和，甚至出现下降。56层的网络比20层网络效果还要差。这不会是过拟合问题，因为56层网络的训练误差同样高。我们知道深层网络存在着梯度消失或者爆炸的问题，这使得深度学习模型很难训练。但是现在已经存在一些技术手段如BatchNorm来缓解这个问题。因此，出现深度网络的退化问题是非常令人诧异的。但是<a href="https://link.zhihu.com/?target=http%3A//kaiminghe.com/">何恺明</a>发明的ResNet有效的解决了这一问题。ResNet有效解决了深度CNN模型难训练的问题（网络太深了容易发生<strong>梯度弥散</strong>）</p>
+<blockquote>
+<p>ResNet残差网络主要是通过残差块组成的，在提出残差网络之前，网络结构无法很深，在VGG中，卷积网络达到了19层，在GoogLeNet中，网络达到了22层。随着网络层数的增加，网络发生了退化（degradation）的现象：随着网络层数的增多，训练集loss逐渐下降，然后趋于饱和，当你再增加网络深度的话，训练集loss反而会增大。而引入残差块后，网络可以达到很深，网络的效果也随之变好。</p>
+</blockquote>
+<p>这里提供了一种想法：既然深层网络相比于浅层网络具有退化问题，那么是否可以保留深层网络的深度，又可以有浅层网络的优势去避免退化问题呢？如果将深层网络的后面若干层学习成恒等映射 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">h(x)=x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> ，那么模型就退化成浅层网络。但是直接去学习这个恒等映射是很困难的，那么就换一种方式，把网络设计成：</p>
+<p class="katex-block math-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>H</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>F</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>+</mo><mi>x</mi><mo>⇒</mo><mi>F</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>H</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>−</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">H(x)=F(x)+x \Rightarrow F(x)=H(x)-x
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⇒</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span></span></p>
+<p>只要 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">F(x)=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span> 就构成了一个恒等映射 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mi>x</mi></mrow><annotation encoding="application/x-tex">H(x)=x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> ，这里 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">F(x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span> 为残差。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2v2-031311969e1fb22b12281f1b0e926df0_r.webp" alt="ResNet结构" /></p>
+<blockquote>
+<p>相关资料链接：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/72679537">深度学习之16——残差网络(ResNet)</a></p>
+</blockquote>
+<h3 id="pytorch-%E6%AE%8B%E5%B7%AE%E5%9D%97%E5%AE%9E%E7%8E%B0" tabindex="-1" id="PyTorch-残差块实现"><a class="headerlink" href="#PyTorch-残差块实现"></a>PyTorch 残差块实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ResBlk</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,ch_in,ch_out</span>):</span><br><span class="line">        self.conv1=nn.Conv2d(ch_in,ch_out,kernel_size=<span class="number">3</span>,stride=<span class="number">1</span>,padding=<span class="number">1</span>)</span><br><span class="line">        self.bn1=nn.BatchNorm2d(ch_out)</span><br><span class="line">        self.conv2=nn.Conv2d(ch_in,ch_out,kernel_size=<span class="number">3</span>,stride=<span class="number">1</span>,padding=<span class="number">1</span>)</span><br><span class="line">        self.bn2=nn.BatchNorm2d(ch_out)</span><br><span class="line"></span><br><span class="line">        self.extra=nn.Sequential()</span><br><span class="line">        <span class="keyword">if</span> ch_out!=ch_in: <span class="comment"># 如果输入输出通道数量不一样的话</span></span><br><span class="line">            self.extra!=ch_in:</span><br><span class="line">            self.extra=nn.Sequential(</span><br><span class="line">                nn.Conv2d(ch_in,ch_out,kernel_size=<span class="number">1</span>,stride=<span class="number">1</span>),</span><br><span class="line">                nn.BatchNorm2s(ch_out)</span><br><span class="line">            )</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self,x</span>):</span><br><span class="line">        out=F.relu(self.bn1(self.conv1(x)))</span><br><span class="line">        out=self.bn2(self.conv2(out))</span><br><span class="line">        out=self.extra(x)+out</span><br><span class="line">        <span class="keyword">return</span> out</span><br></pre></td></tr></table></figure>
+<h2 id="densenet" tabindex="-1" id="DenseNet"><a class="headerlink" href="#DenseNet"></a>DenseNet</h2>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724093520009.webp" alt="DenseNet结构图" /></p>
+<blockquote>
+<p>其实相当于每一层都和前面所有层之间又一个shortcut</p>
+</blockquote>
+<h2 id="nn.module" tabindex="-1" id="nn-Module"><a class="headerlink" href="#nn-Module"></a>nn.Module</h2>
+<p>PyTorch中的nn.Module类为所有我们自定义网络层的一个父类！所以他非常的重要，以下是他的优点</p>
+<h3 id="%E6%8F%90%E4%BE%9B%E4%BA%86%E5%BE%88%E5%A4%9A%E7%9A%84%E6%93%8D%E4%BD%9C" tabindex="-1" id="提供了很多的操作"><a class="headerlink" href="#提供了很多的操作"></a>提供了很多的操作</h3>
+<ul>
+<li>
+<p><code>nn.Linear</code></p>
+</li>
+<li>
+<p><code>nn.BatchNorm2d</code></p>
+</li>
+<li>
+<p><code>nn.Conv2d</code></p>
+</li>
+</ul>
+<p>etc.</p>
+<h3 id="%E6%8F%90%E4%BE%9B%E5%AE%B9%E5%99%A8nn.sequential" tabindex="-1" id="提供容器nn-Sequential"><a class="headerlink" href="#提供容器nn-Sequential"></a>提供容器<code>nn.Sequential</code></h3>
+<h3 id="%E5%AF%B9%E7%BD%91%E7%BB%9C%E5%8F%82%E6%95%B0%E8%83%BD%E5%A4%9F%E8%BF%9B%E8%A1%8C%E5%BE%88%E5%A5%BD%E7%9A%84%E7%AE%A1%E7%90%86" tabindex="-1" id="对网络参数能够进行很好的管理"><a class="headerlink" href="#对网络参数能够进行很好的管理"></a>对网络参数能够进行很好的管理</h3>
+<p>下面举一个例子，我们采用的是一个两层的网络，所以参数有4组，weight0，bias0,weight1,bias1</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: <span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line">In [<span class="number">4</span>]: net=nn.Sequential(nn.Linear(<span class="number">4</span>,<span class="number">2</span>),nn.Linear(<span class="number">2</span>,<span class="number">2</span>))</span><br><span class="line">In [<span class="number">5</span>]: <span class="built_in">dict</span>(net.named_parameters()).items()</span><br><span class="line">Out[<span class="number">5</span>]: </span><br><span class="line">dict_items([(<span class="string">&#x27;0.weight&#x27;</span>, Parameter containing:</span><br><span class="line">tensor([[-<span class="number">0.1411</span>,  <span class="number">0.2698</span>,  <span class="number">0.0457</span>, -<span class="number">0.2939</span>],</span><br><span class="line">        [-<span class="number">0.3555</span>, -<span class="number">0.3352</span>, -<span class="number">0.3403</span>,  <span class="number">0.4714</span>]], requires_grad=<span class="literal">True</span>)), (<span class="string">&#x27;0.bias&#x27;</span>, Parameter containing:</span><br><span class="line">tensor([ <span class="number">0.1076</span>, -<span class="number">0.1325</span>], requires_grad=<span class="literal">True</span>)), (<span class="string">&#x27;1.weight&#x27;</span>, Parameter containing:</span><br><span class="line">tensor([[ <span class="number">0.0859</span>, -<span class="number">0.6313</span>],</span><br><span class="line">        [-<span class="number">0.6823</span>, -<span class="number">0.5285</span>]], requires_grad=<span class="literal">True</span>)), (<span class="string">&#x27;1.bias&#x27;</span>, Parameter containing:</span><br><span class="line">tensor([ <span class="number">0.6793</span>, -<span class="number">0.1800</span>], requires_grad=<span class="literal">True</span>))])</span><br><span class="line">In [<span class="number">6</span>]: <span class="built_in">list</span>(net.parameters())[<span class="number">0</span>]</span><br><span class="line">Out[<span class="number">6</span>]: </span><br><span class="line">Parameter containing:</span><br><span class="line">tensor([[-<span class="number">0.1411</span>,  <span class="number">0.2698</span>,  <span class="number">0.0457</span>, -<span class="number">0.2939</span>],</span><br><span class="line">        [-<span class="number">0.3555</span>, -<span class="number">0.3352</span>, -<span class="number">0.3403</span>,  <span class="number">0.4714</span>]], requires_grad=<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">7</span>]: <span class="built_in">list</span>(net.parameters())[<span class="number">1</span>]</span><br><span class="line">Out[<span class="number">7</span>]: </span><br><span class="line">Parameter containing:</span><br><span class="line">tensor([ <span class="number">0.1076</span>, -<span class="number">0.1325</span>], requires_grad=<span class="literal">True</span>)</span><br><span class="line">In [<span class="number">8</span>]: optimizer=optim.SGD(net.parameters(),lr=<span class="number">1e-3</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="%E5%8F%AF%E4%BB%A5%E6%B8%85%E6%99%B0%E7%9A%84%E6%9F%A5%E7%9C%8B%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84" tabindex="-1" id="可以清晰的查看网络结构"><a class="headerlink" href="#可以清晰的查看网络结构"></a>可以清晰的查看网络结构</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724095644397.webp" alt="网络结构查看清晰" /></p>
+<h3 id="%E5%8F%AF%E4%BB%A5%E5%B0%86%E7%BD%91%E7%BB%9C%E6%96%B9%E4%BE%BF%E7%9A%84%E8%BD%AC%E7%A7%BB%E5%88%B0gpu%E4%B8%8A%E8%BF%9B%E8%A1%8C%E5%8A%A0%E9%80%9F" tabindex="-1" id="可以将网络方便的转移到GPU上进行加速"><a class="headerlink" href="#可以将网络方便的转移到GPU上进行加速"></a>可以将网络方便的转移到GPU上进行加速</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">device=torch,device(<span class="string">&#x27;cuda&#x27;</span>)</span><br><span class="line">net=Net()</span><br><span class="line">net.to(device)</span><br></pre></td></tr></table></figure>
+<h3 id="%E5%8F%AF%E4%BB%A5%E5%BE%88%E6%96%B9%E4%BE%BF%E7%9A%84%E4%BF%9D%E5%AD%98%E5%92%8C%E5%8A%A0%E8%BD%BD%E7%BD%91%E7%BB%9C%E7%9A%84%E4%B8%AD%E9%97%B4%E7%8A%B6%E6%80%81" tabindex="-1" id="可以很方便的保存和加载网络的中间状态"><a class="headerlink" href="#可以很方便的保存和加载网络的中间状态"></a>可以很方便的保存和加载网络的中间状态</h3>
+<p>这就方便我们进行early stop</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">device=torch,device(<span class="string">&#x27;cuda&#x27;</span>)</span><br><span class="line">net=Net()</span><br><span class="line">net.to(device)</span><br><span class="line"></span><br><span class="line">net.load_state_dict(torch.load(<span class="string">&#x27;ckpt.mdl&#x27;</span>)) <span class="comment"># 加载模型</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># train...</span></span><br><span class="line"></span><br><span class="line">torch.save(net.state_dict(),<span class="string">&#x27;ckpt.mdl&#x27;</span>) <span class="comment"># 保存模型</span></span><br></pre></td></tr></table></figure>
+<h3 id="%E6%96%B9%E4%BE%BF%E5%88%87%E6%8D%A2%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81" tabindex="-1" id="方便切换网络状态"><a class="headerlink" href="#方便切换网络状态"></a>方便切换网络状态</h3>
+<p>对于网络中的一些层，比如BatchNorm层，他在训练状态下和测试状态下的行为是有一些差异的，如果我们对网络中的每一层都去执行切换状态的操作是非常麻烦的，但是<code>nn.Module</code>支持对自定义网络整体状态的切换，大大简化了操作。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">device = torch.device(<span class="string">&#x27;cuda&#x27;</span>)</span><br><span class="line">net=Net()</span><br><span class="line">net.to(device)</span><br><span class="line"></span><br><span class="line"><span class="comment"># train</span></span><br><span class="line">net.train()</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># test</span></span><br><span class="line">net.<span class="built_in">eval</span>()</span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<h3 id="%E6%96%B9%E4%BE%BF%E5%AE%9A%E4%B9%89%E8%87%AA%E5%B7%B1%E7%9A%84%E7%B1%BB" tabindex="-1" id="方便定义自己的类"><a class="headerlink" href="#方便定义自己的类"></a>方便定义自己的类</h3>
+<p>比如说PyTorch现目前暂时不提供将tensor拍平的操作（层之间，作用是将卷积层转化为全连接层），因此这个层需要我们自己去实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Flatten</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(Flatten,self).__init__()</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self,<span class="built_in">input</span></span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">input</span>.view(<span class="built_in">input</span>.size(<span class="number">0</span>),-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p>以上这个类使用的非常的广泛</p></div></div>
+<p>我们也可以尝试自己写一个<code>Linear</code>类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyLinear</span>(nn.Module):</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,inp,outp</span>):</span><br><span class="line">        <span class="built_in">super</span>(MyLinear,self).__init__()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># requiers_grad = True</span></span><br><span class="line">        self.w = nn.Parameter(torch.randn(outp,inp))</span><br><span class="line">        self.b = nn.Parameter(torch.randn(outp))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        x = x @ self.w.t() + self.b</span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<h2 id="%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA" tabindex="-1" id="数据增强"><a class="headerlink" href="#数据增强"></a>数据增强</h2>
+<p>其实非常好理解，数据增强让有限的数据产生更多的数据，增加训练样本的数量以及多样性（噪声数据），<strong>提升模型鲁棒性</strong>，一般用于训练集。神经网络需要大量的参数，许许多多的神经网路的参数都是数以百万计，而使得这些参数可以正确工作则需要大量的数据进行训练，但在很多实际的项目中，我们难以找到充足的数据来完成任务。随机改变训练样本可以降低模型对某些属性的依赖，从而提高模型的<strong>泛化</strong>能力。</p>
+<p>常用的数举增强方法有</p>
+<ul>
+<li>翻转</li>
+<li>旋转</li>
+<li>随机移动和裁剪</li>
+<li>加噪</li>
+<li>GAN</li>
+</ul>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724103024965.webp" alt="数据增强" /></p>
+<h3 id="%E7%BF%BB%E8%BD%AC%EF%BC%88flip%EF%BC%89" tabindex="-1" id="翻转（Flip）"><a class="headerlink" href="#翻转（Flip）"></a>翻转（Flip）</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724103417099.webp" alt="翻转" /></p>
+<h4 id="pytorch-%E5%AE%9E%E7%8E%B0-3" tabindex="-1" id="PyTorch-实现-4"><a class="headerlink" href="#PyTorch-实现-4"></a>PyTorch 实现</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">train_loader=torch.utils.dataDataLoader(</span><br><span class="line">    datasets.MNIST(<span class="string">&#x27;../data&#x27;</span>,train=<span class="literal">True</span>,download=<span class="literal">True</span>,</span><br><span class="line">                  	transform=transforms.Compose([</span><br><span class="line">                        transforms.RandomHorizontalFlip(),<span class="comment"># 因为前面是random，所以该操作有可能做也可能不做</span></span><br><span class="line">                        transforms.RandomVerticalFlip(),</span><br><span class="line">                        transforms.ToTensor(),</span><br><span class="line">                        <span class="comment"># transforms.Normalize((0.1307,),(0.3081,))</span></span><br><span class="line">                    ])),</span><br><span class="line">    batch_size=batch_size,shuffle=<span class="literal">True</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p><code>transform</code>是<code>torchvision</code>中提供的操作</p></div></div>
+<h3 id="%E6%97%8B%E8%BD%AC%EF%BC%88rotate%EF%BC%89" tabindex="-1" id="旋转（Rotate）"><a class="headerlink" href="#旋转（Rotate）"></a>旋转（Rotate）</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img299A9099562CD7E4AB515C021899078BB.webp" alt="旋转" /></p>
+<h4 id="pytorch%E5%AE%9E%E7%8E%B0-2" tabindex="-1" id="PyTorch实现-3"><a class="headerlink" href="#PyTorch实现-3"></a>PyTorch实现</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">train_loader=torch.utils.dataDataLoader(</span><br><span class="line">    datasets.MNIST(<span class="string">&#x27;../data&#x27;</span>,train=<span class="literal">True</span>,download=<span class="literal">True</span>,</span><br><span class="line">                  	transform=transforms.Compose([</span><br><span class="line">                        transforms.RandomHorizontalFlip(),</span><br><span class="line">                        transforms.RandomVerticalFlip(),</span><br><span class="line">                        transforms.RandomRotation(<span class="number">15</span>),<span class="comment"># 这里是对于每张照片随机旋转一个角度，角度的范围是从-15°到15°</span></span><br><span class="line">                        transforms.(RandomRotation([<span class="number">90</span>,<span class="number">180</span>,<span class="number">270</span>]))<span class="comment"># 这里是对于每张照片随机旋转一个角度，角度是 90°或180°或270°</span></span><br><span class="line">                        transforms.ToTensor(),</span><br><span class="line">                        <span class="comment"># transforms.Normalize((0.1307,),(0.3081,))</span></span><br><span class="line">                    ])),</span><br><span class="line">    batch_size=batch_size,shuffle=<span class="literal">True</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="%E7%BC%A9%E6%94%BE%EF%BC%88scale%EF%BC%89" tabindex="-1" id="缩放（scale）"><a class="headerlink" href="#缩放（scale）"></a>缩放（scale）</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724104933170.webp" alt="缩放" /></p>
+<h4 id="pytorch-%E5%AE%9E%E7%8E%B0-4" tabindex="-1" id="PyTorch-实现-5"><a class="headerlink" href="#PyTorch-实现-5"></a>PyTorch 实现</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">train_loader=torch.utils.dataDataLoader(</span><br><span class="line">    datasets.MNIST(<span class="string">&#x27;../data&#x27;</span>,train=<span class="literal">True</span>,download=<span class="literal">True</span>,</span><br><span class="line">                  	transform=transforms.Compose([</span><br><span class="line">                        transforms.RandomHorizontalFlip(),</span><br><span class="line">                        transforms.RandomVerticalFlip(),</span><br><span class="line">                        transforms.RandomRotation(<span class="number">15</span>),</span><br><span class="line">                        transforms.(RandomRotation([<span class="number">90</span>,<span class="number">180</span>,<span class="number">270</span>]))</span><br><span class="line">                        transforms.Resize([<span class="number">32</span>,<span class="number">32</span>]) <span class="comment"># 将大小变为32×32</span></span><br><span class="line">                        transforms.ToTensor(),</span><br><span class="line">                        <span class="comment"># transforms.Normalize((0.1307,),(0.3081,))</span></span><br><span class="line">                    ])),</span><br><span class="line">    batch_size=batch_size,shuffle=<span class="literal">True</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="%E9%9A%8F%E6%9C%BA%E7%A7%BB%E5%8A%A8%E5%92%8C%E8%A3%81%E5%89%AA%EF%BC%88crop-part%EF%BC%89" tabindex="-1" id="随机移动和裁剪（Crop-part）"><a class="headerlink" href="#随机移动和裁剪（Crop-part）"></a>随机移动和裁剪（Crop part）</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img25EB1E0AA71BC9B36951E3BEA4CF31ED2.webp" alt="随机移动和裁剪" /></p>
+<h4 id="pytorch-%E5%AE%9E%E7%8E%B0-5" tabindex="-1" id="PyTorch-实现-6"><a class="headerlink" href="#PyTorch-实现-6"></a>PyTorch 实现</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">train_loader=torch.utils.dataDataLoader(</span><br><span class="line">    datasets.MNIST(<span class="string">&#x27;../data&#x27;</span>,train=<span class="literal">True</span>,download=<span class="literal">True</span>,</span><br><span class="line">                  	transform=transforms.Compose([</span><br><span class="line">                        transforms.RandomHorizontalFlip(),</span><br><span class="line">                        transforms.RandomVerticalFlip(),</span><br><span class="line">                        transforms.RandomRotation(<span class="number">15</span>),</span><br><span class="line">                        transforms.(RandomRotation([<span class="number">90</span>,<span class="number">180</span>,<span class="number">270</span>]))</span><br><span class="line">                        transforms.Resize([<span class="number">32</span>,<span class="number">32</span>]) <span class="comment"># 将大小变为32×32</span></span><br><span class="line">                        transforms.ToTensor(),</span><br><span class="line">                        transforms.RandomCrop([<span class="number">28</span>,<span class="number">28</span>])</span><br><span class="line">                        <span class="comment"># transforms.Normalize((0.1307,),(0.3081,))</span></span><br><span class="line">                    ])),</span><br><span class="line">    batch_size=batch_size,shuffle=<span class="literal">True</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p>一般进行数据增强是<code>RandomRotation</code>和<code>RandomCrop</code>结合起来一起使用的</p></div></div>
+<h3 id="%E5%8A%A0%E5%99%AA%EF%BC%88noise%EF%BC%89" tabindex="-1" id="加噪（Noise）"><a class="headerlink" href="#加噪（Noise）"></a>加噪（Noise）</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img2image-20220724110011294.webp" alt="加噪" /></p>
+<h3 id="%E6%80%BB%E7%BB%93" tabindex="-1" id="总结"><a class="headerlink" href="#总结"></a>总结</h3>
+<p>虽然数据增强确实可以提高模型的表现，但是他不会帮助太多。</p>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/PyTorch/PyTorch%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html">PyTorch神经网络</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/PyTorch/PyTorch%20CNN%E5%AE%9E%E6%88%98.html">PyTorch CNN实战</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84%E4%BB%8B%E7%BB%8D"><span class="toc-text">卷积神经网络结构介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B7%E7%A7%AF%E8%BF%90%E7%AE%97"><span class="toc-text">卷积运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%8D%B7%E7%A7%AF%E6%A0%B8"><span class="toc-text">常用卷积核</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%9E%90"><span class="toc-text">概念解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pytorch%E5%AE%9E%E7%8E%B0"><span class="toc-text">PyTorch实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B1%A0%E5%8C%96%E5%B1%82%E4%B8%8E%E9%87%87%E6%A0%B7"><span class="toc-text">池化层与采样</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E9%87%87%E6%A0%B7%EF%BC%88downsample%EF%BC%89"><span class="toc-text">下采样（Downsample）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#max-pooling"><span class="toc-text">Max Pooling</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pytorch-%E5%AE%9E%E7%8E%B0"><span class="toc-text">PyTorch 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E9%87%87%E6%A0%B7%EF%BC%88upsample%EF%BC%89"><span class="toc-text">上采样（Upsample）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pytorch-%E5%AE%9E%E7%8E%B0-1"><span class="toc-text">PyTorch 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#relu"><span class="toc-text">ReLU</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pytorch%E5%AE%9E%E7%8E%B0-1"><span class="toc-text">PyTorch实现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#batch-norm%EF%BC%88%E5%BD%92%E4%B8%80%E5%8C%96%EF%BC%89"><span class="toc-text">Batch-Norm（归一化）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pytorch-%E5%AE%9E%E7%8E%B0-2"><span class="toc-text">PyTorch 实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%8F%E5%85%B8%E7%9A%84%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-text">经典的卷积神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lenet-5"><span class="toc-text">LeNet-5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#alexnet"><span class="toc-text">AlexNet</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E7%89%B9%E7%82%B9"><span class="toc-text">模型特点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vgg"><span class="toc-text">VGG</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#googlenet"><span class="toc-text">GoogLeNet</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E7%89%B9%E7%82%B9-1"><span class="toc-text">模型特点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#resnet%EF%BC%88%E6%B7%B1%E5%BA%A6%E6%AE%8B%E5%B7%AE%E7%BD%91%E7%BB%9C%EF%BC%89%E2%80%BB"><span class="toc-text">ResNet（深度残差网络）※</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pytorch-%E6%AE%8B%E5%B7%AE%E5%9D%97%E5%AE%9E%E7%8E%B0"><span class="toc-text">PyTorch 残差块实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#densenet"><span class="toc-text">DenseNet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#nn.module"><span class="toc-text">nn.Module</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E4%BE%9B%E4%BA%86%E5%BE%88%E5%A4%9A%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="toc-text">提供了很多的操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E4%BE%9B%E5%AE%B9%E5%99%A8nn.sequential"><span class="toc-text">提供容器nn.Sequential</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E7%BD%91%E7%BB%9C%E5%8F%82%E6%95%B0%E8%83%BD%E5%A4%9F%E8%BF%9B%E8%A1%8C%E5%BE%88%E5%A5%BD%E7%9A%84%E7%AE%A1%E7%90%86"><span class="toc-text">对网络参数能够进行很好的管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E4%BB%A5%E6%B8%85%E6%99%B0%E7%9A%84%E6%9F%A5%E7%9C%8B%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="toc-text">可以清晰的查看网络结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E4%BB%A5%E5%B0%86%E7%BD%91%E7%BB%9C%E6%96%B9%E4%BE%BF%E7%9A%84%E8%BD%AC%E7%A7%BB%E5%88%B0gpu%E4%B8%8A%E8%BF%9B%E8%A1%8C%E5%8A%A0%E9%80%9F"><span class="toc-text">可以将网络方便的转移到GPU上进行加速</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E4%BB%A5%E5%BE%88%E6%96%B9%E4%BE%BF%E7%9A%84%E4%BF%9D%E5%AD%98%E5%92%8C%E5%8A%A0%E8%BD%BD%E7%BD%91%E7%BB%9C%E7%9A%84%E4%B8%AD%E9%97%B4%E7%8A%B6%E6%80%81"><span class="toc-text">可以很方便的保存和加载网络的中间状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E4%BE%BF%E5%88%87%E6%8D%A2%E7%BD%91%E7%BB%9C%E7%8A%B6%E6%80%81"><span class="toc-text">方便切换网络状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E4%BE%BF%E5%AE%9A%E4%B9%89%E8%87%AA%E5%B7%B1%E7%9A%84%E7%B1%BB"><span class="toc-text">方便定义自己的类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA"><span class="toc-text">数据增强</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BF%BB%E8%BD%AC%EF%BC%88flip%EF%BC%89"><span class="toc-text">翻转（Flip）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pytorch-%E5%AE%9E%E7%8E%B0-3"><span class="toc-text">PyTorch 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%EF%BC%88rotate%EF%BC%89"><span class="toc-text">旋转（Rotate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pytorch%E5%AE%9E%E7%8E%B0-2"><span class="toc-text">PyTorch实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%A9%E6%94%BE%EF%BC%88scale%EF%BC%89"><span class="toc-text">缩放（scale）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pytorch-%E5%AE%9E%E7%8E%B0-4"><span class="toc-text">PyTorch 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%8F%E6%9C%BA%E7%A7%BB%E5%8A%A8%E5%92%8C%E8%A3%81%E5%89%AA%EF%BC%88crop-part%EF%BC%89"><span class="toc-text">随机移动和裁剪（Crop part）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pytorch-%E5%AE%9E%E7%8E%B0-5"><span class="toc-text">PyTorch 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E5%99%AA%EF%BC%88noise%EF%BC%89"><span class="toc-text">加噪（Noise）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
   }
-  .laptop-only {
-    display: block !important;
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js`,
+    marked: `https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js`
   }
-  .l_body .l_right {
-    top: 8px;
-    position: fixed;
-    max-height: calc(100% - 8px * 2);
-    transform: translateX(320px);
-    transition: transform 0.38s ease-out;
-    margin: 0;
-    right: 8px;
-    box-shadow: $boxshadow-card-float;
-    z-index: 10;
-    background: var(--site-bg);
-    overflow: auto;
-    --blur-bg: var(--alpha60);
-    --blur-px: 50px;
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
   }
-  .l_body[rightbar] .l_right {
-    transform: translateX(0px);
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.27.0" async></script>
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script><script defer src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.swiper-slide img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
   }
-  .l_body[rightbar] .main-mask {
-    pointer-events: inherit;
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
   }
-}
-@media screen and (max-width: $device-mobile-max) {
-  .mobile-only {
-    display: block !important;
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || null
+        }
+      });
+    })
   }
-  .l_body {
-    padding: 0;
-    display: block;
-  }
-  .l_body .l_left {
-    position: fixed;
-    transform: translateX(-320px);
-    transition: transform 0.38s ease-out;
-    margin: 0;
-    left: 8px;
-    box-shadow: $boxshadow-card-float;
-    z-index: 10;
-  }
-  .l_body .l_main {
-    max-width: 100%;
-  }
-  .l_body[leftbar] .l_left {
-    transform: translateX(0px);
-  }
-  .l_body[leftbar] .main-mask {
-    opacity: 1;
-    pointer-events: inherit;
-  }
-}
-.main-mask {
-  position: fixed;
-  pointer-events: none;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.1);
-  z-index: 9;
-  opacity: 0;
-  trans1: opacity;
-}
+</script><script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script><link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

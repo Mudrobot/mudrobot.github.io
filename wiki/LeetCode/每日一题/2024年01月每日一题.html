@@ -1,97 +1,640 @@
-.l_body {
-  display: grid;
-  grid-template-columns: 1fr minmax(200px, var(--width-main)) 1fr;
-  grid-gap: var(--gap-margin);
-  margin: auto;
-  font-size: var(--fsp);
-}
-.l_body aside {
-  z-index: 8;
-  flex-shrink: 0;
-  position: sticky;
-  position: -webkit-sticky;
-  --width-sidebar: calc(var(--gap-margin) * 2 + var(--gap-padding) * 2 + var(--side-content-width));
-  width: var(--width-sidebar);
-}
-.l_body .l_left {
-  justify-self: right;
-  top: 8px;
-}
-.l_body .l_right {
-  justify-self: left;
-  --gap-margin: 0px;
-  max-height: calc(100% - 8px * 2);
-}
-.l_body .l_right .widgets {
-  height: 100%;
-  overflow: visible;
-}
-@media screen and (max-width: $device-laptop) {
-  .l_body .l_right {
-    --gap-margin: 16px;
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.27.0" theme-name="Stellar" theme-version="1.27.0">
+  
+  <meta name="generator" content="Hexo 7.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>LeetCode：2024年01月每日一题 - MudSynth</title>
+
+  
+    <meta name="description" content="2024-01-01  题目传送门：1599. 经营摩天轮的最大利润 - 力扣（LeetCode）  新年快乐🎇🎇🎇！！！，新年第一题就是之前做过的，模拟即可。首先先循环每个时间点，使用一个变量previ记录该时间点上一个时间点后还剩下没上摩天轮的顾客数量，然后当前时间点的顾客数就是之前剩下的加上新来的，这里大于4还是小于等于4分类讨论一下。最后如果最后一个时间点已经过了的话previ还有剩">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2024年01月每日一题">
+<meta property="og:url" content="http://example.com/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B401%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="2024-01-01  题目传送门：1599. 经营摩天轮的最大利润 - 力扣（LeetCode）  新年快乐🎇🎇🎇！！！，新年第一题就是之前做过的，模拟即可。首先先循环每个时间点，使用一个变量previ记录该时间点上一个时间点后还剩下没上摩天轮的顾客数量，然后当前时间点的顾客数就是之前剩下的加上新来的，这里大于4还是小于等于4分类讨论一下。最后如果最后一个时间点已经过了的话previ还有剩">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-04-08T15:30:00.967Z">
+<meta property="article:author" content="Mudrobot">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.27.0">
+
+  
+
+  
+
+  
+</head>
+<body>
+
+
+
+<div class="l_body s:aa content tech" id="start" layout="page" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/leetcodeicon.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></div><a class="title" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE.html"><div class="main" ff="title">LeetCode</div><div class="sub normal cap">Drops of water penetrate the stone</div><div class="sub hover cap" style="opacity:0"> Written by Sima Qian</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/LeetCode/" placeholder="在 LeetCode 中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="文档" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">专项训练</span></div><div class="widget-body fs14"><a class="link" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE.html#start"><span class="toc-text">二分查找</span></a><a class="link" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E5%8D%95%E8%B0%83%E6%A0%88.html"><span class="toc-text">单调栈</span></a></div><div class="widget-header dis-select"><span class="name">周赛&双周赛</span></div><div class="widget-body fs14"><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20378%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 378 场周赛</span></a></div><div class="widget-header dis-select"><span class="name">每日一题</span></div><div class="widget-body fs14"><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2023%E5%B9%B411%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2023年11月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2023%E5%B9%B412%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2023年12月每日一题</span></a><a class="link active" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B401%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年01月每日一题</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B403%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年03月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B404%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年04月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B405%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年05月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B406%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年06月每日一题</span></a></div><div class="widget-header dis-select"><span class="name">...</span></div><div class="widget-body fs14"><a class="link" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html"><span class="toc-text">动态规划</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：OI</span></div><div class="widget-body"><a class="item wiki" href="/wiki/C++/algorithm/sort.html"><span class="title">C++ - 知识点合集</span><span class="excerpt">C++零碎知识点整理🐣</span></a><a class="item wiki" href="/wiki/OI-Knowledge/%E9%AB%98%E7%BA%A7%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E7%BA%BF%E6%AE%B5%E6%A0%91.html"><span class="title">OI - Knowledge</span><span class="excerpt">OI知识整理📖</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE.html">LeetCode</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2024-04-08T15:30:00.967Z">2024-04-08</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>2024年01月每日一题</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="2024-01-01" tabindex="-1" id="2024-01-01"><a class="headerlink" href="#2024-01-01"></a>2024-01-01</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-profit-of-operating-a-centennial-wheel/?envType=daily-question&amp;envId=2024-01-04">1599. 经营摩天轮的最大利润 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>新年快乐🎇🎇🎇！！！，新年第一题就是之前做过的，模拟即可。首先先循环每个时间点，使用一个变量<code>previ</code>记录该时间点上一个时间点后还剩下没上摩天轮的顾客数量，然后当前时间点的顾客数就是之前剩下的加上新来的，这里大于4还是小于等于4分类讨论一下。最后如果最后一个时间点已经过了的话previ还有剩余，则继续转直到将previ转空，中间判断一下转多少次的时候能够有最大利润即可：</p>
+<p>Python代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">minOperationsMaxProfit</span>(<span class="params">self, customers: <span class="type">List</span>[<span class="built_in">int</span>], boardingCost: <span class="built_in">int</span>, runningCost: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">        res = <span class="number">0</span></span><br><span class="line">        ans = []</span><br><span class="line">        serv = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> idx,customer <span class="keyword">in</span> <span class="built_in">enumerate</span>(customers):</span><br><span class="line">            <span class="keyword">if</span> customer + res &gt; <span class="number">4</span>:</span><br><span class="line">                res += (customer-<span class="number">4</span>)</span><br><span class="line">                serv += <span class="number">4</span></span><br><span class="line">                ans.append(serv * boardingCost - (idx+<span class="number">1</span>) * runningCost)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                serv += (res+customer)</span><br><span class="line">                res = <span class="number">0</span></span><br><span class="line">                ans.append(serv * boardingCost - (idx+<span class="number">1</span>) * runningCost)</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">while</span> res:</span><br><span class="line">            idx += <span class="number">1</span></span><br><span class="line">            <span class="keyword">if</span> res &gt; <span class="number">4</span>:</span><br><span class="line">                serv += <span class="number">4</span></span><br><span class="line">                res -= <span class="number">4</span></span><br><span class="line">                ans.append(serv * boardingCost - (idx+<span class="number">1</span>) * runningCost)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                serv += res</span><br><span class="line">                res = <span class="number">0</span></span><br><span class="line">                ans.append(serv * boardingCost - (idx+<span class="number">1</span>) * runningCost)</span><br><span class="line">        now,loc = <span class="number">0</span>,-<span class="number">1</span></span><br><span class="line">        <span class="comment"># return ans</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(ans)):</span><br><span class="line">            <span class="keyword">if</span> now &lt; ans[i]:</span><br><span class="line">                now = ans[i]</span><br><span class="line">                loc = i+<span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span> <span class="keyword">if</span> loc == -<span class="number">1</span> <span class="keyword">else</span> loc</span><br></pre></td></tr></table></figure>
+<p>C++代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;  </span><br><span class="line"><span class="keyword">public</span>:  </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minOperationsMaxProfit</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; customers, <span class="type">int</span> boardingCost, <span class="type">int</span> runningCost)</span> </span>&#123;  </span><br><span class="line">        <span class="type">int</span> previ = <span class="number">0</span>;  </span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>,nw = <span class="number">0</span>;  </span><br><span class="line">        <span class="type">int</span> ans_cnt=<span class="number">-1</span>,cnt=<span class="number">0</span>;  </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> customer:customers) &#123;  </span><br><span class="line">            <span class="type">int</span> tmp = customer + previ;  </span><br><span class="line">            cnt++;  </span><br><span class="line">            <span class="keyword">if</span> (tmp &gt; <span class="number">4</span>) &#123;  </span><br><span class="line">                nw += <span class="number">4</span>*boardingCost - runningCost;  </span><br><span class="line">                previ = tmp - <span class="number">4</span>;  </span><br><span class="line">                <span class="keyword">if</span> (nw &gt; ans) ans = nw,ans_cnt = cnt;  </span><br><span class="line">                ans = <span class="built_in">max</span>(ans, nw);  </span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">                nw += tmp*boardingCost - runningCost;  </span><br><span class="line">                previ = <span class="number">0</span>;  </span><br><span class="line">                <span class="keyword">if</span> (nw &gt; ans) ans = nw,ans_cnt = cnt;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">while</span> (previ) &#123;  </span><br><span class="line">            cnt++;  </span><br><span class="line">            <span class="keyword">if</span>(previ &gt; <span class="number">4</span>) &#123;  </span><br><span class="line">                nw += <span class="number">4</span>*boardingCost - runningCost;  </span><br><span class="line">                previ -= <span class="number">4</span>;  </span><br><span class="line">                <span class="keyword">if</span> (nw &gt; ans) ans = nw,ans_cnt = cnt;  </span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;  </span><br><span class="line">                nw += previ*boardingCost - runningCost;  </span><br><span class="line">                previ = <span class="number">0</span>;  </span><br><span class="line">                <span class="keyword">if</span> (nw &gt; ans) ans = nw,ans_cnt = cnt;  </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> ans_cnt;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-02" tabindex="-1" id="2024-01-02"><a class="headerlink" href="#2024-01-02"></a>2024-01-02</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-the-repetitions/description/?envType=daily-question&amp;envId=2024-01-04">466. 统计重复个数 - 力扣（LeetCode）</a></p>
+</blockquote>
+<h2 id="2024-01-03" tabindex="-1" id="2024-01-03"><a class="headerlink" href="#2024-01-03"></a>2024-01-03</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-nodes-from-linked-list/description/?envType=daily-question&amp;envId=2024-01-06">2487. 从链表中移除节点 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>一道链表的题目，充分暴露了我对C++一些特性以及指针相关内容还不是非常的熟练。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">removeNodes</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        ListNode* nw = head;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; arr = &#123;nw-&gt;val&#125;;</span><br><span class="line">        <span class="keyword">while</span> (nw-&gt;next) &#123;</span><br><span class="line">            nw = nw-&gt;next;</span><br><span class="line">            arr.<span class="built_in">push_back</span>(nw-&gt;val);</span><br><span class="line">        &#125;</span><br><span class="line">        stack&lt;<span class="type">int</span>&gt; ans_arr;</span><br><span class="line">        <span class="type">int</span> siz = arr.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=siz<span class="number">-1</span>;i&gt;=<span class="number">0</span>;--i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (ans_arr.<span class="built_in">size</span>()==<span class="number">0</span>||arr[i] &gt;= ans_arr.<span class="built_in">top</span>()) &#123;</span><br><span class="line">                ans_arr.<span class="built_in">push</span>(arr[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode *hhead =  <span class="keyword">new</span> <span class="built_in">ListNode</span>(), *now =  <span class="keyword">new</span> <span class="built_in">ListNode</span>();</span><br><span class="line">        now = hhead;</span><br><span class="line">        <span class="keyword">while</span> (!ans_arr.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">            ListNode *tmp = <span class="keyword">new</span> <span class="built_in">ListNode</span>();</span><br><span class="line">            <span class="type">int</span> nw_val = ans_arr.<span class="built_in">top</span>(); ans_arr.<span class="built_in">pop</span>();</span><br><span class="line">            tmp-&gt;val = nw_val;</span><br><span class="line">            now-&gt;next = tmp;</span><br><span class="line">            now = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> hhead-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="red"><div class="title">注意</div><div class="body"><p>需要非常注意的就是在初始化指针的时候一定要这么写<code>ListNode *hhead = new ListNode(), *now = new ListNode();</code></p></div></div>
+<h3 id="%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BDlistnode-*tmp%3B" tabindex="-1" id="为什么不能ListNode-tmp"><a class="headerlink" href="#为什么不能ListNode-tmp"></a>为什么不能<code>ListNode *tmp;</code></h3>
+<p>这里的<code>tmp</code>是一个指向<code>ListNode</code>类型的指针。但是，这个指针在使用之前没有被分配任何内存。这意味着<code>tmp</code>指向的是一个未知的、未初始化的内存位置。当您尝试通过<code>now-&gt;next = tmp;</code>给<code>now-&gt;next</code>赋值时，您实际上是在让<code>now-&gt;next</code>指向一个不确定的内存位置。这是非常危险的，因为这块内存可能是空的，或者已经被其他数据占用，从而导致未定义行为或程序崩溃。</p>
+<h3 id="%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BDlistnode*-tmp-%3D-nullptr%3B" tabindex="-1" id="为什么不能ListNode-tmp-nullptr"><a class="headerlink" href="#为什么不能ListNode-tmp-nullptr"></a>为什么不能<code>ListNode* tmp = nullptr;</code></h3>
+<p>如果您将<code>ListNode* tmp = nullptr;</code>并在之后的代码中尝试通过<code>tmp</code>指针访问或修改数据，那么这同样会导致错误。原因如下：</p>
+<ol>
+<li>
+<p><strong>空指针解引用</strong>: 当<code>tmp</code>被设置为<code>nullptr</code>时，它指向的是空地址。任何尝试通过空指针（<code>nullptr</code>）访问或修改数据的行为都会导致运行时错误，通常是段错误（segmentation fault）。在您的代码中，如果<code>tmp</code>是<code>nullptr</code>，那么像<code>now-&gt;next = tmp;</code>这样的赋值操作是安全的，但之后的<code>tmp-&gt;val = nw_val;</code>尝试解引用<code>nullptr</code>，这会导致错误。</p>
+</li>
+<li>
+<p><strong>未分配实际的节点</strong>: 在链表操作中，通常需要创建新的节点来存储数据。如果<code>tmp</code>只是一个空指针，那么它不能用于存储任何实际的数据。您需要为每个新节点分配内存来存储数据和指向下一个节点的指针。</p>
+</li>
+</ol>
+<h3 id="%E6%80%BB%E7%BB%93" tabindex="-1" id="总结"><a class="headerlink" href="#总结"></a>总结</h3>
+<p>要解决这个问题，您需要在使用<code>tmp</code>之前为其分配内存，如下所示：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ListNode* tmp = <span class="keyword">new</span> <span class="built_in">ListNode</span>(); <span class="comment">// 分配内存并初始化</span></span><br></pre></td></tr></table></figure>
+<p>这样，<code>tmp</code>不再是一个空指针，而是指向一个新分配且已初始化的<code>ListNode</code>对象。这允许您安全地使用<code>tmp</code>来存储数据并将其加入到链表中。</p>
+<h2 id="2024-01-04" tabindex="-1" id="2024-01-04"><a class="headerlink" href="#2024-01-04"></a>2024-01-04</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-rows-covered-by-columns/description/?envType=daily-question&amp;envId=2024-01-04">2397. 被列覆盖的最多行数 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>一道暴力搜索板子题目。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maximumRows</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; matrix, <span class="type">int</span> numSelect)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> m = matrix.<span class="built_in">size</span>(),n = matrix[<span class="number">0</span>].<span class="built_in">size</span>();</span><br><span class="line">        <span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">cols</span><span class="params">(n,<span class="literal">false</span>)</span></span>;</span><br><span class="line">        <span class="keyword">auto</span> judge = [&amp;](<span class="type">int</span> x) &#123;</span><br><span class="line">            <span class="type">int</span> now_ans = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">                <span class="keyword">if</span> (matrix[x][i]==<span class="number">1</span> &amp;&amp; cols[i]==<span class="literal">false</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        function&lt;<span class="type">void</span>(<span class="type">int</span>,<span class="type">int</span>)&gt; dfs = [&amp;](<span class="type">int</span> idx,<span class="type">int</span> pre) &#123;</span><br><span class="line">            <span class="keyword">if</span> (idx==numSelect) &#123;</span><br><span class="line">                <span class="type">int</span> nw = <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;m;++i)&#123;</span><br><span class="line">                    <span class="keyword">if</span> (<span class="built_in">judge</span>(i)) nw += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                ans = <span class="built_in">max</span>(ans,nw);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125; </span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i=pre+<span class="number">1</span>;i&lt;n;++i) &#123;</span><br><span class="line">                cols[i] = <span class="literal">true</span>;</span><br><span class="line">                <span class="built_in">dfs</span>(idx+<span class="number">1</span>, i);</span><br><span class="line">                cols[i] = <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="built_in">dfs</span>(<span class="number">0</span>,<span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-05" tabindex="-1" id="2024-01-05"><a class="headerlink" href="#2024-01-05"></a>2024-01-05</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-visible-people-in-a-queue/?envType=daily-question&amp;envId=2024-01-06">1944. 队列中可以看到的人数 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>在读完题目以及看完数据范围后不难想到应该用单调栈的方法解决这道题，反向遍历数组，单调栈维护一个顶小底大的栈，代表当前元素可能可以看见的右边的人。</p>
+<p>我们只需要在每次在判断当前元素时，统计我们要进行多少次弹栈操作。就是我们能够看到的人的数量，但是最后还有一个地方需要注意一下，见下面红色。</p>
+<div class="tag-plugin colorful note" color="red"><div class="title">注意</div><div class="body"><p>这里还有一个细节，弹完栈后，需要判断当前栈是否为空，如果不为空，我们能看到的人还要+1（虽然比我们高但是能看到）</p></div></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">canSeePersonsCount</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; heights)</span> </span>&#123;</span><br><span class="line">        stack&lt;<span class="type">int</span>&gt; stk;</span><br><span class="line">        <span class="type">int</span> n = heights.<span class="built_in">size</span>();</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">ans</span><span class="params">(n,<span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=n<span class="number">-1</span>;i&gt;=<span class="number">0</span>;--i)&#123;</span><br><span class="line">            <span class="type">int</span> tmp = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span>(!stk.<span class="built_in">empty</span>() &amp;&amp; heights[stk.<span class="built_in">top</span>()] &lt; heights[i]) &#123;</span><br><span class="line">                stk.<span class="built_in">pop</span>();</span><br><span class="line">                tmp++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (stk.<span class="built_in">empty</span>()) ans[i] = tmp;</span><br><span class="line">            <span class="keyword">else</span> ans[i] = tmp+<span class="number">1</span>;</span><br><span class="line">            stk.<span class="built_in">push</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-06" tabindex="-1" id="2024-01-06"><a class="headerlink" href="#2024-01-06"></a>2024-01-06</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/insert-greatest-common-divisors-in-linked-list/description/?envType=daily-question&amp;envId=2024-01-06">2807. 在链表中插入最大公约数 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>一道非常简单的签到题，复习一下链表写法和gcd写法。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">insertGreatestCommonDivisors</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        function&lt;<span class="type">int</span>(<span class="type">int</span>,<span class="type">int</span>)&gt; ggcd=[&amp;](<span class="type">int</span> a,<span class="type">int</span> b) &#123;</span><br><span class="line">            <span class="keyword">return</span> a%b==<span class="number">0</span>?b:<span class="built_in">ggcd</span>(b,a%b);</span><br><span class="line">        &#125;;</span><br><span class="line">        ListNode *nw = head;</span><br><span class="line">        <span class="keyword">if</span> (nw-&gt;next == <span class="literal">nullptr</span>) <span class="keyword">return</span> head;</span><br><span class="line">        ListNode *nwnxt = nw-&gt;next;</span><br><span class="line">        <span class="keyword">while</span> (nwnxt != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="type">int</span> val = <span class="built_in">ggcd</span>(<span class="built_in">max</span>(nw-&gt;val,nwnxt-&gt;val),<span class="built_in">min</span>(nw-&gt;val,nwnxt-&gt;val));</span><br><span class="line">            ListNode *tmp = <span class="keyword">new</span> <span class="built_in">ListNode</span>(val, nwnxt);</span><br><span class="line">            nw-&gt;next = tmp;</span><br><span class="line">            nw = nwnxt;</span><br><span class="line">            nwnxt = nwnxt-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-07" tabindex="-1" id="2024-01-07"><a class="headerlink" href="#2024-01-07"></a>2024-01-07</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/ransom-note/description/?envType=daily-question&amp;envId=2024-01-07">383. 赎金信 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>建立26个桶，统计每个字符个数即可。签到题：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">canConstruct</span><span class="params">(string ransomNote, string magazine)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (ransomNote.<span class="built_in">size</span>() &gt; magazine.<span class="built_in">size</span>()) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">cnt</span><span class="params">(<span class="number">26</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> note:magazine) cnt[note-<span class="string">&#x27;a&#x27;</span>]++;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> note:ransomNote)&#123;</span><br><span class="line">            cnt[note-<span class="string">&#x27;a&#x27;</span>]--;</span><br><span class="line">            <span class="keyword">if</span> (cnt[note-<span class="string">&#x27;a&#x27;</span>] &lt; <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-08" tabindex="-1" id="2024-01-08"><a class="headerlink" href="#2024-01-08"></a>2024-01-08</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-boomerangs/description/?envType=daily-question&amp;envId=2024-01-08">447. 回旋镖的数量 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>一道<code>unordered_map</code>哈希题，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>复杂度，对于每个位置，遍历所有位置，使用一个哈希表存储与该位置相距特定距离下有哪些位置（哈希表索引是距离），最后就可以根据这个哈希表计算以该点为中心的回旋镖数量。</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">numberOfBoomerangs</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; points)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>,n=points.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">            unordered_map&lt;<span class="type">int</span>,<span class="type">int</span>&gt; cnt;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j)&#123;</span><br><span class="line">                <span class="keyword">if</span> (i == j) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="type">int</span> dis = (points[i][<span class="number">0</span>]-points[j][<span class="number">0</span>]) * (points[i][<span class="number">0</span>]-points[j][<span class="number">0</span>]) + (points[i][<span class="number">1</span>]-points[j][<span class="number">1</span>]) * (points[i][<span class="number">1</span>]-points[j][<span class="number">1</span>]);</span><br><span class="line">                <span class="keyword">if</span>(cnt.<span class="built_in">find</span>(dis)==cnt.<span class="built_in">end</span>()) cnt[dis] = <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">else</span> cnt[dis] ++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">auto</span> ele:cnt) &#123;</span><br><span class="line">                ans += ele.second * (ele.second<span class="number">-1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-09" tabindex="-1" id="2024-01-09"><a class="headerlink" href="#2024-01-09"></a>2024-01-09</h2>
+<blockquote>
+<p>题目传送门：</p>
+</blockquote>
+<h2 id="2024-01-14" tabindex="-1" id="2024-01-14"><a class="headerlink" href="#2024-01-14"></a>2024-01-14</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-duplicates-from-sorted-list/?envType=daily-question&amp;envId=2024-01-14">83. 删除排序链表中的重复元素 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>链表遍历签到题目，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">deleteDuplicates</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        ListNode *nw = head;</span><br><span class="line">        <span class="keyword">while</span>(nw!= <span class="literal">nullptr</span>&amp;&amp; nw-&gt;next!= <span class="literal">nullptr</span>)&#123;</span><br><span class="line">            ListNode *nxt = nw-&gt;next;</span><br><span class="line">            <span class="keyword">while</span>(nxt!= <span class="literal">nullptr</span>&amp;&amp;nw-&gt;val == nxt-&gt;val) nxt = nxt-&gt;next;</span><br><span class="line">            nw-&gt;next = nxt;</span><br><span class="line">            nw = nw-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-15" tabindex="-1" id="2024-01-15"><a class="headerlink" href="#2024-01-15"></a>2024-01-15</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/description/?envType=daily-question&amp;envId=2024-01-15">82. 删除排序链表中的重复元素 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>链表遍历题目，是昨天题目的加强版,下面给出只遍历一遍的做法，需要注意的细节是：</p>
+<ol>
+<li>头节点也可能被删除，所以要开一个head之前的点。</li>
+<li>需要判断下一个和下下个节点是否存在，只有都存在才可能出现相等的情况。</li>
+</ol>
+<p>最后代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * struct ListNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     ListNode *next;</span></span><br><span class="line"><span class="comment"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">deleteDuplicates</span><span class="params">(ListNode* head)</span> </span>&#123;</span><br><span class="line">        ListNode *headpre = <span class="keyword">new</span> <span class="built_in">ListNode</span>(<span class="number">0</span>, head);</span><br><span class="line">        ListNode *nw = headpre;</span><br><span class="line">        <span class="keyword">while</span> (nw-&gt;next &amp;&amp; nw-&gt;next-&gt;next) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nw-&gt;next-&gt;val == nw-&gt;next-&gt;next-&gt;val) &#123;</span><br><span class="line">                <span class="type">int</span> x = nw-&gt;next-&gt;val;</span><br><span class="line">                <span class="keyword">while</span> (nw-&gt;next &amp;&amp; nw-&gt;next-&gt;val == x) &#123;</span><br><span class="line">                    nw-&gt;next = nw-&gt;next-&gt;next;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                nw = nw-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> headpre-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-16" tabindex="-1" id="2024-01-16"><a class="headerlink" href="#2024-01-16"></a>2024-01-16</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/count-of-integers/?envType=daily-question&amp;envId=2024-01-17">2719. 统计整数数目 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>一道数位DP的题目</p>
+<h2 id="2024-01-17" tabindex="-1" id="2024-01-17"><a class="headerlink" href="#2024-01-17"></a>2024-01-17</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-maximum-number-of-string-pairs/description/?envType=daily-question&amp;envId=2024-01-17">2744. 最大字符串配对数目 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>双重循环直接解决问题。代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maximumNumberOfStringPairs</span><span class="params">(vector&lt;string&gt;&amp; words)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = words.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=i+<span class="number">1</span>;j&lt;n;++j)&#123;</span><br><span class="line">                <span class="keyword">if</span>(words[i][<span class="number">0</span>] == words[j][<span class="number">1</span>] &amp;&amp; words[i][<span class="number">1</span>] == words[j][<span class="number">0</span>]) ans++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-20" tabindex="-1" id="2024-01-20"><a class="headerlink" href="#2024-01-20"></a>2024-01-20</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/split-strings-by-separator/?envType=daily-question&amp;envId=2024-01-20">2788. 按分隔符拆分字符串 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>签到题（对于Python来说哈哈），C<ins>的话主要可能需要使用<code>stringstream</code>以及<code>getline</code>函数，具体见我的C</ins>整理。</p>
+<p>最终代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;string&gt; <span class="title">splitWordsBySeparator</span><span class="params">(vector&lt;string&gt;&amp; words, <span class="type">char</span> separator)</span> </span>&#123;</span><br><span class="line">        vector&lt;string&gt; res;</span><br><span class="line">        <span class="keyword">for</span> (string &amp;word : words) &#123;</span><br><span class="line">            <span class="function">stringstream <span class="title">ss</span><span class="params">(word)</span></span>;</span><br><span class="line">            string sub;</span><br><span class="line">            <span class="keyword">while</span> (<span class="built_in">getline</span>(ss, sub, separator)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!sub.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                    res.<span class="built_in">push_back</span>(sub);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-21" tabindex="-1" id="2024-01-21"><a class="headerlink" href="#2024-01-21"></a>2024-01-21</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/split-array-largest-sum/description/?envType=daily-question&amp;envId=2024-01-21">410. 分割数组的最大值 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>一道DP题目，设置dp二维数组<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>p</mi><mo stretchy="false">[</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>k</mi><mo>+</mo><mn>1</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">dp[n+1][k+1]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">p</span><span class="mopen">[</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span>其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>表示数组长度，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>表示分割次数。定义<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>p</mi><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">dp[i][j]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">p</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mclose">]</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">]</span></span></span></span>的含义是从第1个数到第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span>个数分成<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>段后的最大值。那么不难想到状态转移方程应该表示为：</p>
+<p class="katex-block math-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>d</mi><mi>p</mi><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo>=</mo><mi>min</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>d</mi><mi>p</mi><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo separator="true">,</mo><mi>max</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>d</mi><mi>p</mi><mo stretchy="false">[</mo><mi>k</mi><mi>k</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mi>i</mi><mo>−</mo><mn>1</mn><mo stretchy="false">]</mo><mo separator="true">,</mo><mi>n</mi><mi>u</mi><mi>m</mi><mi>s</mi><mi mathvariant="normal">_</mi><mi>s</mi><mi>u</mi><mi>m</mi><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo><mo>−</mo><mi>n</mi><mi>u</mi><mi>m</mi><mi>s</mi><mi mathvariant="normal">_</mi><mi>s</mi><mi>u</mi><mi>m</mi><mo stretchy="false">[</mo><mi>k</mi><mi>k</mi><mo stretchy="false">]</mo><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">dp[j][i] = \min(dp[j][i],\max(dp[kk][i-1], nums\_sum[j]-nums\_sum[kk]))
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">p</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">]</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">min</span><span class="mopen">(</span><span class="mord mathnormal">d</span><span class="mord mathnormal">p</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">]</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">max</span><span class="mopen">(</span><span class="mord mathnormal">d</span><span class="mord mathnormal">p</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.03148em;">kk</span><span class="mclose">]</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">n</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mord mathnormal">s</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal">s</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal">n</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mord mathnormal">s</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal">s</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.03148em;">kk</span><span class="mclose">]))</span></span></span></span></span></p>
+<p>其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>u</mi><mi>m</mi><mi>s</mi><mi mathvariant="normal">_</mi><mi>s</mi><mi>u</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">nums\_sum</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7406em;vertical-align:-0.31em;"></span><span class="mord mathnormal">n</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mord mathnormal">s</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal">s</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span></span></span></span>是前缀和数组, 因此<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>u</mi><mi>m</mi><mi>s</mi><mi mathvariant="normal">_</mi><mi>s</mi><mi>u</mi><mi>m</mi><mo stretchy="false">[</mo><mi>j</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">nums\_sum[j]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal">n</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mord mathnormal">s</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal">s</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mclose">]</span></span></span></span>表示的是前<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi></mrow><annotation encoding="application/x-tex">j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span></span></span></span>个数的和。</p>
+<p>接下来就是dp限制条件和初始状态的定义了，观察上述状态转移方程，不难得知方程想要正确运行需要<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>≥</mo><mi>i</mi></mrow><annotation encoding="application/x-tex">j\geq i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span>且<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mi>k</mi><mo>≥</mo><mi>i</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">kk\geq i-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8304em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">kk</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7429em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 且<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>&gt;</mo><mi>k</mi><mi>k</mi></mrow><annotation encoding="application/x-tex">j &gt; kk</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05724em;">j</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">kk</span></span></span></span>。这样如果采用递推的方法的话我们就可以确定循环的顺序了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">2</span>; i&lt;=k; ++i)&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> j=i; j&lt;=n; ++j)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> kk=i<span class="number">-1</span>; kk&lt;=j<span class="number">-1</span>; ++kk)</span><br></pre></td></tr></table></figure>
+<p>最后就是初始条件的确定了，其实就是初始化<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mi>p</mi><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo><mo stretchy="false">[</mo><mn>1</mn><mo stretchy="false">]</mo><mo>=</mo><mi>n</mi><mi>u</mi><mi>m</mi><mi>s</mi><mi mathvariant="normal">_</mi><mi>s</mi><mi>u</mi><mi>m</mi><mo stretchy="false">[</mo><mi>i</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">dp[i][1] = nums\_sum[i]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">d</span><span class="mord mathnormal">p</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mclose">]</span><span class="mopen">[</span><span class="mord">1</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.06em;vertical-align:-0.31em;"></span><span class="mord mathnormal">n</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mord mathnormal">s</span><span class="mord" style="margin-right:0.02778em;">_</span><span class="mord mathnormal">s</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mclose">]</span></span></span></span> ,然后循环就可以从第二个分割开始循环了。</p>
+<div class="tag-plugin colorful note" color="red"><div class="title">注意</div><div class="body"><p>dp数组最开始初始化一定是<code>INT_MAX</code></p></div></div>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">splitArray</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">dp</span>(n+<span class="number">1</span>,<span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(k+<span class="number">1</span>, INT_MAX));</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">nums_sum</span><span class="params">(n+<span class="number">1</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i) &#123;</span><br><span class="line">            dp[i+<span class="number">1</span>][<span class="number">1</span>] = dp[i][<span class="number">1</span>] + nums[i];</span><br><span class="line">            nums_sum[i+<span class="number">1</span>] = nums_sum[i] + nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">2</span>; i&lt;=k; ++i)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=i; j&lt;=n; ++j)&#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> kk=i<span class="number">-1</span>; kk&lt;=j<span class="number">-1</span>; ++kk)&#123;</span><br><span class="line">                    dp[j][i] = <span class="built_in">min</span>(dp[j][i],<span class="built_in">max</span>(dp[kk][i<span class="number">-1</span>], nums_sum[j]-nums_sum[kk]));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n][k];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>记忆化搜索同理，逻辑反过来就行,会更简单易懂一些：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">splitArray</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">dp</span>(n + <span class="number">1</span>, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(k + <span class="number">1</span>, INT_MAX));</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) dp[i][<span class="number">1</span>] = dp[i - <span class="number">1</span>][<span class="number">1</span>] + nums[i - <span class="number">1</span>];</span><br><span class="line">        function&lt;<span class="type">int</span>(<span class="type">int</span>, <span class="type">int</span>)&gt; dfs = [&amp;](<span class="type">int</span> u, <span class="type">int</span> v) &#123;</span><br><span class="line">            <span class="keyword">if</span> (v == <span class="number">1</span>) <span class="keyword">return</span> dp[u][<span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (dp[u][v] != INT_MAX) <span class="keyword">return</span> dp[u][v];</span><br><span class="line">            <span class="type">int</span> tmp = INT_MAX;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = v - <span class="number">1</span>; i &lt; u; ++i) &#123;</span><br><span class="line">                tmp = <span class="built_in">min</span>(tmp, <span class="built_in">max</span>(<span class="built_in">dfs</span>(i, v - <span class="number">1</span>), dp[u][<span class="number">1</span>] - dp[i][<span class="number">1</span>]));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> dp[u][v] = tmp;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">dfs</span>(n, k);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>还是建议使用递推，因为效率更高！！！</p>
+</blockquote>
+<h2 id="2024-01-22" tabindex="-1" id="2024-01-22"><a class="headerlink" href="#2024-01-22"></a>2024-01-22</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-swap/description/?envType=daily-question&amp;envId=2024-01-22">670. 最大交换 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>这道题解决方法应该还是很多的，但是因为之前在学习单调栈，所以这里第一时间想到的是基于单调栈的解法。</p>
+<p>主体思路很简单，就是我们倒着扫描这个数的每一位，维护一个单调栈，这样每次我们扫描的时候就可以知道当前第i个数是否有下一个比他大的数。如果有我们使用一个数组ans记录比他大的数的索引。最后正着扫一遍数组，如果碰到第一个第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span>个数的<code>ans[i]</code>中存储了索引，则进行交换操作即可。</p>
+<div class="tag-plugin colorful note" color="red"><div class="title">注意</div><div class="body"><p>判断出栈的时候是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span></span></span></span>不是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo><mo>=</mo></mrow><annotation encoding="application/x-tex">&gt;=</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;=</span></span></span></span>，这是因为当值一样时，换更后面的显然更优，最后判断当前数存不存索引的时候一定要判断当前数和栈底数的大小关系（因为有可能一样大，这时就不需要进行交换）</p></div></div>
+<p>最后代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maximumSwap</span><span class="params">(<span class="type">int</span> num)</span> </span>&#123;</span><br><span class="line">        string num_s = <span class="built_in">to_string</span>(num);</span><br><span class="line">        <span class="type">int</span> n = num_s.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; stk;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">ans</span><span class="params">(n,<span class="number">-1</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=n<span class="number">-1</span>;i&gt;=<span class="number">0</span>;--i)&#123;</span><br><span class="line">            <span class="keyword">while</span>(!stk.<span class="built_in">empty</span>() &amp;&amp; num_s[i]-<span class="string">&#x27;0&#x27;</span> &gt; num_s[stk[stk.<span class="built_in">size</span>()<span class="number">-1</span>]] - <span class="string">&#x27;0&#x27;</span>)stk.<span class="built_in">pop_back</span>();</span><br><span class="line">            <span class="keyword">if</span> (!stk.<span class="built_in">empty</span>() &amp;&amp; num_s[i]-<span class="string">&#x27;0&#x27;</span> &lt; num_s[stk[<span class="number">0</span>]] - <span class="string">&#x27;0&#x27;</span>) ans[i] = stk[<span class="number">0</span>];</span><br><span class="line">            stk.<span class="built_in">emplace_back</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">            <span class="keyword">if</span> (ans[i]!=<span class="number">-1</span>) &#123;</span><br><span class="line">                <span class="type">int</span> tmp = num_s[ans[i]]-<span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">                num_s[ans[i]] = num_s[i];</span><br><span class="line">                num_s[i] = tmp + <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">stoi</span>(num_s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2023-01-23" tabindex="-1" id="2023-01-23"><a class="headerlink" href="#2023-01-23"></a>2023-01-23</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/longest-alternating-subarray/?envType=daily-question&amp;envId=2024-01-01">2765. 最长交替子数组 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>签到题目，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">alternatingSubarray</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>(),pre = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;n;++i)&#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] == pre+<span class="number">1</span>) &#123;</span><br><span class="line">                <span class="type">int</span> tmp = <span class="number">2</span>;</span><br><span class="line">                pre = nums[i];</span><br><span class="line">                <span class="type">int</span> dir = <span class="number">-1</span>;</span><br><span class="line">                <span class="keyword">while</span> (i+<span class="number">1</span>&lt;n &amp;&amp; pre + dir == nums[i+<span class="number">1</span>])&#123;</span><br><span class="line">                    dir *= <span class="number">-1</span>;</span><br><span class="line">                    i += <span class="number">1</span>;</span><br><span class="line">                    pre = nums[i];</span><br><span class="line">                    tmp ++;</span><br><span class="line">                &#125;</span><br><span class="line">                ans = <span class="built_in">max</span>(ans,tmp);</span><br><span class="line">            &#125;</span><br><span class="line">            pre = nums[i];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-24" tabindex="-1" id="2024-01-24"><a class="headerlink" href="#2024-01-24"></a>2024-01-24</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/beautiful-towers-i/description/?envType=daily-question&amp;envId=2024-01-24">2865. 美丽塔 I - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>这道题同样也是一道单调栈的题目，还是有点意思。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-25" tabindex="-1" id="2024-01-25"><a class="headerlink" href="#2024-01-25"></a>2024-01-25</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sum-of-values-at-indices-with-k-set-bits/description/?envType=daily-question&amp;envId=2024-01-25">2859. 计算 K 置位下标对应元素的和 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>一道位运算签到题目，统计二进制数有多少个置位，只需要&amp;1和右移即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">sumIndicesWithKSetBits</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        function&lt;<span class="type">int</span>(<span class="type">int</span>)&gt;bitCount = [&amp;](<span class="type">int</span> i)&#123;</span><br><span class="line">            <span class="type">int</span> nw = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span>(i)&#123;</span><br><span class="line">                nw += i&amp;<span class="number">1</span>;</span><br><span class="line">                i = i&gt;&gt;<span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> nw;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">bitCount</span>(i)==k) &#123;</span><br><span class="line">                ans += nums[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2024-01-26" tabindex="-1" id="2024-01-26"><a class="headerlink" href="#2024-01-26"></a>2024-01-26</h2>
+<blockquote>
+<p>题目传送门：</p>
+</blockquote>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2023%E5%B9%B412%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html">2023年12月每日一题</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B403%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html">2024年03月每日一题</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+<widget class="widget-wrapper ghrepo"><div class="widget-body"><div class="items ds-ghinfo" api="https://api.github.com/repos/xaoxuu/hexo-theme-stellar"><a class="repo" href="https://github.com/xaoxuu/hexo-theme-stellar" target="_blank" rel="external nofollow noopener noreferrer"><div class="repo-name flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>xaoxuu/hexo-theme-stellar</div><div class="repo-desc"><span type="text" id="description">&nbsp;</span></div><div class="grid"><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path></svg><span type="text" id="stargazers_count"></span></div><div class="flex-row"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg><span type="text" id="forks_count"></span></div><div class="flex-row ds-ghinfo" index="0" api="https://api.github.com/repos/xaoxuu/hexo-theme-stellar/tags"><svg aria-hidden="true" role="img" class="color-icon-primary" viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor" style="user-select:none;overflow:visible"><path fill-rule="evenodd" d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z"></path></svg><span type="text" id="latest-tag-name">0</span></div></div></a></div></div></widget>
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-01"><span class="toc-text">2024-01-01</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-02"><span class="toc-text">2024-01-02</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-03"><span class="toc-text">2024-01-03</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BDlistnode-*tmp;"><span class="toc-text">为什么不能ListNode *tmp;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BDlistnode*-tmp-=-nullptr;"><span class="toc-text">为什么不能ListNode* tmp &#x3D; nullptr;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-04"><span class="toc-text">2024-01-04</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-05"><span class="toc-text">2024-01-05</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-06"><span class="toc-text">2024-01-06</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-07"><span class="toc-text">2024-01-07</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-08"><span class="toc-text">2024-01-08</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-09"><span class="toc-text">2024-01-09</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-14"><span class="toc-text">2024-01-14</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-15"><span class="toc-text">2024-01-15</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-16"><span class="toc-text">2024-01-16</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-17"><span class="toc-text">2024-01-17</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-20"><span class="toc-text">2024-01-20</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-21"><span class="toc-text">2024-01-21</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-22"><span class="toc-text">2024-01-22</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2023-01-23"><span class="toc-text">2023-01-23</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-24"><span class="toc-text">2024-01-24</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-25"><span class="toc-text">2024-01-25</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2024-01-26"><span class="toc-text">2024-01-26</span></a></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
   }
-  .laptop-only {
-    display: block !important;
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js`,
+    marked: `https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js`
   }
-  .l_body .l_right {
-    top: 8px;
-    position: fixed;
-    max-height: calc(100% - 8px * 2);
-    transform: translateX(320px);
-    transition: transform 0.38s ease-out;
-    margin: 0;
-    right: 8px;
-    box-shadow: $boxshadow-card-float;
-    z-index: 10;
-    background: var(--site-bg);
-    overflow: auto;
-    --blur-bg: var(--alpha60);
-    --blur-px: 50px;
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
   }
-  .l_body[rightbar] .l_right {
-    transform: translateX(0px);
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.27.0" async></script>
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script><script defer src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.swiper-slide img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
   }
-  .l_body[rightbar] .main-mask {
-    pointer-events: inherit;
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
   }
-}
-@media screen and (max-width: $device-mobile-max) {
-  .mobile-only {
-    display: block !important;
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || null
+        }
+      });
+    })
   }
-  .l_body {
-    padding: 0;
-    display: block;
-  }
-  .l_body .l_left {
-    position: fixed;
-    transform: translateX(-320px);
-    transition: transform 0.38s ease-out;
-    margin: 0;
-    left: 8px;
-    box-shadow: $boxshadow-card-float;
-    z-index: 10;
-  }
-  .l_body .l_main {
-    max-width: 100%;
-  }
-  .l_body[leftbar] .l_left {
-    transform: translateX(0px);
-  }
-  .l_body[leftbar] .main-mask {
-    opacity: 1;
-    pointer-events: inherit;
-  }
-}
-.main-mask {
-  position: fixed;
-  pointer-events: none;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.1);
-  z-index: 9;
-  opacity: 0;
-  trans1: opacity;
-}
+</script><script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script><link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

@@ -1,97 +1,606 @@
-.l_body {
-  display: grid;
-  grid-template-columns: 1fr minmax(200px, var(--width-main)) 1fr;
-  grid-gap: var(--gap-margin);
-  margin: auto;
-  font-size: var(--fsp);
-}
-.l_body aside {
-  z-index: 8;
-  flex-shrink: 0;
-  position: sticky;
-  position: -webkit-sticky;
-  --width-sidebar: calc(var(--gap-margin) * 2 + var(--gap-padding) * 2 + var(--side-content-width));
-  width: var(--width-sidebar);
-}
-.l_body .l_left {
-  justify-self: right;
-  top: 8px;
-}
-.l_body .l_right {
-  justify-self: left;
-  --gap-margin: 0px;
-  max-height: calc(100% - 8px * 2);
-}
-.l_body .l_right .widgets {
-  height: 100%;
-  overflow: visible;
-}
-@media screen and (max-width: $device-laptop) {
-  .l_body .l_right {
-    --gap-margin: 16px;
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.27.0" theme-name="Stellar" theme-version="1.27.0">
+  
+  <meta name="generator" content="Hexo 7.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>PyTorch：PyTorch 自定义数据集实战 - MudSynth</title>
+
+  
+    <meta name="description" content="在前面的学习中，我们已经较为熟练的掌握了不同种类神经网络的原理和基本PyTorch实现，但是之前我们所使用的数据集多为PyTorch中现成的，并没有自己提取数据的这一过程，所以本篇博客旨在采用自定义数据集，帮助大家体验一次包含数据提取，数据训练，数据测试的完整的神经网络数据处理过程。 Pokemon 数据集 数据集基本信息 本次实战，采用Pokemon自定义数据集，数据集中包含5种类型的精灵  数">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PyTorch 自定义数据集实战">
+<meta property="og:url" content="http://example.com/wiki/PyTorch/PyTorch%20%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86%E5%AE%9E%E6%88%98.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="在前面的学习中，我们已经较为熟练的掌握了不同种类神经网络的原理和基本PyTorch实现，但是之前我们所使用的数据集多为PyTorch中现成的，并没有自己提取数据的这一过程，所以本篇博客旨在采用自定义数据集，帮助大家体验一次包含数据提取，数据训练，数据测试的完整的神经网络数据处理过程。 Pokemon 数据集 数据集基本信息 本次实战，采用Pokemon自定义数据集，数据集中包含5种类型的精灵  数">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img812image-20220730095144310.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img812image-20220730095654686.webp">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img812image-20220730102513222-16591479204361.webp">
+<meta property="article:published_time" content="2022-07-27T00:44:55.000Z">
+<meta property="article:modified_time" content="2024-05-24T05:41:23.429Z">
+<meta property="article:author" content="Mudrobot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img812image-20220730095144310.webp">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.27.0">
+
+  
+
+  
+
+  
+</head>
+<body>
+
+
+
+<div class="l_body s:aa content tech" id="start" layout="page" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/icon.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></div><a class="title" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><div class="main" ff="title">PyTorch</div><div class="sub cap">The Greatest ML Framework!</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/PyTorch/" placeholder="在 PyTorch 中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="文档" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">基础教程</span></div><div class="widget-body fs14"><a class="link" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html#start"><span class="toc-text">PyTorch入门-简单BP全连接神经网络</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E5%9F%BA%E7%A1%80.html"><span class="toc-text">PyTorch基础</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E8%BF%9B%E9%98%B6.html"><span class="toc-text">PyTorch进阶</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E6%A2%AF%E5%BA%A6.html"><span class="toc-text">PyTorch梯度</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E8%BF%87%E6%8B%9F%E5%90%88.html"><span class="toc-text">PyTorch过拟合</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html"><span class="toc-text">PyTorch神经网络</span></a><a class="link" href="/wiki/PyTorch/PyTorch%20CNN.html"><span class="toc-text">PyTorch CNN</span></a><a class="link" href="/wiki/PyTorch/PyTorch%20CNN%E5%AE%9E%E6%88%98.html"><span class="toc-text">PyTorch CNN实战</span></a><a class="link" href="/wiki/PyTorch/PyTorch%20RNN&LSTM.html"><span class="toc-text">PyTorch RNN&LSTM</span></a><a class="link active" href="/wiki/PyTorch/PyTorch%20%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86%E5%AE%9E%E6%88%98.html"><span class="toc-text">PyTorch 自定义数据集实战</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a><a class="link" href="/wiki/PyTorch/PyTorch%20%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8.html"><span class="toc-text">PyTorch 自编码器</span></a><a class="link" href="/wiki/PyTorch/PyTorch%E7%BB%88%E7%AB%A0%EF%BC%9A%E5%BC%80GAN%EF%BC%81.html"><span class="toc-text">PyTorch终章：开GAN！</span></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：教程</span></div><div class="widget-body"><a class="item wiki" href="/wiki/Others/png%E5%9B%BE%E7%89%87%E5%A1%AB%E5%85%85%E8%84%9A%E6%9C%AC.html"><span class="title">Others - 杂项合集</span><span class="excerpt">一些零碎技术知识点整理🛠️</span></a><a class="item wiki" href="/wiki/C++/algorithm/sort.html"><span class="title">C++ - 知识点合集</span><span class="excerpt">C++零碎知识点整理🐣</span></a></div></widget><widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：深度学习</span></div><div class="widget-body"><a class="item wiki" href="/wiki/DL-Techniques/%E4%BA%A4%E5%B9%B6%E6%AF%94%20(IOU).html"><span class="title">DeepLearning - Techniques</span><span class="excerpt">记录一些深度学习中使用的零散小技巧📖</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/PyTorch/PyTorch%E5%85%A5%E9%97%A8-%E7%AE%80%E5%8D%95BP%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C.html">PyTorch</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2024-05-24T05:41:23.429Z">2024-05-24</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>PyTorch 自定义数据集实战</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><p>在前面的学习中，我们已经较为熟练的掌握了不同种类神经网络的原理和基本PyTorch实现，但是之前我们所使用的数据集多为PyTorch中现成的，并没有自己提取数据的这一过程，所以本篇博客旨在采用自定义数据集，帮助大家体验一次包含数据提取，数据训练，数据测试的完整的神经网络数据处理过程。</p>
+<h2 id="pokemon-%E6%95%B0%E6%8D%AE%E9%9B%86" tabindex="-1" id="Pokemon-数据集"><a class="headerlink" href="#Pokemon-数据集"></a>Pokemon 数据集</h2>
+<h3 id="%E6%95%B0%E6%8D%AE%E9%9B%86%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF" tabindex="-1" id="数据集基本信息"><a class="headerlink" href="#数据集基本信息"></a>数据集基本信息</h3>
+<p>本次实战，采用Pokemon自定义数据集，数据集中包含5种类型的精灵</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img812image-20220730095144310.webp" alt="5种精灵" /></p>
+<p>数据集中所包含的图片的数量分别是：</p>
+<ul>
+<li>皮卡丘 ：234</li>
+<li>超梦： 239</li>
+<li>杰尼龟： 223</li>
+<li>小火龙： 238</li>
+<li>妙蛙种子： 234</li>
+</ul>
+<h3 id="%E6%95%B0%E6%8D%AE%E9%9B%86%E5%88%92%E5%88%86" tabindex="-1" id="数据集划分"><a class="headerlink" href="#数据集划分"></a>数据集划分</h3>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img812image-20220730095654686.webp" alt="数据集划分" /></p>
+<h2 id="%E5%AE%9E%E6%88%98%E6%AD%A5%E9%AA%A4" tabindex="-1" id="实战步骤"><a class="headerlink" href="#实战步骤"></a>实战步骤</h2>
+<ul>
+<li>数据集加载（Load data）※</li>
+<li>创建模型（Build model）</li>
+<li>训练和测试（Train and Test）</li>
+<li>迁移学习（Transfer Learning）※</li>
+</ul>
+<h3 id="%E6%95%B0%E6%8D%AE%E9%9B%86%E5%8A%A0%E8%BD%BD" tabindex="-1" id="数据集加载"><a class="headerlink" href="#数据集加载"></a>数据集加载</h3>
+<p>这一部分的工作主要就是要继承父类（<code>torch.utils.data.Dataset</code>）并且实现该类下的两个函数</p>
+<ul>
+<li><code>__len__</code>:返回样本长度</li>
+<li><code>__getitem__</code>:取出样本</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NumberDataset</span>(<span class="title class_ inherited__">Dataset</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self,training=<span class="literal">True</span></span>):</span><br><span class="line">        <span class="keyword">if</span> training:</span><br><span class="line">            self.samples = <span class="built_in">list</span>(<span class="built_in">range</span>(<span class="number">1</span>,<span class="number">1001</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.samples = <span class="built_in">list</span>(<span class="built_in">range</span>(<span class="number">1001</span>,<span class="number">1501</span>))</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.samples)</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="keyword">return</span> self.samples[idx]</span><br></pre></td></tr></table></figure>
+<p>了解了数据集PyTorch中的加载方法，下面来介绍一下本次项目需要完成的数据预处理相关操作。</p>
+<h3 id="%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E6%AD%A5%E9%AA%A4%EF%BC%88preprocessing%EF%BC%89" tabindex="-1" id="数据预处理步骤（Preprocessing）"><a class="headerlink" href="#数据预处理步骤（Preprocessing）"></a>数据预处理步骤（Preprocessing）</h3>
+<ul>
+<li>Image Resize
+<ul>
+<li>224*224 for ResNet 18</li>
+</ul>
+</li>
+<li>Data Argumentation
+<ul>
+<li>Rotate</li>
+<li>Crop</li>
+</ul>
+</li>
+<li>Normalize
+<ul>
+<li>Mean,std</li>
+</ul>
+</li>
+<li>ToTensor</li>
+</ul>
+<h3 id="%E6%95%B0%E6%8D%AE%E9%9B%86%E5%AD%98%E6%94%BE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84" tabindex="-1" id="数据集存放文件结构"><a class="headerlink" href="#数据集存放文件结构"></a>数据集存放文件结构</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pokeman</span><br><span class="line">├─bulbasaur</span><br><span class="line">├─charmander</span><br><span class="line">├─mewtwo</span><br><span class="line">├─pikachu</span><br><span class="line">└─squirtle</span><br></pre></td></tr></table></figure>
+<p>可以发现是5种精灵是分了5个文件夹，我们打开pikachu文件夹，可以看到里面的图片数据是这样的。</p>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/img812image-20220730102513222-16591479204361.webp" alt="pikachu" /></p>
+<blockquote>
+<p>这样存放的好处是，使用PyTorch可以直接一行代码导入所有的数据。后面我们会进行讲解。</p>
+</blockquote>
+<h3 id="pytorch%E5%AE%9E%E7%8E%B0" tabindex="-1" id="PyTorch实现"><a class="headerlink" href="#PyTorch实现"></a>PyTorch实现</h3>
+<p>首先是名字类别的映射</p>
+<h4 id="name2label" tabindex="-1" id="name2label"><a class="headerlink" href="#name2label"></a><code>name2label</code></h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, root, resize, mode</span>):</span><br><span class="line">    <span class="built_in">super</span>(Pokemon, self).__init__() <span class="comment"># 调用父类初始化函数</span></span><br><span class="line"></span><br><span class="line">    self.root = root</span><br><span class="line">    self.resize = resize</span><br><span class="line">    <span class="comment"># 创建类别和标签映射表</span></span><br><span class="line">    self.name2label=&#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> name <span class="keyword">in</span> <span class="built_in">sorted</span>(os.listdir((os.path.join(root)))):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.isdir(os.path.join(root,name)):</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        self.name2label[name] = <span class="built_in">len</span>(self.name2label.keys())</span><br><span class="line">    <span class="comment"># 调试代码</span></span><br><span class="line">    <span class="built_in">print</span>(self.name2label)</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p>这里因为<code>listdir</code>返回的顺序不稳定，所以返回后增加一个<code>sorted</code>函数对名字排序，这样就保证了返回的顺序稳定的问题。</p></div></div>
+<p>结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;bulbasaur&#x27;: 0, &#x27;charmander&#x27;: 1, &#x27;mewtwo&#x27;: 2, &#x27;pikachu&#x27;: 3, &#x27;squirtle&#x27;: 4&#125;</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="yellow"><div class="body"><p>注意<code>__getitem__</code>重写的时候要将图片里面的信息提取出来，而不是图片的路径！！！</p></div></div>
+<h4 id="load_csv%E5%8A%A0%E8%BD%BD%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF" tabindex="-1" id="load-csv加载文件信息"><a class="headerlink" href="#load-csv加载文件信息"></a><code>load_csv</code>加载文件信息</h4>
+<p>这个函数也是写在我们自己的Class中的，目的是根据一个数据集加载一个数据集信息的csv文件(如果没有就先创建一个然后再加载)，文件中存储每一个数据的存放位置以及标签信息。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">load_csv</span>(<span class="params">self, filename</span>):</span><br><span class="line">	<span class="comment"># 没有csv数据集信息文件，生成一个</span></span><br><span class="line">       <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(os.path.join(self.root, filename)):</span><br><span class="line">           images = []</span><br><span class="line">           <span class="keyword">for</span> name <span class="keyword">in</span> self.name2label.keys():</span><br><span class="line">               <span class="comment"># &#x27;pokemon\\mewtwo\\00001.png</span></span><br><span class="line">               images += glob.glob(os.path.join(self.root, name, <span class="string">&#x27;*.png&#x27;</span>))</span><br><span class="line">               images += glob.glob(os.path.join(self.root, name, <span class="string">&#x27;*.jpg&#x27;</span>))</span><br><span class="line">               images += glob.glob(os.path.join(self.root, name, <span class="string">&#x27;*.jpeg&#x27;</span>))</span><br><span class="line"></span><br><span class="line">           <span class="comment"># 1167, &#x27;pokemon\\bulbasaur\\00000000.png&#x27;</span></span><br><span class="line">           <span class="built_in">print</span>(<span class="built_in">len</span>(images), images)</span><br><span class="line"></span><br><span class="line">           random.shuffle(images)</span><br><span class="line">           <span class="keyword">with</span> <span class="built_in">open</span>(os.path.join(self.root, filename), mode=<span class="string">&#x27;w&#x27;</span>, newline=<span class="string">&#x27;&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">               writer = csv.writer(f)</span><br><span class="line">               <span class="keyword">for</span> img <span class="keyword">in</span> images: <span class="comment"># &#x27;pokemon\\bulbasaur\\00000000.png&#x27;</span></span><br><span class="line">                   name = img.split(os.sep)[-<span class="number">2</span>]</span><br><span class="line">                   label = self.name2label[name]</span><br><span class="line">                   <span class="comment"># &#x27;pokemon\\bulbasaur\\00000000.png&#x27;, 0</span></span><br><span class="line">                   writer.writerow([img, label])</span><br><span class="line">               <span class="built_in">print</span>(<span class="string">&#x27;writen into csv file:&#x27;</span>, filename)</span><br><span class="line">               </span><br><span class="line">       <span class="comment"># 如果存在csv数据集信息文件，则读取</span></span><br><span class="line">       <span class="comment"># read from csv file</span></span><br><span class="line">       images, labels = [], []</span><br><span class="line">       <span class="keyword">with</span> <span class="built_in">open</span>(os.path.join(self.root, filename)) <span class="keyword">as</span> f:</span><br><span class="line">           reader = csv.reader(f)</span><br><span class="line">           <span class="keyword">for</span> row <span class="keyword">in</span> reader:</span><br><span class="line">               <span class="comment"># &#x27;pokemon\\bulbasaur\\00000000.png&#x27;, 0</span></span><br><span class="line">               img, label = row</span><br><span class="line">               label = <span class="built_in">int</span>(label)</span><br><span class="line"></span><br><span class="line">               images.append(img)</span><br><span class="line">               labels.append(label)</span><br><span class="line"></span><br><span class="line">       <span class="keyword">assert</span> <span class="built_in">len</span>(images) == <span class="built_in">len</span>(labels)</span><br><span class="line"></span><br><span class="line">       <span class="keyword">return</span> images, labels</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p><code>glob</code>是python自己带的一个文件操作相关模块，用它可以查找符合自己目的的文件.该方法返回所有匹配的文件路径<strong>列表</strong>（list）；该方法需要一个参数用来指定匹配的路径字符串（字符串可以为绝对路径也可以为相对路径），其返回的文件名只包括当前目录里的文件名，不包括子文件夹里的文件。</p></div></div>
+<h4 id="%E5%88%92%E5%88%86%E6%95%B0%E6%8D%AE%E9%9B%86" tabindex="-1" id="划分数据集"><a class="headerlink" href="#划分数据集"></a>划分数据集</h4>
+<p>在<code>__init__</code>中<code>load_csv</code>后，我们就可以进行数据集裁剪了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># image, label</span></span><br><span class="line">self.images, self.labels = self.load_csv(<span class="string">&#x27;images.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> mode==<span class="string">&#x27;train&#x27;</span>: <span class="comment"># 60%</span></span><br><span class="line">    self.images = self.images[:<span class="built_in">int</span>(<span class="number">0.6</span>*<span class="built_in">len</span>(self.images))]</span><br><span class="line">    self.labels = self.labels[:<span class="built_in">int</span>(<span class="number">0.6</span>*<span class="built_in">len</span>(self.labels))]</span><br><span class="line"><span class="keyword">elif</span> mode==<span class="string">&#x27;val&#x27;</span>: <span class="comment"># 20% = 60%-&gt;80%</span></span><br><span class="line">    self.images = self.images[<span class="built_in">int</span>(<span class="number">0.6</span>*<span class="built_in">len</span>(self.images)):<span class="built_in">int</span>(<span class="number">0.8</span>*<span class="built_in">len</span>(self.images))]</span><br><span class="line">    self.labels = self.labels[<span class="built_in">int</span>(<span class="number">0.6</span>*<span class="built_in">len</span>(self.labels)):<span class="built_in">int</span>(<span class="number">0.8</span>*<span class="built_in">len</span>(self.labels))]</span><br><span class="line"><span class="keyword">else</span>: <span class="comment"># 20% = 80%-&gt;100%</span></span><br><span class="line">    self.images = self.images[<span class="built_in">int</span>(<span class="number">0.8</span>*<span class="built_in">len</span>(self.images)):]</span><br><span class="line">    self.labels = self.labels[<span class="built_in">int</span>(<span class="number">0.8</span>*<span class="built_in">len</span>(self.labels)):]</span><br></pre></td></tr></table></figure>
+<p>其实我更推荐的方法是先将数据集全部读出来，然后再另写一个函数，使用PyTorch提供的<code>subset</code>方法对数据集进行划分。详情可以见PyTorch技巧中Kfold这一个模块。</p>
+<h4 id="%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA" tabindex="-1" id="数据增强"><a class="headerlink" href="#数据增强"></a>数据增强</h4>
+<blockquote>
+<p>我们是在取数据的时候对数据进行数据增强操作</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">    <span class="comment"># idx~[0~len(images)]</span></span><br><span class="line">    <span class="comment"># self.images, self.labels</span></span><br><span class="line">    <span class="comment"># img: &#x27;pokemon\\bulbasaur\\00000000.png&#x27;</span></span><br><span class="line">    <span class="comment"># label: 0</span></span><br><span class="line">    img, label = self.images[idx], self.labels[idx]</span><br><span class="line"></span><br><span class="line">    tf = transforms.Compose([</span><br><span class="line">        <span class="keyword">lambda</span> x:Image.<span class="built_in">open</span>(x).convert(<span class="string">&#x27;RGB&#x27;</span>), <span class="comment"># string path= &gt; image data</span></span><br><span class="line">        transforms.Resize((<span class="built_in">int</span>(self.resize*<span class="number">1.25</span>), <span class="built_in">int</span>(self.resize*<span class="number">1.25</span>))),</span><br><span class="line">        transforms.RandomRotation(<span class="number">15</span>),</span><br><span class="line">        transforms.CenterCrop(self.resize),</span><br><span class="line">        transforms.ToTensor(),</span><br><span class="line">        transforms.Normalize(mean=[<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>],</span><br><span class="line">                             std=[<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">    ])</span><br><span class="line"></span><br><span class="line">    img = tf(img)</span><br><span class="line">    label = torch.tensor(label)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> img, label</span><br></pre></td></tr></table></figure>
+<h4 id="class%E9%83%A8%E5%88%86%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB" tabindex="-1" id="Class部分代码汇总"><a class="headerlink" href="#Class部分代码汇总"></a>Class部分代码汇总</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Pokemon</span>(<span class="title class_ inherited__">Dataset</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, root, resize, mode</span>):</span><br><span class="line">        <span class="built_in">super</span>(Pokemon, self).__init__()</span><br><span class="line"></span><br><span class="line">        self.root = root</span><br><span class="line">        self.resize = resize</span><br><span class="line"></span><br><span class="line">        self.name2label = &#123;&#125; <span class="comment"># &quot;sq...&quot;:0</span></span><br><span class="line">        <span class="keyword">for</span> name <span class="keyword">in</span> <span class="built_in">sorted</span>(os.listdir(os.path.join(root))):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> os.path.isdir(os.path.join(root, name)):</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">            self.name2label[name] = <span class="built_in">len</span>(self.name2label.keys())</span><br><span class="line"></span><br><span class="line">        <span class="comment"># print(self.name2label)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># image, label</span></span><br><span class="line">        self.images, self.labels = self.load_csv(<span class="string">&#x27;images.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> mode==<span class="string">&#x27;train&#x27;</span>: <span class="comment"># 60%</span></span><br><span class="line">            self.images = self.images[:<span class="built_in">int</span>(<span class="number">0.6</span>*<span class="built_in">len</span>(self.images))]</span><br><span class="line">            self.labels = self.labels[:<span class="built_in">int</span>(<span class="number">0.6</span>*<span class="built_in">len</span>(self.labels))]</span><br><span class="line">        <span class="keyword">elif</span> mode==<span class="string">&#x27;val&#x27;</span>: <span class="comment"># 20% = 60%-&gt;80%</span></span><br><span class="line">            self.images = self.images[<span class="built_in">int</span>(<span class="number">0.6</span>*<span class="built_in">len</span>(self.images)):<span class="built_in">int</span>(<span class="number">0.8</span>*<span class="built_in">len</span>(self.images))]</span><br><span class="line">            self.labels = self.labels[<span class="built_in">int</span>(<span class="number">0.6</span>*<span class="built_in">len</span>(self.labels)):<span class="built_in">int</span>(<span class="number">0.8</span>*<span class="built_in">len</span>(self.labels))]</span><br><span class="line">        <span class="keyword">else</span>: <span class="comment"># 20% = 80%-&gt;100%</span></span><br><span class="line">            self.images = self.images[<span class="built_in">int</span>(<span class="number">0.8</span>*<span class="built_in">len</span>(self.images)):]</span><br><span class="line">            self.labels = self.labels[<span class="built_in">int</span>(<span class="number">0.8</span>*<span class="built_in">len</span>(self.labels)):]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">load_csv</span>(<span class="params">self, filename</span>):</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(os.path.join(self.root, filename)):</span><br><span class="line">            images = []</span><br><span class="line">            <span class="keyword">for</span> name <span class="keyword">in</span> self.name2label.keys():</span><br><span class="line">                <span class="comment"># &#x27;pokemon\\mewtwo\\00001.png</span></span><br><span class="line">                images += glob.glob(os.path.join(self.root, name, <span class="string">&#x27;*.png&#x27;</span>))</span><br><span class="line">                images += glob.glob(os.path.join(self.root, name, <span class="string">&#x27;*.jpg&#x27;</span>))</span><br><span class="line">                images += glob.glob(os.path.join(self.root, name, <span class="string">&#x27;*.jpeg&#x27;</span>))</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 1167, &#x27;pokemon\\bulbasaur\\00000000.png&#x27;</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="built_in">len</span>(images), images)</span><br><span class="line"></span><br><span class="line">            random.shuffle(images)</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(os.path.join(self.root, filename), mode=<span class="string">&#x27;w&#x27;</span>, newline=<span class="string">&#x27;&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                writer = csv.writer(f)</span><br><span class="line">                <span class="keyword">for</span> img <span class="keyword">in</span> images: <span class="comment"># &#x27;pokemon\\bulbasaur\\00000000.png&#x27;</span></span><br><span class="line">                    name = img.split(os.sep)[-<span class="number">2</span>]</span><br><span class="line">                    label = self.name2label[name]</span><br><span class="line">                    <span class="comment"># &#x27;pokemon\\bulbasaur\\00000000.png&#x27;, 0</span></span><br><span class="line">                    writer.writerow([img, label])</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;writen into csv file:&#x27;</span>, filename)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># read from csv file</span></span><br><span class="line">        images, labels = [], []</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(os.path.join(self.root, filename)) <span class="keyword">as</span> f:</span><br><span class="line">            reader = csv.reader(f)</span><br><span class="line">            <span class="keyword">for</span> row <span class="keyword">in</span> reader:</span><br><span class="line">                <span class="comment"># &#x27;pokemon\\bulbasaur\\00000000.png&#x27;, 0</span></span><br><span class="line">                img, label = row</span><br><span class="line">                label = <span class="built_in">int</span>(label)</span><br><span class="line"></span><br><span class="line">                images.append(img)</span><br><span class="line">                labels.append(label)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">assert</span> <span class="built_in">len</span>(images) == <span class="built_in">len</span>(labels)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> images, labels</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>):</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">len</span>(self.images)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">denormalize</span>(<span class="params">self, x_hat</span>):</span><br><span class="line"></span><br><span class="line">        mean = [<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>]</span><br><span class="line">        std = [<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># x_hat = (x-mean)/std</span></span><br><span class="line">        <span class="comment"># x = x_hat*std = mean</span></span><br><span class="line">        <span class="comment"># x: [c, h, w]</span></span><br><span class="line">        <span class="comment"># mean: [3] =&gt; [3, 1, 1]</span></span><br><span class="line">        mean = torch.tensor(mean).unsqueeze(<span class="number">1</span>).unsqueeze(<span class="number">1</span>)</span><br><span class="line">        std = torch.tensor(std).unsqueeze(<span class="number">1</span>).unsqueeze(<span class="number">1</span>)</span><br><span class="line">        <span class="comment"># print(mean.shape, std.shape)</span></span><br><span class="line">        x = x_hat * std + mean</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__getitem__</span>(<span class="params">self, idx</span>):</span><br><span class="line">        <span class="comment"># idx~[0~len(images)]</span></span><br><span class="line">        <span class="comment"># self.images, self.labels</span></span><br><span class="line">        <span class="comment"># img: &#x27;pokemon\\bulbasaur\\00000000.png&#x27;</span></span><br><span class="line">        <span class="comment"># label: 0</span></span><br><span class="line">        img, label = self.images[idx], self.labels[idx]</span><br><span class="line"></span><br><span class="line">        tf = transforms.Compose([</span><br><span class="line">            <span class="keyword">lambda</span> x:Image.<span class="built_in">open</span>(x).convert(<span class="string">&#x27;RGB&#x27;</span>), <span class="comment"># string path= &gt; image data</span></span><br><span class="line">            transforms.Resize((<span class="built_in">int</span>(self.resize*<span class="number">1.25</span>), <span class="built_in">int</span>(self.resize*<span class="number">1.25</span>))),</span><br><span class="line">            transforms.RandomRotation(<span class="number">15</span>),</span><br><span class="line">            transforms.CenterCrop(self.resize),</span><br><span class="line">            transforms.ToTensor(),</span><br><span class="line">            transforms.Normalize(mean=[<span class="number">0.485</span>, <span class="number">0.456</span>, <span class="number">0.406</span>],</span><br><span class="line">                                 std=[<span class="number">0.229</span>, <span class="number">0.224</span>, <span class="number">0.225</span>])</span><br><span class="line">        ])</span><br><span class="line"></span><br><span class="line">        img = tf(img)</span><br><span class="line">        label = torch.tensor(label)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> img, label</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="blue"><div class="body"><p>其中<code>denormalize</code>函数做的工作是反正则化</p></div></div>
+<h4 id="visdom%E9%AA%8C%E8%AF%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86%E5%8A%A0%E8%BD%BD%E6%AD%A3%E7%A1%AE%E6%80%A7" tabindex="-1" id="Visdom验证自定义数据集加载正确性"><a class="headerlink" href="#Visdom验证自定义数据集加载正确性"></a>Visdom验证自定义数据集加载正确性</h4>
+<p>我们在主函数中写下如下的代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>  visdom</span><br><span class="line"><span class="keyword">import</span>  time</span><br><span class="line"><span class="keyword">import</span>  torchvision</span><br><span class="line"></span><br><span class="line">viz = visdom.Visdom()</span><br><span class="line">db = Pokemon(<span class="string">&#x27;pokemon&#x27;</span>, <span class="number">64</span>, <span class="string">&#x27;train&#x27;</span>)</span><br><span class="line"></span><br><span class="line">x,y = <span class="built_in">next</span>(<span class="built_in">iter</span>(db))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;sample:&#x27;</span>, x.shape, y.shape, y)</span><br><span class="line"></span><br><span class="line">viz.image(db.denormalize(x), win=<span class="string">&#x27;sample_x&#x27;</span>, opts=<span class="built_in">dict</span>(title=<span class="string">&#x27;sample_x&#x27;</span>))</span><br><span class="line"></span><br><span class="line">loader = DataLoader(db, batch_size=<span class="number">32</span>, shuffle=<span class="literal">True</span>, num_workers=<span class="number">8</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> x,y <span class="keyword">in</span> loader:</span><br><span class="line">    viz.images(db.denormalize(x), nrow=<span class="number">8</span>, win=<span class="string">&#x27;batch&#x27;</span>, opts=<span class="built_in">dict</span>(title=<span class="string">&#x27;batch&#x27;</span>))</span><br><span class="line">    viz.text(<span class="built_in">str</span>(y.numpy()), win=<span class="string">&#x27;label&#x27;</span>, opts=<span class="built_in">dict</span>(title=<span class="string">&#x27;batch-y&#x27;</span>))</span><br><span class="line"></span><br><span class="line">time.sleep(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<p>使用Visdom之前一定要在命令行启动Visdom本地服务器，输入以下命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m visdom.server</span><br></pre></td></tr></table></figure>
+<p>运行效果是每过10sload32张图出来，一排8个，一共4排。</p>
+<p>自定义数据集的部分就完成了，下面就进入到建立模型的阶段了。</p>
+<h3 id="%E5%BB%BA%E7%AB%8B%E6%A8%A1%E5%9E%8B" tabindex="-1" id="建立模型"><a class="headerlink" href="#建立模型"></a>建立模型</h3>
+<p>这一阶段在之前的PyTorch CNN实战部分已经有过详细的讲解了，这里就不赘述了。</p>
+<p>本实验使用的ResNet18模型代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ResNet18</span>(nn.Module):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, num_class</span>):</span><br><span class="line">        <span class="built_in">super</span>(ResNet18, self).__init__()</span><br><span class="line"></span><br><span class="line">        self.conv1 = nn.Sequential(</span><br><span class="line">            nn.Conv2d(<span class="number">3</span>, <span class="number">16</span>, kernel_size=<span class="number">3</span>, stride=<span class="number">3</span>, padding=<span class="number">0</span>),</span><br><span class="line">            nn.BatchNorm2d(<span class="number">16</span>)</span><br><span class="line">        )</span><br><span class="line">        <span class="comment"># followed 4 blocks</span></span><br><span class="line">        <span class="comment"># [b, 16, h, w] =&gt; [b, 32, h ,w]</span></span><br><span class="line">        self.blk1 = ResBlk(<span class="number">16</span>, <span class="number">32</span>, stride=<span class="number">3</span>)</span><br><span class="line">        <span class="comment"># [b, 32, h, w] =&gt; [b, 64, h, w]</span></span><br><span class="line">        self.blk2 = ResBlk(<span class="number">32</span>, <span class="number">64</span>, stride=<span class="number">3</span>)</span><br><span class="line">        <span class="comment"># # [b, 64, h, w] =&gt; [b, 128, h, w]</span></span><br><span class="line">        self.blk3 = ResBlk(<span class="number">64</span>, <span class="number">128</span>, stride=<span class="number">2</span>)</span><br><span class="line">        <span class="comment"># # [b, 128, h, w] =&gt; [b, 256, h, w]</span></span><br><span class="line">        self.blk4 = ResBlk(<span class="number">128</span>, <span class="number">256</span>, stride=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># [b, 256, 7, 7]</span></span><br><span class="line">        self.outlayer = nn.Linear(<span class="number">256</span>*<span class="number">3</span>*<span class="number">3</span>, num_class)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        :param x:</span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        x = F.relu(self.conv1(x))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># [b, 64, h, w] =&gt; [b, 1024, h, w]</span></span><br><span class="line">        x = self.blk1(x)</span><br><span class="line">        x = self.blk2(x)</span><br><span class="line">        x = self.blk3(x)</span><br><span class="line">        x = self.blk4(x)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># print(x.shape)</span></span><br><span class="line">        x = x.view(x.size(<span class="number">0</span>), -<span class="number">1</span>)</span><br><span class="line">        x = self.outlayer(x)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<h3 id="%E8%AE%AD%E7%BB%83%EF%BC%8C%E9%AA%8C%E8%AF%81%EF%BC%8C%E6%B5%8B%E8%AF%95" tabindex="-1" id="训练，验证，测试"><a class="headerlink" href="#训练，验证，测试"></a>训练，验证，测试</h3>
+<h4 id="%E4%B8%A5%E6%A0%BCtrain%EF%BC%8Cval%EF%BC%8Ctest%E6%A8%A1%E6%9D%BF%E2%80%BB" tabindex="-1" id="严格Train，Val，Test模板※"><a class="headerlink" href="#严格Train，Val，Test模板※"></a>严格Train，Val，Test模板※</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(epochs):</span><br><span class="line">    </span><br><span class="line">    train(train_db)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> epoch%<span class="number">10</span>==<span class="number">0</span>: <span class="comment"># Val</span></span><br><span class="line">        val_acc = evaluate(val_db)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> val_acc <span class="keyword">is</span> the best:</span><br><span class="line">            save_ckpt() <span class="comment"># 保存当前网络参数</span></span><br><span class="line">        <span class="keyword">if</span> out_of_patience():</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">load_ckpt <span class="comment"># 加载网络参数</span></span><br><span class="line">test_acc = evaluate(test_db) <span class="comment"># test</span></span><br></pre></td></tr></table></figure>
+<p>以后训练按照以上模板进行书写即可。</p>
+<p>本实验中所使用的代码如下所示：</p>
+<p>evaluate部分</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">evalute</span>(<span class="params">model, loader</span>):</span><br><span class="line">    model.<span class="built_in">eval</span>()</span><br><span class="line">    </span><br><span class="line">    correct = <span class="number">0</span></span><br><span class="line">    total = <span class="built_in">len</span>(loader.dataset)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> x,y <span class="keyword">in</span> loader:</span><br><span class="line">        x,y = x.to(device), y.to(device)</span><br><span class="line">        <span class="keyword">with</span> torch.no_grad():</span><br><span class="line">            logits = model(x)</span><br><span class="line">            pred = logits.argmax(dim=<span class="number">1</span>)</span><br><span class="line">        correct += torch.eq(pred, y).<span class="built_in">sum</span>().<span class="built_in">float</span>().item()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> correct / total</span><br></pre></td></tr></table></figure>
+<p>main部分</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line"></span><br><span class="line">    model = ResNet18(<span class="number">5</span>).to(device)</span><br><span class="line">    optimizer = optim.Adam(model.parameters(), lr=lr)</span><br><span class="line">    criteon = nn.CrossEntropyLoss()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    best_acc, best_epoch = <span class="number">0</span>, <span class="number">0</span> <span class="comment"># 保存最优模型参数</span></span><br><span class="line">    global_step = <span class="number">0</span></span><br><span class="line">    viz.line([<span class="number">0</span>], [-<span class="number">1</span>], win=<span class="string">&#x27;loss&#x27;</span>, opts=<span class="built_in">dict</span>(title=<span class="string">&#x27;loss&#x27;</span>))</span><br><span class="line">    viz.line([<span class="number">0</span>], [-<span class="number">1</span>], win=<span class="string">&#x27;val_acc&#x27;</span>, opts=<span class="built_in">dict</span>(title=<span class="string">&#x27;val_acc&#x27;</span>))</span><br><span class="line">    <span class="keyword">for</span> epoch <span class="keyword">in</span> <span class="built_in">range</span>(epochs):</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> step, (x,y) <span class="keyword">in</span> <span class="built_in">enumerate</span>(train_loader):</span><br><span class="line"></span><br><span class="line">            <span class="comment"># x: [b, 3, 224, 224], y: [b]</span></span><br><span class="line">            x, y = x.to(device), y.to(device)</span><br><span class="line">            </span><br><span class="line">            model.train()</span><br><span class="line">            logits = model(x)</span><br><span class="line">            loss = criteon(logits, y)</span><br><span class="line"></span><br><span class="line">            optimizer.zero_grad()</span><br><span class="line">            loss.backward()</span><br><span class="line">            optimizer.step()</span><br><span class="line"></span><br><span class="line">            viz.line([loss.item()], [global_step], win=<span class="string">&#x27;loss&#x27;</span>, update=<span class="string">&#x27;append&#x27;</span>)</span><br><span class="line">            global_step += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> epoch % <span class="number">1</span> == <span class="number">0</span>:</span><br><span class="line"></span><br><span class="line">            val_acc = evalute(model, val_loader)</span><br><span class="line">            <span class="keyword">if</span> val_acc&gt; best_acc:</span><br><span class="line">                best_epoch = epoch</span><br><span class="line">                best_acc = val_acc</span><br><span class="line"></span><br><span class="line">                torch.save(model.state_dict(), <span class="string">&#x27;best.mdl&#x27;</span>) <span class="comment"># 保存最优模型参数</span></span><br><span class="line"></span><br><span class="line">                viz.line([val_acc], [global_step], win=<span class="string">&#x27;val_acc&#x27;</span>, update=<span class="string">&#x27;append&#x27;</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 结束train后</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;best acc:&#x27;</span>, best_acc, <span class="string">&#x27;best epoch:&#x27;</span>, best_epoch)</span><br><span class="line">	<span class="comment"># 加载最优模型</span></span><br><span class="line">    model.load_state_dict(torch.load(<span class="string">&#x27;best.mdl&#x27;</span>))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;loaded from ckpt!&#x27;</span>)</span><br><span class="line">	<span class="comment"># 进行test</span></span><br><span class="line">    test_acc = evalute(model, test_loader)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;test acc:&#x27;</span>, test_acc)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" ><div class="body"><p>如果想要实时检测训练情况，那么我们可以使用visdom工具，而不是最后进行matplotlib，实时监控可以在模型出现问题时及时停下来，进行调整。(如上面的代码所示)</p></div></div>
+<h3 id="%E7%9B%AE%E5%89%8D%E7%BB%93%E6%9E%9C" tabindex="-1" id="目前结果"><a class="headerlink" href="#目前结果"></a>目前结果</h3>
+<p>按照以上步骤下来，我们的模型train下来的loss是非常小的，但是测试集，准确率并没有达到理想的准确率，这说明我们的模型发生了过拟合,发生这样的事情非常的正常，因为我们数据集的规模非常的小，而且种类也不多，对于ResNet18这种较为复杂的神经网络是不够的，很容易出现这样的问题，因此，这个时候就有必要使用<strong>迁移学习</strong>解决过拟合的问题了。</p>
+<h3 id="%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%EF%BC%88transfer-learning%EF%BC%89" tabindex="-1" id="迁移学习（Transfer-Learning）"><a class="headerlink" href="#迁移学习（Transfer-Learning）"></a>迁移学习（Transfer Learning）</h3>
+<p>简而言之，迁移学习是一种机器学习方法，就是把为任务 A 开发的模型作为初始点，重新使用在为任务 B 开发模型的过程中。</p>
+<p>在我们这里，就是在训练好ImageNet数据集的神经网络的基础上，提取其中训练好的网络参数，加载到要训练宝可梦数据集的网络中，然后再对宝可梦数据集进行训练。</p>
+<p>这里我们直接使用的是<code>torchvision</code>中提供好的<code>resnet18</code>模型</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> torchvision.models <span class="keyword">import</span> resnet18</span><br></pre></td></tr></table></figure>
+<div class="tag-plugin colorful note" color="red"><div class="body"><p>此ResNet18是已经训练好的模型！</p></div></div>
+<p>我们要做的就是将其前17层拆下来，然后最后一层接一层我们自己的全连接层进行分类。</p>
+<p>使用<code>children()</code>方法拆下网络的前17层然后传入到我们自己的model中去，然后再接Flatten操作，然后接全连接层。</p>
+<p>代码如下所示：（只需要在初始化模型那里改变一点即可，这里就不贴代码汇总了）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">trained_model = resnet18(pretrained=<span class="literal">True</span>)</span><br><span class="line">model = nn.Sequential(*<span class="built_in">list</span>(trained_model.children())[:-<span class="number">1</span>], <span class="comment">#[b, 512, 1, 1]</span></span><br><span class="line">                      Flatten(), <span class="comment"># [b, 512, 1, 1] =&gt; [b, 512]</span></span><br><span class="line">                      nn.Linear(<span class="number">512</span>, <span class="number">5</span>)</span><br><span class="line">                     ).to(device)</span><br></pre></td></tr></table></figure>
+<p>Flatten层代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Flatten</span>(nn.Module):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>(Flatten, self).__init__()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        shape = torch.prod(torch.tensor(x.shape[<span class="number">1</span>:])).item()</span><br><span class="line">        <span class="keyword">return</span> x.view(-<span class="number">1</span>, shape)</span><br></pre></td></tr></table></figure>
+<h3 id="%E7%BB%93%E6%9E%9C" tabindex="-1" id="结果"><a class="headerlink" href="#结果"></a>结果</h3>
+<p>最终，train loss在同一水平下，验证集的准确率提高了10%左右，使用迁移学习的效果提升还是非常明显的。</p>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/PyTorch/PyTorch%20RNN&LSTM.html">PyTorch RNN&LSTM</a></div><div class="item" id="next"><div class="note">接下来阅读</div><a href="/wiki/PyTorch/PyTorch%20%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8.html">PyTorch 自编码器</a></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#pokemon-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">Pokemon 数据集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-text">数据集基本信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E5%88%92%E5%88%86"><span class="toc-text">数据集划分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E6%AD%A5%E9%AA%A4"><span class="toc-text">实战步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E5%8A%A0%E8%BD%BD"><span class="toc-text">数据集加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E6%AD%A5%E9%AA%A4%EF%BC%88preprocessing%EF%BC%89"><span class="toc-text">数据预处理步骤（Preprocessing）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E5%AD%98%E6%94%BE%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="toc-text">数据集存放文件结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pytorch%E5%AE%9E%E7%8E%B0"><span class="toc-text">PyTorch实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#name2label"><span class="toc-text">name2label</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#load_csv%E5%8A%A0%E8%BD%BD%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="toc-text">load_csv加载文件信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%92%E5%88%86%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text">划分数据集</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA"><span class="toc-text">数据增强</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#class%E9%83%A8%E5%88%86%E4%BB%A3%E7%A0%81%E6%B1%87%E6%80%BB"><span class="toc-text">Class部分代码汇总</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#visdom%E9%AA%8C%E8%AF%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E9%9B%86%E5%8A%A0%E8%BD%BD%E6%AD%A3%E7%A1%AE%E6%80%A7"><span class="toc-text">Visdom验证自定义数据集加载正确性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BB%BA%E7%AB%8B%E6%A8%A1%E5%9E%8B"><span class="toc-text">建立模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%EF%BC%8C%E9%AA%8C%E8%AF%81%EF%BC%8C%E6%B5%8B%E8%AF%95"><span class="toc-text">训练，验证，测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%A5%E6%A0%BCtrain%EF%BC%8Cval%EF%BC%8Ctest%E6%A8%A1%E6%9D%BF%E2%80%BB"><span class="toc-text">严格Train，Val，Test模板※</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%89%8D%E7%BB%93%E6%9E%9C"><span class="toc-text">目前结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%EF%BC%88transfer-learning%EF%BC%89"><span class="toc-text">迁移学习（Transfer Learning）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-text">结果</span></a></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
   }
-  .laptop-only {
-    display: block !important;
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js`,
+    marked: `https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js`
   }
-  .l_body .l_right {
-    top: 8px;
-    position: fixed;
-    max-height: calc(100% - 8px * 2);
-    transform: translateX(320px);
-    transition: transform 0.38s ease-out;
-    margin: 0;
-    right: 8px;
-    box-shadow: $boxshadow-card-float;
-    z-index: 10;
-    background: var(--site-bg);
-    overflow: auto;
-    --blur-bg: var(--alpha60);
-    --blur-px: 50px;
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
   }
-  .l_body[rightbar] .l_right {
-    transform: translateX(0px);
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.27.0" async></script>
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script><script defer src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.swiper-slide img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
   }
-  .l_body[rightbar] .main-mask {
-    pointer-events: inherit;
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
   }
-}
-@media screen and (max-width: $device-mobile-max) {
-  .mobile-only {
-    display: block !important;
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || null
+        }
+      });
+    })
   }
-  .l_body {
-    padding: 0;
-    display: block;
-  }
-  .l_body .l_left {
-    position: fixed;
-    transform: translateX(-320px);
-    transition: transform 0.38s ease-out;
-    margin: 0;
-    left: 8px;
-    box-shadow: $boxshadow-card-float;
-    z-index: 10;
-  }
-  .l_body .l_main {
-    max-width: 100%;
-  }
-  .l_body[leftbar] .l_left {
-    transform: translateX(0px);
-  }
-  .l_body[leftbar] .main-mask {
-    opacity: 1;
-    pointer-events: inherit;
-  }
-}
-.main-mask {
-  position: fixed;
-  pointer-events: none;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.1);
-  z-index: 9;
-  opacity: 0;
-  trans1: opacity;
-}
+</script><script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script><link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
