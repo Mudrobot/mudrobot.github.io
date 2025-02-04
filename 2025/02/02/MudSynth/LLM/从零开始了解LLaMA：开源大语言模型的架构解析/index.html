@@ -1,0 +1,754 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.27.0" theme-name="Stellar" theme-version="1.27.0">
+  
+  <meta name="generator" content="Hexo 7.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>从零开始了解LLaMA：开源大语言模型的架构解析 - MudSynth</title>
+
+  
+    <meta name="description" content="你是否好奇LLaMA是如何工作的？它与其他LLM相比有何优势？在这篇博客中，我们将结合代码深入浅出地解析LLaMA的整体架构，带你从零开始了解这一强大的语言模型。我们将探讨LLaMA的模型结构，帮助你全面理解LLaMA的运作机制，并为你开启探索LLM世界的大门。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始了解LLaMA：开源大语言模型的架构解析">
+<meta property="og:url" content="http://example.com/2025/02/02/MudSynth/LLM/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E4%BA%86%E8%A7%A3LLaMA%EF%BC%9A%E5%BC%80%E6%BA%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9E%B6%E6%9E%84%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="你是否好奇LLaMA是如何工作的？它与其他LLM相比有何优势？在这篇博客中，我们将结合代码深入浅出地解析LLaMA的整体架构，带你从零开始了解这一强大的语言模型。我们将探讨LLaMA的模型结构，帮助你全面理解LLaMA的运作机制，并为你开启探索LLM世界的大门。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202152010.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202153122.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202154107.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202214619.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202155920.png">
+<meta property="og:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202160510.png">
+<meta property="article:published_time" content="2025-02-02T07:10:36.244Z">
+<meta property="article:modified_time" content="2025-02-03T08:09:11.963Z">
+<meta property="article:author" content="Mudrobot">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="llama">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202152010.png">
+  
+  
+  
+  <meta name="keywords" content="LLM,llama">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.27.0">
+
+  
+
+  
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css" />
+</head>
+<body>
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/assets/float cat4.jpg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></a><a class="title" href="/"><div class="main" ff="title">MudSynth</div><div class="sub normal cap">Thinking</div><div class="sub hover cap" style="opacity:0"> Inspiring</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="文档" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2025/02/02/MudSynth/LLM/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E4%BA%86%E8%A7%A3LLaMA%EF%BC%9A%E5%BC%80%E6%BA%90%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9E%B6%E6%9E%84%E8%A7%A3%E6%9E%90/"><span class="title">从零开始了解LLaMA：开源大语言模型的架构解析</span></a><a class="item title" href="/2025/01/06/MudSynth/Quant/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91AWQ/"><span class="title">【论文笔记】AWQ</span></a><a class="item title" href="/2024/09/26/MudSynth/ReID/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91AUL/"><span class="title">【论文笔记】AUL</span></a><a class="item title" href="/2024/09/26/MudSynth/ReID/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91DNDM/"><span class="title">【论文笔记】DNDM</span></a><a class="item title" href="/2024/09/26/MudSynth/Diffusion/DDIM%20%E5%8E%9F%E7%90%86%E6%8E%A8%E5%AF%BC/"><span class="title">DDIM 原理推导</span></a><a class="item title" href="/2024/09/26/MudSynth/Diffusion/DDPM%20%E5%8E%9F%E7%90%86%E6%8E%A8%E5%AF%BC/"><span class="title">DDPM 原理推导</span></a><a class="item title" href="/2024/09/26/MudSynth/ReID/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91DEEN/"><span class="title">【论文笔记】DEEN</span></a><a class="item title" href="/2024/09/26/MudSynth/ReID/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91Re-ranking/"><span class="title">【论文笔记】Re-ranking</span></a><a class="item title" href="/2024/09/26/MudSynth/ReID/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91IDKL/"><span class="title">【论文笔记】IDKL</span></a><a class="item title" href="/2024/09/26/hello-world/"><span class="title">Hello World</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/LLM/">LLM</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2025-02-02T07:10:36.244Z">2025-02-02</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2025-02-03T08:09:11.963Z">2025-02-03</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>从零开始了解LLaMA：开源大语言模型的架构解析</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><blockquote>
+<p>整理自B站教程：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1nK4y1F7x7?spm_id_from=333.788.videopod.sections&amp;vd_source=7d5a8a31be1040d87d552a89b051e9f6">图解llama架构 解读源码实现_哔哩哔哩_bilibili</a></p>
+</blockquote>
+<h2 id="0.-%E5%BC%95%E8%A8%80" tabindex="-1" id="0-引言"><a class="headerlink" href="#0-引言"></a>0. 引言</h2>
+<p>近年来，大型语言模型（LLM）在自然语言处理领域取得了突破性进展，而LLaMA（Large Language Model Meta AI）作为Meta AI开源的一系列LLM，以其优异的性能和开放的姿态，迅速成为研究者和开发者关注的焦点。</p>
+<p>你是否好奇LLaMA是如何工作的？它与其他LLM相比有何优势？在这篇博客中，我们将结合代码深入浅出地解析LLaMA的整体架构，带你从零开始了解这一强大的语言模型。我们将探讨LLaMA的模型结构，帮助你全面理解LLaMA的运作机制，并为你开启探索LLM世界的大门。</p>
+<p>为了能够更好的配合原代码进行阅读，首先需要安装<code>transformers</code>库：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install transformers</span><br></pre></td></tr></table></figure>
+<p>使用<code>pip show transformers</code>定位到安装包的位置后，使用代码编辑器打开库所在文件夹，我们需要阅读的代码在<code>models/llama</code>文件夹中。</p>
+<h2 id="1.-%E5%88%86%E8%AF%8D%E5%99%A8%E9%83%A8%E5%88%86" tabindex="-1" id="1-分词器部分"><a class="headerlink" href="#1-分词器部分"></a>1. 分词器部分</h2>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202152010.png" alt="image.png" /></p>
+<p>在LLaMA的整体架构中，分词器（Tokenizer）部分负责将原始文本转换为模型能够理解的输入格式。这个过程是深度学习模型处理文本数据的关键步骤，主要通过将文本转换为一系列数字化的ID（即token IDs）来实现。</p>
+<p>以一个简单的例子为说明：假设我们有一个文本输入 “I love machine learning.”。分词器首先会将文本分割成以下几个单元：</p>
+<ul>
+<li><strong>“I”</strong></li>
+<li><strong>“love”</strong></li>
+<li><strong>“machine”</strong></li>
+<li><strong>“learning”</strong></li>
+<li><strong>”.”</strong></li>
+</ul>
+<p>接着，分词器将这些词汇映射为对应的数字ID（token IDs）。例如，假设词汇表中的映射为：</p>
+<ul>
+<li>“I” -&gt; 101</li>
+<li>“love” -&gt; 2057</li>
+<li>“machine” -&gt; 12345</li>
+<li>“learning” -&gt; 67890</li>
+<li>“.” -&gt; 999</li>
+</ul>
+<p>最终，分词器输出的token IDs序列为：<strong>[101, 2057, 12345, 67890, 999]</strong>。这些ID作为LLaMA模型的输入，供模型进行进一步的计算和处理。</p>
+<p>通过这种方式，LLaMA能够高效地理解和处理文本数据，为后续的模型计算奠定基础。分词器在这一过程中的作用不仅仅是将文字转为数字，它还要确保分割的单位能够反映出文本的语法和语义结构，从而提高模型的理解能力和生成效果。</p>
+<h2 id="2.-llama%E4%B8%BB%E5%B9%B2%E9%83%A8%E5%88%86" tabindex="-1" id="2-LLaMA主干部分"><a class="headerlink" href="#2-LLaMA主干部分"></a>2. LLaMA主干部分</h2>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202153122.png" alt="image.png" /></p>
+<p>LLaMA的主干部分主要负责对输入文本进行深入的特征提取和理解。这一部分从分词器输出的token IDs开始，经过嵌入层（Embedding），并通过多个隐藏状态（hidden states）层层传递，最终输出模型的高级特征表示。</p>
+<h3 id="2.1-%E5%B5%8C%E5%85%A5%E5%B1%82%EF%BC%88embedding%EF%BC%89" tabindex="-1" id="2-1-嵌入层（Embedding）"><a class="headerlink" href="#2-1-嵌入层（Embedding）"></a>2.1 嵌入层（Embedding）</h3>
+<p>在LLaMA模型的主干部分，首先是<strong>嵌入层（Embedding）</strong>。嵌入层将每个token ID转化为高维向量，使得模型可以在更高层次上理解和处理输入数据。嵌入向量包含了每个token的语义信息，使得模型能够基于这些信息进行后续的计算。</p>
+<h3 id="2.2-%E9%9A%90%E8%97%8F%E7%8A%B6%E6%80%81%EF%BC%88hidden-states%EF%BC%89" tabindex="-1" id="2-2-隐藏状态（hidden-states）"><a class="headerlink" href="#2-2-隐藏状态（hidden-states）"></a>2.2 隐藏状态（hidden states）</h3>
+<p>从嵌入层输出的向量会进入一系列的隐藏状态（hidden states）。这些隐藏状态是神经网络中每一层的输出，包含了输入数据在网络中的逐步转换过程。LLaMA使用了多个隐藏状态层，这些层共同作用，捕捉了文本中更复杂的语法和语义特征。每一层的输出都会提供关于输入文本的不同方面的理解，帮助模型构建更精确的上下文关系。</p>
+<h3 id="2.3-%E5%A4%9A%E5%B1%82%E5%A4%84%E7%90%86%EF%BC%88layers%EF%BC%89" tabindex="-1" id="2-3-多层处理（Layers）"><a class="headerlink" href="#2-3-多层处理（Layers）"></a>2.3 多层处理（Layers）</h3>
+<p>LLaMA模型的核心部分由多个<strong>层（Layers）</strong> 组成，每一层都在不断改进模型对输入文本的理解。这些层通过多个神经网络模块，如自注意力机制（Self-attention），帮助模型捕捉长距离依赖关系和复杂的语义信息。每一层都从前一层的输出（即隐藏状态）中提取更高层次的特征表示，逐步增强对文本的理解。在后面我们会结合代码进行具体讲解。</p>
+<p>最终，LLaMA通过这些多层的处理机制，能够获得更为丰富的语义表示，进而完成各种语言理解和生成任务。</p>
+<p>通过这种结构，LLaMA能够有效地进行文本的深度处理，最大化其对输入的理解能力。每个层级的输出（隐藏状态）都会传递至下一层，以确保模型在每一阶段都能构建出更具语境感知的特征表示。</p>
+<h3 id="2.4-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0" tabindex="-1" id="2-4-代码实现"><a class="headerlink" href="#2-4-代码实现"></a>2.4 代码实现</h3>
+<p>这一部分的代码对应的就是<code>models/llama/modeling_llama.py</code>中的<code>LlamaModel</code>类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LlamaModel</span>(<span class="title class_ inherited__">LlamaPreTrainedModel</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Transformer decoder consisting of *config.num_hidden_layers* layers. Each layer is a [`LlamaDecoderLayer`]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        config: LlamaConfig</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config: LlamaConfig</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(config)</span><br><span class="line">        self.padding_idx = config.pad_token_id</span><br><span class="line">        self.vocab_size = config.vocab_size</span><br><span class="line"></span><br><span class="line">        self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)</span><br><span class="line">        self.layers = nn.ModuleList(</span><br><span class="line">            [LlamaDecoderLayer(config, layer_idx) <span class="keyword">for</span> layer_idx <span class="keyword">in</span> <span class="built_in">range</span>(config.num_hidden_layers)]</span><br><span class="line">        )</span><br><span class="line">        self.norm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)</span><br><span class="line">        self.rotary_emb = LlamaRotaryEmbedding(config=config)</span><br><span class="line">        self.gradient_checkpointing = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initialize weights and apply final processing</span></span><br><span class="line">        self.post_init()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后核心的执行顺序如下（<code>forward</code>函数精简版）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> inputs_embeds <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">	inputs_embeds = self.embed_tokens(input_ids)</span><br><span class="line"></span><br><span class="line">causal_mask = self._update_causal_mask(</span><br><span class="line">		attention_mask, inputs_embeds, cache_position, past_key_values, output_attentions</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">hidden_states = inputs_embeds</span><br><span class="line"></span><br><span class="line"><span class="comment"># create position embeddings to be shared across the decoder layers</span></span><br><span class="line">position_embeddings = self.rotary_emb(hidden_states, position_ids)</span><br><span class="line"></span><br><span class="line"><span class="comment"># hidden states forward(decoder layers)</span></span><br><span class="line"><span class="keyword">for</span> decoder_layer <span class="keyword">in</span> self.layers[: self.config.num_hidden_layers]:</span><br><span class="line">	<span class="keyword">if</span> output_hidden_states:</span><br><span class="line">		all_hidden_states += (hidden_states,)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> self.gradient_checkpointing <span class="keyword">and</span> self.training:</span><br><span class="line">		layer_outputs = self._gradient_checkpointing_func(</span><br><span class="line">			decoder_layer.__call__,</span><br><span class="line">			hidden_states,</span><br><span class="line">			causal_mask,</span><br><span class="line">			position_ids,</span><br><span class="line">			past_key_values,</span><br><span class="line">			output_attentions,</span><br><span class="line">			use_cache,</span><br><span class="line">			cache_position,</span><br><span class="line">			position_embeddings,</span><br><span class="line">		)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		layer_outputs = decoder_layer(</span><br><span class="line">			hidden_states,</span><br><span class="line">			attention_mask=causal_mask,</span><br><span class="line">			position_ids=position_ids,</span><br><span class="line">			past_key_value=past_key_values,</span><br><span class="line">			output_attentions=output_attentions,</span><br><span class="line">			use_cache=use_cache,</span><br><span class="line">			cache_position=cache_position,</span><br><span class="line">			position_embeddings=position_embeddings,</span><br><span class="line">			**flash_attn_kwargs,</span><br><span class="line">		)</span><br><span class="line"></span><br><span class="line">	hidden_states = layer_outputs[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> output_attentions:</span><br><span class="line">		all_self_attns += (layer_outputs[<span class="number">1</span>],)</span><br><span class="line"></span><br><span class="line">hidden_states = self.norm(hidden_states)</span><br><span class="line"></span><br><span class="line"><span class="comment"># add hidden states from the last decoder layer</span></span><br><span class="line"><span class="keyword">if</span> output_hidden_states:</span><br><span class="line">	all_hidden_states += (hidden_states,)</span><br><span class="line"></span><br><span class="line">output = BaseModelOutputWithPast(</span><br><span class="line">	last_hidden_state=hidden_states,</span><br><span class="line">	past_key_values=past_key_values <span class="keyword">if</span> use_cache <span class="keyword">else</span> <span class="literal">None</span>,</span><br><span class="line">	hidden_states=all_hidden_states,</span><br><span class="line">	attentions=all_self_attns,</span><br><span class="line">)</span><br><span class="line"><span class="keyword">return</span> output <span class="keyword">if</span> return_dict <span class="keyword">else</span> output.to_tuple()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="3.-llama%E7%9A%84clm%E4%BB%BB%E5%8A%A1" tabindex="-1" id="3-LLaMA的CLM任务"><a class="headerlink" href="#3-LLaMA的CLM任务"></a>3. LLaMA的CLM任务</h2>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202154107.png" alt="image.png" /></p>
+<p>在LLaMA模型中，<strong>CLM任务</strong>（Causal Language Modeling）是用于训练模型理解文本生成的关键任务之一。其主要目标是通过预测下一个token的方式，训练模型掌握语言的生成能力。</p>
+<h3 id="3.1-%E8%87%AA%E5%9B%9E%E5%BD%92loss%EF%BC%88causal-loss%EF%BC%89" tabindex="-1" id="3-1-自回归Loss（Causal-Loss）"><a class="headerlink" href="#3-1-自回归Loss（Causal-Loss）"></a>3.1 自回归Loss（Causal Loss）</h3>
+<p>LLaMA在CLM任务中使用了<strong>自回归损失（Causal Loss）</strong>。在该任务中，模型基于输入的文本（或token序列）逐步预测每个token，尝试生成下一个token。这一过程通过计算预测值与实际值之间的差距来优化模型，从而使模型能够更准确地预测未来的token。损失函数则根据这个差距来反向传播误差，更新模型参数。</p>
+<h3 id="3.2-clm%E8%BE%93%E5%87%BA" tabindex="-1" id="3-2-CLM输出"><a class="headerlink" href="#3-2-CLM输出"></a>3.2 CLM输出</h3>
+<p>CLM任务的最终输出是<strong>CLM output</strong>，即通过训练得到的token预测结果。这个输出包含了每个时间步的预测token，以及其对应的生成概率分布，最终构成了模型的语言生成能力。</p>
+<h3 id="3.3-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0" tabindex="-1" id="3-3-代码实现"><a class="headerlink" href="#3-3-代码实现"></a>3.3 代码实现</h3>
+<p>这一部分的代码对应的就是<code>models/llama/modeling_llama.py</code>中的<code>LlamaForCausalLM</code>类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LlamaForCausalLM</span>(LlamaPreTrainedModel, GenerationMixin):</span><br><span class="line">    _tied_weights_keys = [<span class="string">&quot;lm_head.weight&quot;</span>]</span><br><span class="line">    _tp_plan = &#123;<span class="string">&quot;lm_head&quot;</span>: <span class="string">&quot;colwise_rep&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(config)</span><br><span class="line">        self.model = LlamaModel(config)</span><br><span class="line">        self.vocab_size = config.vocab_size</span><br><span class="line">        self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initialize weights and apply final processing</span></span><br><span class="line">        self.post_init()</span><br></pre></td></tr></table></figure>
+<p>可以看到，他上来就定义了一个<code>LlamaModel</code>，利用输出的<code>hidden_states</code>做自回归任务（next token prediction）。</p>
+<p>然后我们看forward部分（精简版），输入<code>input_ids</code>，先过上面我们说的model。然后过linear层，最后计算一个loss，loss function的定义见后续代码。</p>
+<p>forward部分精简版如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)</span></span><br><span class="line">outputs = self.model(</span><br><span class="line">	input_ids=input_ids,</span><br><span class="line">	attention_mask=attention_mask,</span><br><span class="line">	position_ids=position_ids,</span><br><span class="line">	past_key_values=past_key_values,</span><br><span class="line">	inputs_embeds=inputs_embeds,</span><br><span class="line">	use_cache=use_cache,</span><br><span class="line">	output_attentions=output_attentions,</span><br><span class="line">	output_hidden_states=output_hidden_states,</span><br><span class="line">	return_dict=return_dict,</span><br><span class="line">	cache_position=cache_position,</span><br><span class="line">	**kwargs,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">hidden_states = outputs[<span class="number">0</span>]</span><br><span class="line"><span class="comment"># Only compute necessary logits, and do not upcast them to float if we are not computing the loss</span></span><br><span class="line">logits = self.lm_head(hidden_states[:, -num_logits_to_keep:, :])</span><br><span class="line"></span><br><span class="line">loss = <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> labels <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">	loss = self.loss_function(logits=logits, labels=labels, vocab_size=self.config.vocab_size, **kwargs)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> return_dict:</span><br><span class="line">	output = (logits,) + outputs[<span class="number">1</span>:]</span><br><span class="line">	<span class="keyword">return</span> (loss,) + output <span class="keyword">if</span> loss <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> output</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> CausalLMOutputWithPast(</span><br><span class="line">	loss=loss,</span><br><span class="line">	logits=logits,</span><br><span class="line">	past_key_values=outputs.past_key_values,</span><br><span class="line">	hidden_states=outputs.hidden_states,</span><br><span class="line">	attentions=outputs.attentions,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>loss部分代码如下(默认是ForCausalLM)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@property</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">loss_function</span>(<span class="params">self</span>):</span><br><span class="line">	loss_type = <span class="built_in">getattr</span>(self, <span class="string">&quot;loss_type&quot;</span>, <span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> loss_type <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> loss_type <span class="keyword">not</span> <span class="keyword">in</span> LOSS_MAPPING:</span><br><span class="line">		logger.warning_once(</span><br><span class="line">			<span class="string">f&quot;`loss_type=<span class="subst">&#123;loss_type&#125;</span>` was set in the config but it is unrecognised.&quot;</span></span><br><span class="line">			<span class="string">f&quot;Using the default loss: `ForCausalLMLoss`.&quot;</span></span><br><span class="line">		)</span><br><span class="line">		loss_type = <span class="string">&quot;ForCausalLM&quot;</span></span><br><span class="line">	<span class="keyword">return</span> LOSS_MAPPING[loss_type]</span><br></pre></td></tr></table></figure>
+<h4 id="forcausallmloss-%E5%87%BD%E6%95%B0%EF%BC%9A%E5%9B%A0%E6%9E%9C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8D%9F%E5%A4%B1%E8%AE%A1%E7%AE%97" tabindex="-1" id="ForCausalLMLoss-函数：因果语言模型损失计算"><a class="headerlink" href="#ForCausalLMLoss-函数：因果语言模型损失计算"></a><code>ForCausalLMLoss</code> 函数：因果语言模型损失计算</h4>
+<p>这一部分使用的就是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fixed_cross_entropy</span>(<span class="params">source, target, num_items_in_batch: <span class="built_in">int</span> = <span class="literal">None</span>, ignore_index: <span class="built_in">int</span> = -<span class="number">100</span>, **kwargs</span>):</span><br><span class="line">    reduction = <span class="string">&quot;sum&quot;</span> <span class="keyword">if</span> num_items_in_batch <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> <span class="string">&quot;mean&quot;</span></span><br><span class="line">    loss = nn.functional.cross_entropy(source, target, ignore_index=ignore_index, reduction=reduction)</span><br><span class="line">    <span class="keyword">if</span> reduction == <span class="string">&quot;sum&quot;</span>:</span><br><span class="line">        loss = loss / num_items_in_batch</span><br><span class="line">    <span class="keyword">return</span> loss</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">ForCausalLMLoss</span>(<span class="params"></span></span><br><span class="line"><span class="params">    logits, labels, vocab_size: <span class="built_in">int</span>, num_items_in_batch: <span class="built_in">int</span> = <span class="literal">None</span>, ignore_index: <span class="built_in">int</span> = -<span class="number">100</span>, **kwargs</span></span><br><span class="line"><span class="params"></span>):</span><br><span class="line">    <span class="comment"># Upcast to float if we need to compute the loss to avoid potential precision issues</span></span><br><span class="line">    logits = logits.<span class="built_in">float</span>()</span><br><span class="line">    labels = labels.to(logits.device)</span><br><span class="line">    <span class="comment"># Shift so that tokens &lt; n predict n</span></span><br><span class="line">    shift_logits = logits[..., :-<span class="number">1</span>, :].contiguous()</span><br><span class="line">    shift_labels = labels[..., <span class="number">1</span>:].contiguous()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Flatten the tokens</span></span><br><span class="line">    shift_logits = shift_logits.view(-<span class="number">1</span>, vocab_size)</span><br><span class="line">    shift_labels = shift_labels.view(-<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># Enable model parallelism</span></span><br><span class="line">    shift_labels = shift_labels.to(shift_logits.device)</span><br><span class="line">    loss = fixed_cross_entropy(shift_logits, shift_labels, num_items_in_batch, ignore_index, **kwargs)</span><br><span class="line">    <span class="keyword">return</span> loss</span><br></pre></td></tr></table></figure>
+<h5 id="1.-%E8%BE%93%E5%85%A5%E5%8F%82%E6%95%B0" tabindex="-1" id="1-输入参数"><a class="headerlink" href="#1-输入参数"></a>1. 输入参数</h5>
+<ul>
+<li><strong><code>logits</code></strong>: 模型输出，形状 <code>(batch_size, sequence_length, vocab_size)</code>。</li>
+<li><strong><code>labels</code></strong>: 真实标签，形状 <code>(batch_size, sequence_length)</code>。</li>
+<li><strong><code>vocab_size</code></strong>: 词汇表大小。</li>
+<li><strong><code>ignore_index</code></strong>: 忽略的标签索引（如填充符）。</li>
+</ul>
+<h5 id="2.-%E6%A0%B8%E5%BF%83%E6%AD%A5%E9%AA%A4" tabindex="-1" id="2-核心步骤"><a class="headerlink" href="#2-核心步骤"></a>2. 核心步骤</h5>
+<p><strong>2.1 移位操作</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shift_logits = logits[..., :-<span class="number">1</span>, :]  <span class="comment"># 预测：去掉最后一个词</span></span><br><span class="line">shift_labels = labels[..., <span class="number">1</span>:]      <span class="comment"># 标签：去掉第一个词</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>目的</strong>: 使模型只能基于前 ( n-1 ) 个词预测第 ( n ) 个词。</li>
+</ul>
+<p><strong>2.2 展平</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shift_logits = shift_logits.view(-<span class="number">1</span>, vocab_size)  <span class="comment"># 展平为 (N, vocab_size)</span></span><br><span class="line">shift_labels = shift_labels.view(-<span class="number">1</span>)              <span class="comment"># 展平为 (N,)</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>目的</strong>: 将所有预测和标签放在统一维度，方便计算损失。</li>
+</ul>
+<p><strong>2.3 计算交叉熵损失</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loss = fixed_cross_entropy(shift_logits, shift_labels, ...)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>公式</strong>:<p class="katex-block math-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>loss</mtext><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>V</mi></munderover><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi>p</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\text{loss} = -\frac{1}{N} \sum_{i=1}^{N} \sum_{j=1}^{V} y_{ij} \log(p_{ij})
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">loss</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.2421em;vertical-align:-1.4138em;"></span><span class="mord">−</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283em;"><span style="top:-1.8723em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2777em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283em;"><span style="top:-1.8723em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.22222em;">V</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.4138em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">ij</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">ij</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+其中：
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mtext>softmax</mtext><mo stretchy="false">(</mo><msub><mtext>shift_logits</mtext><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">p_{ij} = \text{softmax}(\text{shift\_logits}_{ij})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">ij</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2458em;vertical-align:-0.4958em;"></span><span class="mord text"><span class="mord">softmax</span></span><span class="mopen">(</span><span class="mord"><span class="mord text"><span class="mord">shift_logits</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.102em;"><span style="top:-2.3403em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">ij</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4958em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">y_{ij}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">ij</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span> 是真实标签的 one-hot 编码。</li>
+</ul>
+</li>
+</ul>
+<h5 id="3.-%E6%80%BB%E7%BB%93" tabindex="-1" id="3-总结"><a class="headerlink" href="#3-总结"></a>3. 总结</h5>
+<ul>
+<li><strong>功能</strong>: 计算因果语言模型的损失。</li>
+<li><strong>核心</strong>: 通过移位操作实现因果性，使用交叉熵衡量预测与真实标签的差异。</li>
+<li><strong>输出</strong>: 损失值（标量）。</li>
+</ul>
+<h5 id="%E7%A4%BA%E4%BE%8B" tabindex="-1" id="示例"><a class="headerlink" href="#示例"></a>示例</h5>
+<p>输入：</p>
+<ul>
+<li><code>logits</code>: <code>(2, 3, 5)</code>（批次 2，序列 3，词汇表 5）。</li>
+<li><code>labels</code>: <code>(2, 3)</code>。</li>
+</ul>
+<p>输出：</p>
+<ul>
+<li><code>shift_logits</code>: <code>(2, 2, 5)</code>。</li>
+<li><code>shift_labels</code>: <code>(2, 2)</code>。</li>
+<li>最终损失：标量值。</li>
+</ul>
+<h2 id="4.-llama%E7%9A%84%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E4%BB%BB%E5%8A%A1" tabindex="-1" id="4-LLaMA的文本分类任务"><a class="headerlink" href="#4-LLaMA的文本分类任务"></a>4. LLaMA的文本分类任务</h2>
+<p>除了生成任务，LLaMA还支持<strong>文本分类任务</strong>，这是许多自然语言处理任务的核心部分，特别是在情感分析、主题分类等任务中具有广泛应用。</p>
+<h3 id="4.1-%E5%88%86%E7%B1%BB%E5%B1%82%EF%BC%88classifier-layer%EF%BC%89" tabindex="-1" id="4-1-分类层（Classifier-Layer）"><a class="headerlink" href="#4-1-分类层（Classifier-Layer）"></a>4.1 分类层（Classifier Layer）</h3>
+<p>在文本分类任务中，LLaMA通过一个<strong>nn.Linear</strong>层将隐藏状态（hidden states）转换为适合分类任务的输出。该层根据输入文本的特征，计算出每个类别的概率。</p>
+<h3 id="4.2-%E5%88%86%E7%B1%BB%E6%8D%9F%E5%A4%B1%EF%BC%88classification-loss%EF%BC%89" tabindex="-1" id="4-2-分类损失（Classification-Loss）"><a class="headerlink" href="#4-2-分类损失（Classification-Loss）"></a>4.2 分类损失（Classification Loss）</h3>
+<p>LLaMA使用<strong>分类损失（Classification Loss）</strong> 来优化文本分类任务。与CLM任务不同，分类任务的目标是将文本分配到特定的类别中，损失函数计算预测类别与实际类别之间的差距，并通过反向传播调整模型参数。</p>
+<h3 id="4.3-%E5%88%86%E7%B1%BB%E8%BE%93%E5%87%BA%EF%BC%88classifier-output%EF%BC%89" tabindex="-1" id="4-3-分类输出（Classifier-output）"><a class="headerlink" href="#4-3-分类输出（Classifier-output）"></a>4.3 分类输出（Classifier output）</h3>
+<p>分类任务的输出是<strong>Classifier output</strong>，即模型对输入文本所预测的分类结果。这个输出表示模型对每个类别的预测概率，并通过选择概率最大的类别作为最终分类结果。</p>
+<p>总结来说，LLaMA不仅在语言生成任务（CLM任务）中表现出色，还在文本分类任务中具备强大的能力。通过使用自回归损失和分类损失，LLaMA能够在这两类任务中进行高效的学习与优化，从而实现广泛的自然语言处理应用。</p>
+<h3 id="4.4-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0" tabindex="-1" id="4-4-代码实现"><a class="headerlink" href="#4-4-代码实现"></a>4.4 代码实现</h3>
+<p>这一部分的代码对应的就是<code>models/llama/modeling_llama.py</code>中的<code>LlamaForSequenceClassification</code>类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LlamaForSequenceClassification</span>(<span class="title class_ inherited__">LlamaPreTrainedModel</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(config)</span><br><span class="line">        self.num_labels = config.num_labels</span><br><span class="line">        self.model = LlamaModel(config)</span><br><span class="line">        self.score = nn.Linear(config.hidden_size, self.num_labels, bias=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Initialize weights and apply final processing</span></span><br><span class="line">        self.post_init()</span><br></pre></td></tr></table></figure>
+<p>然后我们看forward部分（精简版），输入<code>input_ids</code>，先过上面我们说的model。然后过linear层，最后计算一个loss，loss function的定义见后续代码。</p>
+<p>forward部分精简版如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">transformer_outputs = self.model(</span><br><span class="line">	input_ids,</span><br><span class="line">	attention_mask=attention_mask,</span><br><span class="line">	position_ids=position_ids,</span><br><span class="line">	past_key_values=past_key_values,</span><br><span class="line">	inputs_embeds=inputs_embeds,</span><br><span class="line">	use_cache=use_cache,</span><br><span class="line">	output_attentions=output_attentions,</span><br><span class="line">	output_hidden_states=output_hidden_states,</span><br><span class="line">	return_dict=return_dict,</span><br><span class="line">)</span><br><span class="line">hidden_states = transformer_outputs[<span class="number">0</span>]</span><br><span class="line">logits = self.score(hidden_states)</span><br><span class="line"></span><br><span class="line">pooled_logits = logits[torch.arange(batch_size, device=logits.device), sequence_lengths]</span><br><span class="line"></span><br><span class="line">loss = <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> labels <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">	loss = self.loss_function(logits=logits, labels=labels, pooled_logits=pooled_logits, config=self.config)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> return_dict:</span><br><span class="line">	output = (pooled_logits,) + transformer_outputs[<span class="number">1</span>:]</span><br><span class="line">	<span class="keyword">return</span> ((loss,) + output) <span class="keyword">if</span> loss <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> output</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> SequenceClassifierOutputWithPast(</span><br><span class="line">	loss=loss,</span><br><span class="line">	logits=pooled_logits,</span><br><span class="line">	past_key_values=transformer_outputs.past_key_values,</span><br><span class="line">	hidden_states=transformer_outputs.hidden_states,</span><br><span class="line">	attentions=transformer_outputs.attentions,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>loss还是使用的是交叉熵损失函数，这里不再赘述</p>
+<p>然后其实还有两个函数:</p>
+<h3 id="4.5-llamaforquestionanswering" tabindex="-1" id="4-5-LlamaForQuestionAnswering"><a class="headerlink" href="#4-5-LlamaForQuestionAnswering"></a>4.5 LlamaForQuestionAnswering</h3>
+<ul>
+<li><strong>任务</strong>：问答任务</li>
+<li><strong>损失函数</strong>：<strong>交叉熵损失</strong>（Cross-Entropy Loss）</li>
+<li>在问答任务中，特别是抽取式问答任务中，LLaMA通常会通过交叉熵损失来计算预测的答案位置与实际答案之间的差距。模型会输出每个token作为答案的概率分布，交叉熵损失用于比较预测的答案跨度与真实答案的跨度之间的差距。</li>
+<li>这里的损失函数通常是<code>torch.nn.CrossEntropyLoss</code>，用来对答案span进行评估。</li>
+</ul>
+<h3 id="4.6-llamafortokenclassification" tabindex="-1" id="4-6-LlamaForTokenClassification"><a class="headerlink" href="#4-6-LlamaForTokenClassification"></a>4.6 LlamaForTokenClassification</h3>
+<ul>
+<li><strong>任务</strong>：标记分类任务</li>
+<li><strong>损失函数</strong>：<strong>交叉熵损失</strong>（Cross-Entropy Loss）</li>
+<li>在标记分类任务中（如命名实体识别、词性标注等），模型会为输入的每个token分配一个标签。每个token的logits将与真实标签进行比较，通常使用交叉熵损失来计算损失。</li>
+<li>同样，交叉熵损失通过 <code>torch.nn.CrossEntropyLoss</code> 来实现。</li>
+</ul>
+<h2 id="5.-llama%E7%9A%84layer%E5%B1%82" tabindex="-1" id="5-LLaMA的Layer层"><a class="headerlink" href="#5-LLaMA的Layer层"></a>5. LLaMA的Layer层</h2>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202214619.png" alt="image.png" /></p>
+<p>LLaMA的<strong>Layer层</strong>是模型的核心结构之一，每一层都由多个重要组成部分构成，这些组件共同作用，帮助模型处理输入数据并提取更深层次的特征表示。每一层的处理步骤通常包括自注意力机制（Attention）、归一化（Norm）和多层感知机（MLP）等模块。</p>
+<h3 id="5.1-%E5%BD%92%E4%B8%80%E5%8C%96%EF%BC%88norm%EF%BC%89" tabindex="-1" id="5-1-归一化（Norm）"><a class="headerlink" href="#5-1-归一化（Norm）"></a>5.1 归一化（Norm）</h3>
+<p>每一层的输入（即隐藏状态hidden states）首先会经过<strong>归一化（Norm）</strong> 操作。归一化的目的是调整输入的分布，使得模型训练更加稳定，并加速收敛过程。通过这种方式，LLaMA能够确保每一层的输入都处于一个合理的数值范围内。</p>
+<h3 id="5.2-%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%EF%BC%88attention%EF%BC%89" tabindex="-1" id="5-2-自注意力机制（Attention）"><a class="headerlink" href="#5-2-自注意力机制（Attention）"></a>5.2 自注意力机制（Attention）</h3>
+<p>接下来，<strong>自注意力机制（Attention）</strong> 会被应用于每一层的隐藏状态。自注意力机制是LLaMA处理序列数据的关键，它帮助模型根据输入数据的各个部分之间的关系来调整每个token的表示。通过这种方式，模型能够捕捉到序列中远程依赖的关系，从而提升对文本语义的理解能力。<strong>注意力机制中的细节会在后面进行详细解释。</strong></p>
+<p>在此步骤中，模型会计算每个token与其他token的相关性，并基于这些信息来更新隐藏状态，使得每个token的表示更加贴合上下文。</p>
+<h3 id="5.3-%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%EF%BC%88residual%EF%BC%89" tabindex="-1" id="5-3-残差连接（Residual）"><a class="headerlink" href="#5-3-残差连接（Residual）"></a>5.3 残差连接（Residual）</h3>
+<p>在自注意力模块之后，<strong>残差连接（Residual）</strong> 被用于将输入隐藏状态与经过自注意力机制更新后的隐藏状态相加，从而形成更新后的隐藏状态。这种残差连接有助于防止梯度消失问题，使得深层模型能够更好地训练。</p>
+<h3 id="5.4-%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA%EF%BC%88mlp%EF%BC%89" tabindex="-1" id="5-4-多层感知机（MLP）"><a class="headerlink" href="#5-4-多层感知机（MLP）"></a>5.4 多层感知机（MLP）</h3>
+<p>每一层的后半部分是<strong>多层感知机（MLP）</strong> 模块，它通常由若干个全连接层（fully connected layers）构成。MLP层的作用是进一步处理更新后的隐藏状态，通过非线性变换来增加模型的表达能力。MLP层帮助模型在处理信息时更好地捕捉复杂的模式。</p>
+<h3 id="5.5-%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%EF%BC%88residual%EF%BC%89" tabindex="-1" id="5-5-残差连接（Residual）"><a class="headerlink" href="#5-5-残差连接（Residual）"></a>5.5 残差连接（Residual）</h3>
+<p>与自注意力机制类似，MLP模块后的输出也会通过一个残差连接与输入进行相加。这样可以确保每一层的特征表示不仅仅依赖于当前层的输出，还结合了输入的信息，使得梯度能够顺利传播，从而提高训练效果。</p>
+<h3 id="5.6-%E6%9C%80%E7%BB%88%E8%BE%93%E5%87%BA%EF%BC%88hidden-states%EF%BC%89" tabindex="-1" id="5-6-最终输出（hidden-states）"><a class="headerlink" href="#5-6-最终输出（hidden-states）"></a>5.6 最终输出（hidden states）</h3>
+<p>经过上述步骤，每一层的最终输出是更新后的<strong>隐藏状态（hidden states）</strong>，它包含了模型在该层提取到的所有语义信息。这些隐藏状态将被传递到下一层，继续进行进一步的处理，直到整个网络完成训练。</p>
+<p>总结来说，LLaMA的每一层通过自注意力、归一化、MLP和残差连接等模块的协作，能够从输入数据中提取越来越丰富的特征。这些层级的组合构建了一个深度神经网络，使得LLaMA能够在多个自然语言处理任务中取得良好的效果。</p>
+<h3 id="5.7-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0" tabindex="-1" id="5-7-代码实现"><a class="headerlink" href="#5-7-代码实现"></a>5.7 代码实现</h3>
+<p>这一部分的代码对应的就是<code>models/llama/modeling_llama.py</code>中的<code>LlamaDecoderLayer</code>类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LlamaDecoderLayer</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config: LlamaConfig, layer_idx: <span class="built_in">int</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.hidden_size = config.hidden_size</span><br><span class="line"></span><br><span class="line">        self.self_attn = LlamaAttention(config=config, layer_idx=layer_idx)</span><br><span class="line"></span><br><span class="line">        self.mlp = LlamaMLP(config)</span><br><span class="line">        self.input_layernorm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)</span><br><span class="line">        self.post_attention_layernorm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)</span><br></pre></td></tr></table></figure>
+<p>可以看到确实如我们之前所介绍那样，包含了3个部分：</p>
+<ul>
+<li>Attention部分</li>
+<li>MLP部分</li>
+<li>标准化部分</li>
+</ul>
+<p>forward函数实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">residual = hidden_states</span><br><span class="line"></span><br><span class="line">hidden_states = self.input_layernorm(hidden_states)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Self Attention</span></span><br><span class="line">hidden_states, self_attn_weights = self.self_attn(</span><br><span class="line">	hidden_states=hidden_states,</span><br><span class="line">	attention_mask=attention_mask,</span><br><span class="line">	position_ids=position_ids,</span><br><span class="line">	past_key_value=past_key_value,</span><br><span class="line">	output_attentions=output_attentions,</span><br><span class="line">	use_cache=use_cache,</span><br><span class="line">	cache_position=cache_position,</span><br><span class="line">	position_embeddings=position_embeddings,</span><br><span class="line">	**kwargs,</span><br><span class="line">)</span><br><span class="line">hidden_states = residual + hidden_states</span><br><span class="line"></span><br><span class="line"><span class="comment"># Fully Connected</span></span><br><span class="line">residual = hidden_states</span><br><span class="line">hidden_states = self.post_attention_layernorm(hidden_states)</span><br><span class="line">hidden_states = self.mlp(hidden_states)</span><br><span class="line">hidden_states = residual + hidden_states</span><br><span class="line"></span><br><span class="line">outputs = (hidden_states,)</span><br><span class="line"><span class="keyword">if</span> output_attentions:</span><br><span class="line">	outputs += (self_attn_weights,)</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> outputs</span><br></pre></td></tr></table></figure>
+<p>可以看到就是如上图所示的一个流程。</p>
+<h2 id="6.-attention%E9%83%A8%E5%88%86" tabindex="-1" id="6-Attention部分"><a class="headerlink" href="#6-Attention部分"></a>6. Attention部分</h2>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202155920.png" alt="image.png" /><br />
+在LLaMA模型中，<strong>Attention机制</strong>是一个关键的模块，帮助模型在处理文本时捕捉不同位置之间的依赖关系。通过这种机制，模型能够动态地关注输入序列中与当前token相关的部分，从而改善对上下文的理解。</p>
+<h3 id="6.1-%E8%BE%93%E5%85%A5%E5%A4%84%E7%90%86" tabindex="-1" id="6-1-输入处理"><a class="headerlink" href="#6-1-输入处理"></a>6.1 输入处理</h3>
+<p>首先，模型会将隐藏状态（hidden states）通过<strong>线性层（nn.Linear）转换为查询（query）</strong> 、<strong>键（key）和值（value）</strong>。这些表示将作为自注意力计算的核心输入。</p>
+<h3 id="6.2-%E6%97%8B%E8%BD%AC%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%EF%BC%88apply_rotary_pos_emb%EF%BC%89" tabindex="-1" id="6-2-旋转位置编码（apply-rotary-pos-emb）"><a class="headerlink" href="#6-2-旋转位置编码（apply-rotary-pos-emb）"></a>6.2 旋转位置编码（apply_rotary_pos_emb）</h3>
+<p>接着，通过<strong>旋转位置编码（apply_rotary_pos_emb）</strong> 对查询和键进行位置编码。这一步确保模型能够捕捉到输入中各token的位置信息，从而正确理解其在上下文中的角色。</p>
+<h3 id="6.3-%E8%AE%A1%E7%AE%97%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9D%83%E9%87%8D" tabindex="-1" id="6-3-计算注意力权重"><a class="headerlink" href="#6-3-计算注意力权重"></a>6.3 计算注意力权重</h3>
+<p>然后，查询和键将进行点积计算，并通过<strong>softmax</strong>函数得到<strong>注意力权重（attn_weights）</strong>。这些权重表示每个token在当前上下文中对其他token的“关注程度”。</p>
+<h3 id="6.4-%E8%AE%A1%E7%AE%97%E8%BE%93%E5%87%BA" tabindex="-1" id="6-4-计算输出"><a class="headerlink" href="#6-4-计算输出"></a>6.4 计算输出</h3>
+<p>最后，注意力权重会与值（value）进行矩阵乘法（MatMul），从而得到最终的<strong>Attention输出（attn_output）</strong>。这个输出表示了模型基于输入文本中各部分关系所做的加权汇总。</p>
+<h3 id="6.5-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0" tabindex="-1" id="6-5-代码实现"><a class="headerlink" href="#6-5-代码实现"></a>6.5 代码实现</h3>
+<p>这一部分的代码对应的就是<code>models/llama/modeling_llama.py</code>中的<code>LlamaAttention</code>类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LlamaAttention</span>(nn.Module):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Multi-headed attention from &#x27;Attention Is All You Need&#x27; paper&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config: LlamaConfig, layer_idx: <span class="built_in">int</span></span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.config = config</span><br><span class="line">        self.layer_idx = layer_idx</span><br><span class="line">        self.head_dim = <span class="built_in">getattr</span>(config, <span class="string">&quot;head_dim&quot;</span>, config.hidden_size // config.num_attention_heads)</span><br><span class="line">        self.num_key_value_groups = config.num_attention_heads // config.num_key_value_heads</span><br><span class="line">        self.scaling = self.head_dim**-<span class="number">0.5</span></span><br><span class="line">        self.attention_dropout = config.attention_dropout</span><br><span class="line">        self.is_causal = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">        self.q_proj = nn.Linear(</span><br><span class="line">            config.hidden_size, config.num_attention_heads * self.head_dim, bias=config.attention_bias</span><br><span class="line">        )</span><br><span class="line">        self.k_proj = nn.Linear(</span><br><span class="line">            config.hidden_size, config.num_key_value_heads * self.head_dim, bias=config.attention_bias</span><br><span class="line">        )</span><br><span class="line">        self.v_proj = nn.Linear(</span><br><span class="line">            config.hidden_size, config.num_key_value_heads * self.head_dim, bias=config.attention_bias</span><br><span class="line">        )</span><br><span class="line">        self.o_proj = nn.Linear(</span><br><span class="line">            config.num_attention_heads * self.head_dim, config.hidden_size, bias=config.attention_bias</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+<p>forward函数实现如下（精简版）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">input_shape = hidden_states.shape[:-<span class="number">1</span>]</span><br><span class="line">hidden_shape = (*input_shape, -<span class="number">1</span>, self.head_dim)</span><br><span class="line"></span><br><span class="line">query_states = self.q_proj(hidden_states).view(hidden_shape).transpose(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">key_states = self.k_proj(hidden_states).view(hidden_shape).transpose(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">value_states = self.v_proj(hidden_states).view(hidden_shape).transpose(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">cos, sin = position_embeddings</span><br><span class="line">query_states, key_states = apply_rotary_pos_emb(query_states, key_states, cos, sin)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> past_key_value <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">	<span class="comment"># sin and cos are specific to RoPE models; cache_position needed for the static cache</span></span><br><span class="line">	cache_kwargs = &#123;<span class="string">&quot;sin&quot;</span>: sin, <span class="string">&quot;cos&quot;</span>: cos, <span class="string">&quot;cache_position&quot;</span>: cache_position&#125;</span><br><span class="line">	key_states, value_states = past_key_value.update(key_states, value_states, self.layer_idx, cache_kwargs)</span><br><span class="line">attn_output, attn_weights = attention_interface(</span><br><span class="line">	self,</span><br><span class="line">	query_states,</span><br><span class="line">	key_states,</span><br><span class="line">	value_states,</span><br><span class="line">	attention_mask,</span><br><span class="line">	dropout=<span class="number">0.0</span> <span class="keyword">if</span> <span class="keyword">not</span> self.training <span class="keyword">else</span> self.attention_dropout,</span><br><span class="line">	scaling=self.scaling,</span><br><span class="line">	**kwargs,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">attn_output = attn_output.reshape(*input_shape, -<span class="number">1</span>).contiguous()</span><br><span class="line">attn_output = self.o_proj(attn_output)</span><br><span class="line"><span class="keyword">return</span> attn_output, attn_weights	</span><br></pre></td></tr></table></figure>
+<p>对于Attention中的一些重要技术如RoPE以及Paged Attention等后续会单开栏目进行介绍。</p>
+<h2 id="7.-mlp%E9%83%A8%E5%88%86" tabindex="-1" id="7-MLP部分"><a class="headerlink" href="#7-MLP部分"></a>7. MLP部分</h2>
+<p><img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2025/20250202160510.png" alt="image.png" /></p>
+<h3 id="7.1-%E7%AE%80%E4%BB%8B" tabindex="-1" id="7-1-简介"><a class="headerlink" href="#7-1-简介"></a>7.1 简介</h3>
+<p>MLP这一部分的设计则更为简单，详细设计后续会结合代码进行进一步的讲解，简单介绍下为什么这样设计：</p>
+<ol>
+<li><strong>门控与投影的结合</strong>：通过将<strong>gate_proj_output</strong>和<strong>up_proj_output</strong>相乘，模型能够在每一层中灵活地调整信息流动。这种设计通过加权和门控的方式，确保模型能够有选择性地保留或抑制不同的输入特征，从而提高处理能力。（up是升采样的流程，down是降采样的过程）</li>
+<li><strong>非线性激活</strong>：激活函数的引入确保了模型能够捕捉复杂的非线性模式，使得LLaMA可以更好地拟合数据中的复杂关系，提升模型的准确性和泛化能力。</li>
+</ol>
+<h3 id="7.2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0" tabindex="-1" id="7-2-代码实现"><a class="headerlink" href="#7-2-代码实现"></a>7.2 代码实现</h3>
+<p>这一部分的代码对应的就是<code>models/llama/modeling_llama.py</code>中的<code>LlamaMLP</code>类</p>
+<p>代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LlamaMLP</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.config = config</span><br><span class="line">        self.hidden_size = config.hidden_size</span><br><span class="line">        self.intermediate_size = config.intermediate_size</span><br><span class="line">        self.gate_proj = nn.Linear(self.hidden_size, self.intermediate_size, bias=config.mlp_bias)</span><br><span class="line">        self.up_proj = nn.Linear(self.hidden_size, self.intermediate_size, bias=config.mlp_bias)</span><br><span class="line">        self.down_proj = nn.Linear(self.intermediate_size, self.hidden_size, bias=config.mlp_bias)</span><br><span class="line">        self.act_fn = ACT2FN[config.hidden_act]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))</span><br><span class="line">        <span class="keyword">return</span> down_proj</span><br></pre></td></tr></table></figure>
+<p>其中<code>self.act_fn</code>指的是激活函数，符合上图所示的运算步骤</p>
+<h2 id="8.-%E5%BD%92%E4%B8%80%E5%8C%96%E9%83%A8%E5%88%86%EF%BC%88rmsnorm%EF%BC%89" tabindex="-1" id="8-归一化部分（RMSNorm）"><a class="headerlink" href="#8-归一化部分（RMSNorm）"></a>8. 归一化部分（RMSNorm）</h2>
+<h3 id="8.1-%E7%AE%80%E4%BB%8B" tabindex="-1" id="8-1-简介"><a class="headerlink" href="#8-1-简介"></a>8.1 简介</h3>
+<p>在LLaMA模型中，<strong>RMSNorm</strong>（均方根归一化）是一种用于归一化的技术，类似于传统的Layer Normalization，但采用了不同的归一化方式。与LayerNorm基于均值和方差的标准化不同，RMSNorm只使用输入的方差（而非均值），通过计算均方根（RMS）来调整每个token的特征。这种方法的优势在于数值计算的简化与稳定性，尤其是在处理大规模预训练模型时。RMSNorm能够避免训练过程中出现的梯度消失或爆炸问题，并在许多任务中展现了出色的性能。</p>
+<p>与标准化方法（如LayerNorm）不同，RMSNorm不需要中心化输入数据，而是直接对每个token的特征进行归一化，保留了输入数据的原始分布。这使得它在大规模神经网络训练中具有更高的效率与稳定性，尤其适用于像LLaMA这样的大型模型。</p>
+<p>接下来，我们将深入探讨 <code>LlamaRMSNorm</code> 层的实现和工作原理。</p>
+<h3 id="8.2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0" tabindex="-1" id="8-2-代码实现"><a class="headerlink" href="#8-2-代码实现"></a>8.2 代码实现</h3>
+<p>这一部分的代码对应的就是<code>models/llama/modeling_llama.py</code>中的<code>LlamaMLP</code>类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">LlamaRMSNorm</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, hidden_size, eps=<span class="number">1e-6</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        LlamaRMSNorm is equivalent to T5LayerNorm</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.weight = nn.Parameter(torch.ones(hidden_size))</span><br><span class="line">        self.variance_epsilon = eps</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, hidden_states</span>):</span><br><span class="line">        input_dtype = hidden_states.dtype</span><br><span class="line">        hidden_states = hidden_states.to(torch.float32)</span><br><span class="line">        variance = hidden_states.<span class="built_in">pow</span>(<span class="number">2</span>).mean(-<span class="number">1</span>, keepdim=<span class="literal">True</span>)</span><br><span class="line">        hidden_states = hidden_states * torch.rsqrt(variance + self.variance_epsilon)</span><br><span class="line">        <span class="keyword">return</span> self.weight * hidden_states.to(input_dtype)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">extra_repr</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;<span class="built_in">tuple</span>(self.weight.shape)&#125;</span>, eps=<span class="subst">&#123;self.variance_epsilon&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<p><code>LlamaRMSNorm</code> 是一种归一化方法，类似于 T5 模型中的 <code>T5LayerNorm</code>，但它使用 <strong>均方根（RMS）归一化</strong>，而不是常规的标准化方法（如 LayerNorm）。这种方法通过对输入的方差进行归一化，使得模型在训练时更加稳定。</p>
+<h4 id="%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F" tabindex="-1" id="数学公式"><a class="headerlink" href="#数学公式"></a>数学公式</h4>
+<p>均方根归一化的核心公式如下：</p>
+<p class="katex-block math-block"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mover accent="true"><mi>x</mi><mo>^</mo></mover><mi>i</mi></msub><mo>=</mo><mfrac><msub><mi>x</mi><mi>i</mi></msub><msqrt><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><msubsup><mi>x</mi><mi>i</mi><mn>2</mn></msubsup><mo>+</mo><mi>ϵ</mi></mrow></msqrt></mfrac></mrow><annotation encoding="application/x-tex">\hat{x}_i = \frac{x_i}{\sqrt{\frac{1}{N} \sum_{i=1}^N x_i^2 + \epsilon}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.8376em;vertical-align:-1.73em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1076em;"><span style="top:-2.11em;"><span class="pstrut" style="height:3.3031em;"></span><span class="mord"><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3031em;"><span class="svg-align" style="top:-3.8em;"><span class="pstrut" style="height:3.8em;"></span><span class="mord" style="padding-left:1em;"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9812em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7959em;"><span style="top:-2.4231em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span><span style="top:-3.0448em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2769em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">ϵ</span></span></span><span style="top:-3.2631em;"><span class="pstrut" style="height:3.8em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.88em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.88em" viewBox="0 0 400000 1944" preserveAspectRatio="xMinYMin slice"><path d="M983 90
+l0 -0
+c4,-6.7,10,-10,18,-10 H400000v40
+H1013.1s-83.4,268,-264.1,840c-180.7,572,-277,876.3,-289,913c-4.7,4.7,-12.7,7,-24,7
+s-12,0,-12,0c-1.3,-3.3,-3.7,-11.7,-7,-25c-35.3,-125.3,-106.7,-373.3,-214,-744
+c-10,12,-21,25,-33,39s-32,39,-32,39c-6,-5.3,-15,-14,-27,-26s25,-30,25,-30
+c26.7,-32.7,52,-63,76,-91s52,-60,52,-60s208,722,208,722
+c56,-175.3,126.3,-397.3,211,-666c84.7,-268.7,153.8,-488.2,207.5,-658.5
+c53.7,-170.3,84.5,-266.8,92.5,-289.5z
+M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.5369em;"><span></span></span></span></span></span></span></span><span style="top:-3.5331em;"><span class="pstrut" style="height:3.3031em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.9801em;"><span class="pstrut" style="height:3.3031em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.73em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>其中：</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">x_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是输入的第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> 个元素（例如某个token的特征值）。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi></mrow><annotation encoding="application/x-tex">N</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span></span></span></span> 是特征维度的大小。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span> 是防止除零错误的小常数（例如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>e</mi><mo>−</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">1e-6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mord mathnormal">e</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span>）。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover accent="true"><mi>x</mi><mo>^</mo></mover><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\hat{x}_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">x</span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2222em;"><span class="mord">^</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是归一化后的输出。</li>
+</ul>
+<h4 id="1.-%E5%88%9D%E5%A7%8B%E5%8C%96" tabindex="-1" id="1-初始化"><a class="headerlink" href="#1-初始化"></a>1. 初始化</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">self.weight = nn.Parameter(torch.ones(hidden_size))</span><br><span class="line">self.variance_epsilon = eps</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>self.weight</code></strong>：一个可学习的参数，用于对归一化后的隐藏状态进行缩放，初始值为 1。</li>
+<li><strong><code>self.variance_epsilon</code></strong>：小常数 <code>eps</code>，用于防止除零错误。</li>
+</ul>
+<h4 id="2.-%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD" tabindex="-1" id="2-前向传播"><a class="headerlink" href="#2-前向传播"></a>2. 前向传播</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hidden_states = hidden_states.to(torch.float32)</span><br><span class="line">variance = hidden_states.<span class="built_in">pow</span>(<span class="number">2</span>).mean(-<span class="number">1</span>, keepdim=<span class="literal">True</span>)</span><br><span class="line">hidden_states = hidden_states * torch.rsqrt(variance + self.variance_epsilon)</span><br><span class="line"><span class="keyword">return</span> self.weight * hidden_states.to(input_dtype)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>计算方差</strong>：首先将输入 <code>hidden_states</code> 转换为 <code>float32</code>，然后沿特征维度计算方差。</li>
+<li><strong>均方根归一化</strong>：使用 <code>torch.rsqrt()</code> 对方差加上小常数 <code>eps</code> 后取平方根的倒数，进行归一化处理。</li>
+<li><strong>缩放和恢复数据类型</strong>：归一化后的结果乘以可学习的 <code>weight</code> 参数，并恢复到输入的原始数据类型。</li>
+</ul>
+<h4 id="3.-%E9%A2%9D%E5%A4%96%E6%98%BE%E7%A4%BA%E4%BF%A1%E6%81%AF" tabindex="-1" id="3-额外显示信息"><a class="headerlink" href="#3-额外显示信息"></a>3. 额外显示信息</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">extra_repr</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="string">f&quot;<span class="subst">&#123;<span class="built_in">tuple</span>(self.weight.shape)&#125;</span>, eps=<span class="subst">&#123;self.variance_epsilon&#125;</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>extra_repr()</code> 用于返回该层的额外信息，便于调试。</li>
+</ul>
+<h4 id="%E6%80%BB%E7%BB%93" tabindex="-1" id="总结"><a class="headerlink" href="#总结"></a>总结</h4>
+<p><code>LlamaRMSNorm</code> 是一种优化的归一化方法，常用于 LLaMA 模型。它通过计算输入的方差并对其进行均方根归一化，使用可学习的参数进行缩放，帮助模型在训练过程中保持稳定性。与传统的标准化方法相比，RMSNorm 在一些任务中表现出更好的效果，尤其是在处理大规模模型时。</p>
+<hr />
+<p>过对LLaMA架构的深入解析，我们可以看到，它的设计巧妙地平衡了性能与效率，为自然语言处理领域提供了强大的工具。无论是研究者还是开发者，LLaMA的开源都为我们探索语言模型的潜力打开了新的大门。希望这篇博客能帮助你更好地理解LLaMA，也希望它能激发你对大语言模型的更多兴趣与思考。未来已来，让我们一起期待更多创新与突破！</p>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2025/01/06/MudSynth/Quant/%E3%80%90%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%E3%80%91AWQ/">【论文笔记】AWQ</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0.-%E5%BC%95%E8%A8%80"><span class="toc-text">0. 引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1.-%E5%88%86%E8%AF%8D%E5%99%A8%E9%83%A8%E5%88%86"><span class="toc-text">1. 分词器部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2.-llama%E4%B8%BB%E5%B9%B2%E9%83%A8%E5%88%86"><span class="toc-text">2. LLaMA主干部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2.1-%E5%B5%8C%E5%85%A5%E5%B1%82%EF%BC%88embedding%EF%BC%89"><span class="toc-text">2.1 嵌入层（Embedding）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2.2-%E9%9A%90%E8%97%8F%E7%8A%B6%E6%80%81%EF%BC%88hidden-states%EF%BC%89"><span class="toc-text">2.2 隐藏状态（hidden states）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2.3-%E5%A4%9A%E5%B1%82%E5%A4%84%E7%90%86%EF%BC%88layers%EF%BC%89"><span class="toc-text">2.3 多层处理（Layers）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2.4-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">2.4 代码实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3.-llama%E7%9A%84clm%E4%BB%BB%E5%8A%A1"><span class="toc-text">3. LLaMA的CLM任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3.1-%E8%87%AA%E5%9B%9E%E5%BD%92loss%EF%BC%88causal-loss%EF%BC%89"><span class="toc-text">3.1 自回归Loss（Causal Loss）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3.2-clm%E8%BE%93%E5%87%BA"><span class="toc-text">3.2 CLM输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3.3-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">3.3 代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#forcausallmloss-%E5%87%BD%E6%95%B0%EF%BC%9A%E5%9B%A0%E6%9E%9C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E6%8D%9F%E5%A4%B1%E8%AE%A1%E7%AE%97"><span class="toc-text">ForCausalLMLoss 函数：因果语言模型损失计算</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1.-%E8%BE%93%E5%85%A5%E5%8F%82%E6%95%B0"><span class="toc-text">1. 输入参数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2.-%E6%A0%B8%E5%BF%83%E6%AD%A5%E9%AA%A4"><span class="toc-text">2. 核心步骤</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3.-%E6%80%BB%E7%BB%93"><span class="toc-text">3. 总结</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-text">示例</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4.-llama%E7%9A%84%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB%E4%BB%BB%E5%8A%A1"><span class="toc-text">4. LLaMA的文本分类任务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4.1-%E5%88%86%E7%B1%BB%E5%B1%82%EF%BC%88classifier-layer%EF%BC%89"><span class="toc-text">4.1 分类层（Classifier Layer）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4.2-%E5%88%86%E7%B1%BB%E6%8D%9F%E5%A4%B1%EF%BC%88classification-loss%EF%BC%89"><span class="toc-text">4.2 分类损失（Classification Loss）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4.3-%E5%88%86%E7%B1%BB%E8%BE%93%E5%87%BA%EF%BC%88classifier-output%EF%BC%89"><span class="toc-text">4.3 分类输出（Classifier output）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4.4-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">4.4 代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4.5-llamaforquestionanswering"><span class="toc-text">4.5 LlamaForQuestionAnswering</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4.6-llamafortokenclassification"><span class="toc-text">4.6 LlamaForTokenClassification</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5.-llama%E7%9A%84layer%E5%B1%82"><span class="toc-text">5. LLaMA的Layer层</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5.1-%E5%BD%92%E4%B8%80%E5%8C%96%EF%BC%88norm%EF%BC%89"><span class="toc-text">5.1 归一化（Norm）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5.2-%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%EF%BC%88attention%EF%BC%89"><span class="toc-text">5.2 自注意力机制（Attention）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5.3-%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%EF%BC%88residual%EF%BC%89"><span class="toc-text">5.3 残差连接（Residual）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5.4-%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA%EF%BC%88mlp%EF%BC%89"><span class="toc-text">5.4 多层感知机（MLP）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5.5-%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%EF%BC%88residual%EF%BC%89"><span class="toc-text">5.5 残差连接（Residual）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5.6-%E6%9C%80%E7%BB%88%E8%BE%93%E5%87%BA%EF%BC%88hidden-states%EF%BC%89"><span class="toc-text">5.6 最终输出（hidden states）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5.7-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">5.7 代码实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6.-attention%E9%83%A8%E5%88%86"><span class="toc-text">6. Attention部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6.1-%E8%BE%93%E5%85%A5%E5%A4%84%E7%90%86"><span class="toc-text">6.1 输入处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6.2-%E6%97%8B%E8%BD%AC%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%EF%BC%88apply_rotary_pos_emb%EF%BC%89"><span class="toc-text">6.2 旋转位置编码（apply_rotary_pos_emb）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6.3-%E8%AE%A1%E7%AE%97%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9D%83%E9%87%8D"><span class="toc-text">6.3 计算注意力权重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6.4-%E8%AE%A1%E7%AE%97%E8%BE%93%E5%87%BA"><span class="toc-text">6.4 计算输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6.5-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">6.5 代码实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7.-mlp%E9%83%A8%E5%88%86"><span class="toc-text">7. MLP部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7.1-%E7%AE%80%E4%BB%8B"><span class="toc-text">7.1 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7.2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">7.2 代码实现</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8.-%E5%BD%92%E4%B8%80%E5%8C%96%E9%83%A8%E5%88%86%EF%BC%88rmsnorm%EF%BC%89"><span class="toc-text">8. 归一化部分（RMSNorm）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8.1-%E7%AE%80%E4%BB%8B"><span class="toc-text">8.1 简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8.2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">8.2 代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F"><span class="toc-text">数学公式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1.-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">1. 初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2.-%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD"><span class="toc-text">2. 前向传播</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3.-%E9%A2%9D%E5%A4%96%E6%98%BE%E7%A4%BA%E4%BF%A1%E6%81%AF"><span class="toc-text">3. 额外显示信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js`,
+    marked: `https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.27.0" async></script>
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script><script defer src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.swiper-slide img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || null
+        }
+      });
+    })
+  }
+</script><script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script><link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
