@@ -1,0 +1,631 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.27.0" theme-name="Stellar" theme-version="1.27.0">
+  
+  <meta name="generator" content="Hexo 7.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#f8f8f8">
+  
+  <title>LeetCode：2025年02月每日一题 - MudSynth</title>
+
+  
+    <meta name="description" content="2025-02-01  题目传送门：81. 搜索旋转排序数组 II - 力扣（LeetCode）  这道题中，数组本身不是有序的，进行旋转后只保证了数组的局部是有序的，这还能进行二分查找吗？答案是可以的。 可以发现的是，我们将数组从中间分开成左右两部分的时候，一定有一部分的数组是有序的。拿示例来看，我们从 6 这个位置分开以后数组变成了 [4,5,6][4, 5, 6][4,5,6] 和 [7,0">
+<meta property="og:type" content="website">
+<meta property="og:title" content="2025年02月每日一题">
+<meta property="og:url" content="http://example.com/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2025%E5%B9%B402%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html">
+<meta property="og:site_name" content="MudSynth">
+<meta property="og:description" content="2025-02-01  题目传送门：81. 搜索旋转排序数组 II - 力扣（LeetCode）  这道题中，数组本身不是有序的，进行旋转后只保证了数组的局部是有序的，这还能进行二分查找吗？答案是可以的。 可以发现的是，我们将数组从中间分开成左右两部分的时候，一定有一部分的数组是有序的。拿示例来看，我们从 6 这个位置分开以后数组变成了 [4,5,6][4, 5, 6][4,5,6] 和 [7,0">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-02-20T12:08:46.381Z">
+<meta property="article:author" content="Mudrobot">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.27.0">
+
+  
+
+  
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css" />
+</head>
+<body>
+
+
+
+<div class="l_body s:aa content tech" id="start" layout="page" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="https://pic-1313147768.cos.ap-chengdu.myqcloud.com/2023-9-17/leetcodeicon.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/image/2659360.svg';"></div><a class="title" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html"><div class="main" ff="title">LeetCode</div><div class="sub normal cap">Drops of water penetrate the stone</div><div class="sub hover cap" style="opacity:0"> Written by Sima Qian</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" data-filter="/wiki/LeetCode/" placeholder="在 LeetCode 中搜索..."></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"><a class="nav-item" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item active" title="文档" href="/wiki/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="社交" href="/friends/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">专项训练</span></div><div class="widget-body fs14"><a class="link" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html#start"><span class="toc-text">动态规划</span></a><a class="link" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE.html"><span class="toc-text">二分查找</span></a><a class="link" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E5%8D%95%E8%B0%83%E6%A0%88.html"><span class="toc-text">单调栈</span></a></div><div class="widget-header dis-select"><span class="name">周赛&双周赛</span></div><div class="widget-body fs14"><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20400%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 400 场周赛</span></a><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20401%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 401 场周赛</span></a><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20402%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 402 场周赛</span></a><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20405%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 405 场周赛</span></a><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20406%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 406 场周赛</span></a><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20407%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 407 场周赛</span></a><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20408%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 408 场周赛</span></a></div><div class="widget-header dis-select"><span class="name">每日一题</span></div><div class="widget-body fs14"><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2023%E5%B9%B411%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2023年11月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2023%E5%B9%B412%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2023年12月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B401%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年01月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B403%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年03月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B404%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年04月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B405%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年05月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B406%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年06月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B407%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年07月每日一题</span></a></div><div class="widget-header dis-select"><span class="name">...</span></div><div class="widget-body fs14"><a class="link" href="/wiki/LeetCode/%E5%91%A8%E8%B5%9B/%E7%AC%AC%20424%20%E5%9C%BA%E5%91%A8%E8%B5%9B.html"><span class="toc-text">第 424 场周赛</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B408%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年08月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B410%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年10月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2024%E5%B9%B411%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2024年11月每日一题</span></a><a class="link" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2025%E5%B9%B401%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2025年01月每日一题</span></a><a class="link active" href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2025%E5%B9%B402%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html"><span class="toc-text">2025年02月每日一题</span><svg class="active-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M21 11.098v4.993c0 3.096 0 4.645-.734 5.321c-.35.323-.792.526-1.263.58c-.987.113-2.14-.907-4.445-2.946c-1.02-.901-1.529-1.352-2.118-1.47a2.225 2.225 0 0 0-.88 0c-.59.118-1.099.569-2.118 1.47c-2.305 2.039-3.458 3.059-4.445 2.945a2.238 2.238 0 0 1-1.263-.579C3 20.736 3 19.188 3 16.091v-4.994C3 6.81 3 4.666 4.318 3.333C5.636 2 7.758 2 12 2c4.243 0 6.364 0 7.682 1.332C21 4.665 21 6.81 21 11.098" opacity=".5"/><path fill="currentColor" d="M9 5.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5z"/></svg></a></div></widget>
+
+<widget class="widget-wrapper post-card"><div class="widget-header dis-select"><span class="name">更多：OI</span></div><div class="widget-body"><a class="item wiki" href="/wiki/C++/algorithm/sort.html"><span class="title">C++ - 知识点合集</span><span class="excerpt">C++零碎知识点整理🐣</span></a><a class="item wiki" href="/wiki/OI-Knowledge/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/%E8%83%8C%E5%8C%85%E9%97%AE%E9%A2%98.html"><span class="title">OI - Knowledge</span><span class="excerpt">OI知识整理📖</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" id="menu" href="/wiki">文档</a><span class="sep"></span><a class="cap breadcrumb" id="proj" href="/wiki/LeetCode/%E4%B8%93%E9%A1%B9%E8%AE%AD%E7%BB%83/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92.html">LeetCode</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">更新于：<time datetime="2025-02-20T12:08:46.381Z">2025-02-20</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>2025年02月每日一题</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h2 id="2025-02-01" tabindex="-1" id="2025-02-01"><a class="headerlink" href="#2025-02-01"></a>2025-02-01</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/search-in-rotated-sorted-array-ii/description/?envType=daily-question&amp;envId=2025-02-01">81. 搜索旋转排序数组 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>这道题中，数组本身不是有序的，进行旋转后只保证了数组的局部是有序的，这还能进行二分查找吗？答案是可以的。</p>
+<p>可以发现的是，我们将数组从中间分开成左右两部分的时候，一定有一部分的数组是有序的。拿示例来看，我们从 6 这个位置分开以后数组变成了 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>4</mn><mo separator="true">,</mo><mn>5</mn><mo separator="true">,</mo><mn>6</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[4, 5, 6]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">6</span><span class="mclose">]</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>7</mn><mo separator="true">,</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[7, 0, 1, 2]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">7</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mclose">]</span></span></span></span> 两个部分，其中左边 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>4</mn><mo separator="true">,</mo><mn>5</mn><mo separator="true">,</mo><mn>6</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[4, 5, 6]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">5</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">6</span><span class="mclose">]</span></span></span></span> 这个部分的数组是有序的，其他也是如此。</p>
+<p>这启示我们可以在常规二分查找的时候查看当前 mid 为分割位置分割出来的两个部分 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>l</mi><mo separator="true">,</mo><mi>m</mi><mi>i</mi><mi>d</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[l, mid]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">mi</span><span class="mord mathnormal">d</span><span class="mclose">]</span></span></span></span> 和 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>m</mi><mi>i</mi><mi>d</mi><mo>+</mo><mn>1</mn><mo separator="true">,</mo><mi>r</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[mid + 1, r]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">mi</span><span class="mord mathnormal">d</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mclose">]</span></span></span></span> 哪个部分是有序的，并根据有序的那个部分确定我们该如何改变二分查找的上下界，因为我们能够根据有序的那部分判断出 target 在不在这个部分：</p>
+<p><strong>对于数组中有重复元素的情况</strong>，二分查找时可能会有 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo stretchy="false">[</mo><mi>l</mi><mo stretchy="false">]</mo><mo>=</mo><mi>a</mi><mo stretchy="false">[</mo><mi>m</mi><mi>i</mi><mi>d</mi><mo stretchy="false">]</mo><mo>=</mo><mi>a</mi><mo stretchy="false">[</mo><mi>r</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">a[l]=a[mid]=a[r]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mopen">[</span><span class="mord mathnormal">mi</span><span class="mord mathnormal">d</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">a</span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mclose">]</span></span></span></span>，此时无法判断区间 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>l</mi><mo separator="true">,</mo><mi>m</mi><mi>i</mi><mi>d</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[l,mid]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">mi</span><span class="mord mathnormal">d</span><span class="mclose">]</span></span></span></span> 和区间 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>m</mi><mi>i</mi><mi>d</mi><mo>+</mo><mn>1</mn><mo separator="true">,</mo><mi>r</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[mid+1,r]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">mi</span><span class="mord mathnormal">d</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mclose">]</span></span></span></span> 哪个是有序的。</p>
+<p>例如 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>u</mi><mi>m</mi><mi>s</mi><mo>=</mo><mo stretchy="false">[</mo><mn>3</mn><mo separator="true">,</mo><mn>1</mn><mo separator="true">,</mo><mn>2</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mn>3</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">nums=[3,1,2,3,3,3,3]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span><span class="mord mathnormal">u</span><span class="mord mathnormal">m</span><span class="mord mathnormal">s</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">]</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mi>a</mi><mi>r</mi><mi>g</mi><mi>e</mi><mi>t</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">target=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8095em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">t</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">e</span><span class="mord mathnormal">t</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>，首次二分时无法判断区间 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>0</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[0,3]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">]</span></span></span></span> 和区间 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mn>4</mn><mo separator="true">,</mo><mn>6</mn><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[4,6]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">6</span><span class="mclose">]</span></span></span></span> 哪个是有序的。</p>
+<p>对于这种情况，我们只能将当前二分区间的左边界加一，右边界减一，然后在新区间上继续二分查找。</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">search</span><span class="params">(vector&lt;<span class="type">int</span>&gt; &amp;nums, <span class="type">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (n == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> nums[<span class="number">0</span>] == target;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">0</span>, r = n - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (l &lt;= r) &#123;</span><br><span class="line">            <span class="type">int</span> mid = (l + r) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] == target) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (nums[l] == nums[mid] &amp;&amp; nums[mid] == nums[r]) &#123;</span><br><span class="line">                ++l;</span><br><span class="line">                --r;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[l] &lt;= nums[mid]) &#123;</span><br><span class="line">                <span class="keyword">if</span> (nums[l] &lt;= target &amp;&amp; target &lt; nums[mid]) &#123;</span><br><span class="line">                    r = mid - <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    l = mid + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (nums[mid] &lt; target &amp;&amp; target &lt;= nums[n - <span class="number">1</span>]) &#123;</span><br><span class="line">                    l = mid + <span class="number">1</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    r = mid - <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-02" tabindex="-1" id="2025-02-02"><a class="headerlink" href="#2025-02-02"></a>2025-02-02</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/range-addition-ii/description/?envType=daily-question&amp;envId=2025-02-02">598. 区间加法 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>就是找所有操作中的最小行号和最小列号相乘就可以了。</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maxCount</span><span class="params">(<span class="type">int</span> m, <span class="type">int</span> n, vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; ops)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (ops.<span class="built_in">size</span>()==<span class="number">0</span>) <span class="keyword">return</span> m*n;</span><br><span class="line">        <span class="type">int</span> minR = ops[<span class="number">0</span>][<span class="number">0</span>], minC = ops[<span class="number">0</span>][<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp; op : ops) &#123;</span><br><span class="line">            minR = <span class="built_in">min</span>(minR, op[<span class="number">0</span>]);</span><br><span class="line">            minC = <span class="built_in">min</span>(minC, op[<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> minR * minC;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-03" tabindex="-1" id="2025-02-03"><a class="headerlink" href="#2025-02-03"></a>2025-02-03</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/valid-palindrome-ii/description/?envType=daily-question&amp;envId=2025-02-03">680. 验证回文串 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>双指针即可</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">checkPalindrome</span><span class="params">(<span class="type">const</span> string&amp; s, <span class="type">int</span> low, <span class="type">int</span> high)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = low, j = high; i &lt; j; ++i, --j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (s[i] != s[j]) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">bool</span> <span class="title">validPalindrome</span><span class="params">(string s)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> low = <span class="number">0</span>, high = s.<span class="built_in">size</span>() - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">            <span class="type">char</span> c1 = s[low], c2 = s[high];</span><br><span class="line">            <span class="keyword">if</span> (c1 == c2) &#123;</span><br><span class="line">                ++low;</span><br><span class="line">                --high;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">checkPalindrome</span>(s, low, high - <span class="number">1</span>) || <span class="built_in">checkPalindrome</span>(s, low + <span class="number">1</span>, high);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-04" tabindex="-1" id="2025-02-04"><a class="headerlink" href="#2025-02-04"></a>2025-02-04</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sort-array-by-parity-ii/description/?envType=daily-question&amp;envId=2025-02-04">922. 按奇偶排序数组 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>分类排序完成后，再合并即可。</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">sortArrayByParityII</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; odd, even;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;num : nums) &#123;</span><br><span class="line">            <span class="keyword">if</span> (num % <span class="number">2</span>) odd.<span class="built_in">emplace_back</span>(num);</span><br><span class="line">            <span class="keyword">else</span> even.<span class="built_in">emplace_back</span>(num);</span><br><span class="line">        &#125;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;odd.<span class="built_in">size</span>();++i)&#123;</span><br><span class="line">            ans.<span class="built_in">emplace_back</span>(even[i]);</span><br><span class="line">            ans.<span class="built_in">emplace_back</span>(odd[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-05" tabindex="-1" id="2025-02-05"><a class="headerlink" href="#2025-02-05"></a>2025-02-05</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/subsets-ii/?envType=daily-question&amp;envId=2025-02-05">90. 子集 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>暴搜+集合set熟练运用</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">subsetsWithDup</span>(vector&lt;<span class="type">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        set&lt;vector&lt;<span class="type">int</span>&gt;&gt; se;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;(<span class="number">1</span>&lt;&lt;n);++i)&#123;</span><br><span class="line">            vector&lt;<span class="type">int</span>&gt; tmp;</span><br><span class="line">            <span class="type">int</span> nw = i;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j)&#123;</span><br><span class="line">                <span class="keyword">if</span> ((nw&gt;&gt;j)&amp;<span class="number">1</span>) tmp.<span class="built_in">push_back</span>(nums[j]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">sort</span>(tmp.<span class="built_in">begin</span>(), tmp.<span class="built_in">end</span>());</span><br><span class="line">            se.<span class="built_in">insert</span>(tmp);</span><br><span class="line">        &#125;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; ans;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> &amp; itm : se)&#123;</span><br><span class="line">            ans.<span class="built_in">push_back</span>(itm);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-06" tabindex="-1" id="2025-02-06"><a class="headerlink" href="#2025-02-06"></a>2025-02-06</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/permutations-ii/description/?envType=daily-question&amp;envId=2025-02-06">47. 全排列 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>同上，暴搜+集合set熟练运用</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">permuteUnique</span>(vector&lt;<span class="type">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        set&lt;vector&lt;<span class="type">int</span>&gt;&gt; se;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="function">vector&lt;<span class="type">bool</span>&gt; <span class="title">flag</span><span class="params">(n,<span class="literal">false</span>)</span></span>;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt;  tmp;</span><br><span class="line">        function&lt;<span class="type">void</span>(<span class="type">int</span>)&gt; func = [&amp;](<span class="type">int</span> cnt)&#123;</span><br><span class="line">            <span class="keyword">if</span> (cnt == n) &#123;</span><br><span class="line">                se.<span class="built_in">insert</span>(tmp); <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">                <span class="keyword">if</span> (!flag[i]) &#123;</span><br><span class="line">                    tmp.<span class="built_in">push_back</span>(nums[i]);</span><br><span class="line">                    flag[i] = <span class="literal">true</span>;</span><br><span class="line">                    <span class="built_in">func</span>(cnt+<span class="number">1</span>);</span><br><span class="line">                    tmp.<span class="built_in">pop_back</span>();</span><br><span class="line">                    flag[i] = <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="built_in">func</span>(<span class="number">0</span>);</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; ans;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> &amp; itm : se) &#123;</span><br><span class="line">            ans.<span class="built_in">push_back</span>(itm);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>但是上面这种做法效率会非常低。</p>
+<h2 id="2025-02-07" tabindex="-1" id="2025-02-07"><a class="headerlink" href="#2025-02-07"></a>2025-02-07</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/spiral-matrix-ii/description/?envType=daily-question&amp;envId=2025-02-07">59. 螺旋矩阵 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>大模拟</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">generateMatrix</span>(<span class="type">int</span> n) &#123;</span><br><span class="line">        <span class="type">int</span> maxNum = n * n;</span><br><span class="line">        <span class="type">int</span> curNum = <span class="number">1</span>;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">matrix</span>(n, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(n));</span><br><span class="line">        <span class="type">int</span> row = <span class="number">0</span>, column = <span class="number">0</span>;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; directions = &#123;&#123;<span class="number">0</span>, <span class="number">1</span>&#125;, &#123;<span class="number">1</span>, <span class="number">0</span>&#125;, &#123;<span class="number">0</span>, <span class="number">-1</span>&#125;, &#123;<span class="number">-1</span>, <span class="number">0</span>&#125;&#125;;  <span class="comment">// 右下左上</span></span><br><span class="line">        <span class="type">int</span> directionIndex = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (curNum &lt;= maxNum) &#123;</span><br><span class="line">            matrix[row][column] = curNum;</span><br><span class="line">            curNum++;</span><br><span class="line">            <span class="type">int</span> nextRow = row + directions[directionIndex][<span class="number">0</span>], nextColumn = column + directions[directionIndex][<span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (nextRow &lt; <span class="number">0</span> || nextRow &gt;= n || nextColumn &lt; <span class="number">0</span> || nextColumn &gt;= n || matrix[nextRow][nextColumn] != <span class="number">0</span>) &#123;</span><br><span class="line">                directionIndex = (directionIndex + <span class="number">1</span>) % <span class="number">4</span>;  <span class="comment">// 顺时针旋转至下一个方向</span></span><br><span class="line">            &#125;</span><br><span class="line">            row = row + directions[directionIndex][<span class="number">0</span>];</span><br><span class="line">            column = column + directions[directionIndex][<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> matrix;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-08" tabindex="-1" id="2025-02-08"><a class="headerlink" href="#2025-02-08"></a>2025-02-08</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/unique-paths-ii/description/?envType=daily-question&amp;envId=2025-02-08">63. 不同路径 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>简单的动态规划问题</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">uniquePathsWithObstacles</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; obstacleGrid)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = obstacleGrid.<span class="built_in">size</span>(), m = obstacleGrid[<span class="number">0</span>].<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">dp</span>(n+<span class="number">1</span>,<span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(m+<span class="number">1</span>,<span class="number">0</span>));</span><br><span class="line">        <span class="comment">// if (obstacleGrid[0][0]) return 0;</span></span><br><span class="line">        dp[<span class="number">1</span>][<span class="number">1</span>] = obstacleGrid[<span class="number">0</span>][<span class="number">0</span>]==<span class="number">0</span>?<span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;++i)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j&lt;=m;++j)&#123;</span><br><span class="line">                <span class="keyword">if</span> (obstacleGrid[i<span class="number">-1</span>][j<span class="number">-1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">                dp[i][j] += dp[i<span class="number">-1</span>][j] + dp[i][j<span class="number">-1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n][m];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-09" tabindex="-1" id="2025-02-09"><a class="headerlink" href="#2025-02-09"></a>2025-02-09</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/description/?envType=daily-question&amp;envId=2025-02-09">80. 删除有序数组中的重复项 II - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>双指针即可。</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">removeDuplicates</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = nums.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">if</span> (n &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> n;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> slow = <span class="number">2</span>, fast = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">while</span> (fast &lt; n) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[slow - <span class="number">2</span>] != nums[fast]) &#123;</span><br><span class="line">                nums[slow] = nums[fast];</span><br><span class="line">                ++slow;</span><br><span class="line">            &#125;</span><br><span class="line">            ++fast;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> slow;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-10" tabindex="-1" id="2025-02-10"><a class="headerlink" href="#2025-02-10"></a>2025-02-10</h2>
+<blockquote>
+<p>题目传送门：</p>
+</blockquote>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-11" tabindex="-1" id="2025-02-11"><a class="headerlink" href="#2025-02-11"></a>2025-02-11</h2>
+<blockquote>
+<p>题目传送门：</p>
+</blockquote>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-12" tabindex="-1" id="2025-02-12"><a class="headerlink" href="#2025-02-12"></a>2025-02-12</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/minimum-limit-of-balls-in-a-bag/description/?envType=daily-question&amp;envId=2025-02-12">1760. 袋子里最少数目的球 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>二分一下就可以啦</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">minimumSize</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; nums, <span class="type">int</span> maxOperations)</span> </span>&#123;</span><br><span class="line">        function&lt;<span class="type">bool</span>(<span class="type">int</span>)&gt; judge = [&amp;](<span class="type">int</span> ball)&#123;</span><br><span class="line">            <span class="type">int</span> nw = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">auto</span> num : nums)&#123;</span><br><span class="line">                nw += (num<span class="number">-1</span>) / ball;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> nw &lt;= maxOperations ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">1</span>, r=<span class="number">1e9</span>+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(l&lt;r)&#123;</span><br><span class="line">            <span class="type">int</span> mid = (r-l)/<span class="number">2</span> + l;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">judge</span>(mid)) r = mid;</span><br><span class="line">            <span class="keyword">else</span> l = mid+<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-13" tabindex="-1" id="2025-02-13"><a class="headerlink" href="#2025-02-13"></a>2025-02-13</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-number-of-balls-in-a-box/description/?envType=daily-question&amp;envId=2025-02-13">1742. 盒子中小球的最大数量 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>模拟题</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">countBalls</span><span class="params">(<span class="type">int</span> lowLimit, <span class="type">int</span> highLimit)</span> </span>&#123;</span><br><span class="line">        function&lt;<span class="type">int</span>(<span class="type">int</span>)&gt; func = [&amp;](<span class="type">int</span> cnt)&#123;</span><br><span class="line">            <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span>(cnt)&#123;</span><br><span class="line">                ans += (cnt%<span class="number">10</span>);</span><br><span class="line">                cnt /= <span class="number">10</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> ans;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">buk</span><span class="params">(<span class="number">100</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=lowLimit;i&lt;=highLimit;++i)&#123;</span><br><span class="line">            buk[<span class="built_in">func</span>(i)]++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> ans = buk[<span class="built_in">func</span>(lowLimit)];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">99</span>;++i) ans = <span class="built_in">max</span>(ans,buk[i]);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-14" tabindex="-1" id="2025-02-14"><a class="headerlink" href="#2025-02-14"></a>2025-02-14</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/magnetic-force-between-two-balls/description/?envType=daily-question&amp;envId=2025-02-14">1552. 两球之间的磁力 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>二分一下啦</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maxDistance</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; position, <span class="type">int</span> m)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">sort</span>(position.<span class="built_in">begin</span>(), position.<span class="built_in">end</span>());</span><br><span class="line">        function&lt;<span class="type">bool</span>(<span class="type">int</span>)&gt; judge = [&amp;](<span class="type">int</span> interval)&#123;</span><br><span class="line">            <span class="type">int</span> pre = position[<span class="number">0</span>], cnt = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt; position.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">                <span class="keyword">if</span> (position[i] - pre &gt;= interval) &#123;</span><br><span class="line">                    pre = position[i];</span><br><span class="line">                    cnt += <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> cnt &gt;= m;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="type">int</span> l = <span class="number">1</span>, r = <span class="number">1e9</span>+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">            <span class="type">int</span> mid = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">judge</span>(mid)) l =mid+<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> r = mid;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l<span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-15" tabindex="-1" id="2025-02-15"><a class="headerlink" href="#2025-02-15"></a>2025-02-15</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/where-will-the-ball-fall/?envType=daily-question&amp;envId=2025-02-15">1706. 球会落何处 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>模拟题，简单模拟下就好。</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">findBall</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; grid)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = grid.<span class="built_in">size</span>(), m = grid[<span class="number">0</span>].<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; ans;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;m; ++i)&#123;</span><br><span class="line">            <span class="type">int</span> nw = i;</span><br><span class="line">            <span class="type">bool</span> flag = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;n;++j)&#123;</span><br><span class="line">                <span class="keyword">if</span>(grid[j][nw]==<span class="number">1</span>)&#123; <span class="comment">// 如果当前块是朝右</span></span><br><span class="line">                    <span class="keyword">if</span> (nw!=m<span class="number">-1</span>) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (grid[j][nw+<span class="number">1</span>]==<span class="number">1</span>)&#123;</span><br><span class="line">                            nw++;</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            flag = <span class="literal">true</span>;<span class="keyword">break</span>;</span><br><span class="line">                            <span class="comment">// if(j!=n-1) &#123;flag = true;break;&#125;</span></span><br><span class="line">                            <span class="comment">// nw++;</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123; <span class="comment">// 如果是最后一列</span></span><br><span class="line">                        flag = <span class="literal">true</span>;<span class="keyword">break</span>;</span><br><span class="line">                        <span class="comment">// if(j!=n-1) &#123;flag = true;break;&#125;</span></span><br><span class="line">                        <span class="comment">// nw++;</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (nw!=<span class="number">0</span>) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (grid[j][nw<span class="number">-1</span>]==<span class="number">-1</span>)&#123;</span><br><span class="line">                            nw--;</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            flag = <span class="literal">true</span>;<span class="keyword">break</span>;</span><br><span class="line">                            <span class="comment">// if(j!=n-1) &#123;flag=true; break;&#125;</span></span><br><span class="line">                            <span class="comment">// nw--;</span></span><br><span class="line">                        &#125; </span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        flag = <span class="literal">true</span>;<span class="keyword">break</span>;</span><br><span class="line">                        <span class="comment">// if(j!=n-1) &#123;flag=true; break;&#125;</span></span><br><span class="line">                        <span class="comment">// nw--;</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!flag) ans.<span class="built_in">push_back</span>(nw);</span><br><span class="line">            <span class="keyword">else</span> ans.<span class="built_in">push_back</span>(<span class="number">-1</span>);</span><br><span class="line">        &#125;  </span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-16" tabindex="-1" id="2025-02-16"><a class="headerlink" href="#2025-02-16"></a>2025-02-16</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/replace-elements-with-greatest-element-on-right-side/description/?envType=daily-question&amp;envId=2025-02-16">1299. 将每个元素替换为右侧最大元素 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>模拟简单题啦，遍历一遍即可。</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">replaceElements</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; arr)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = arr.<span class="built_in">size</span>();</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">ans</span><span class="params">(n,<span class="number">-1</span>)</span></span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=n<span class="number">-2</span>;i&gt;=<span class="number">0</span>;--i)&#123;</span><br><span class="line">            ans[i] = <span class="built_in">max</span>(arr[i+<span class="number">1</span>],ans[i+<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-17" tabindex="-1" id="2025-02-17"><a class="headerlink" href="#2025-02-17"></a>2025-02-17</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/element-appearing-more-than-25-in-sorted-array/description/?envType=daily-question&amp;envId=2025-02-17">1287. 有序数组中出现次数超过25%的元素 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>排序后，计数判断即可～</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">findSpecialInteger</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; arr)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">sort</span>(arr.<span class="built_in">begin</span>(), arr.<span class="built_in">end</span>());</span><br><span class="line">        <span class="type">int</span> n = arr.<span class="built_in">size</span>();</span><br><span class="line">        <span class="type">int</span> prev = <span class="number">-1</span>;</span><br><span class="line">        <span class="type">int</span> cnt = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>; i&lt;n; ++i)&#123;</span><br><span class="line">            <span class="keyword">if</span> (arr[i]!=prev) &#123;</span><br><span class="line">                cnt = <span class="number">1</span>;</span><br><span class="line">                prev = arr[i];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                cnt++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (cnt*<span class="number">4</span> &gt; n) <span class="keyword">return</span> prev;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-18" tabindex="-1" id="2025-02-18"><a class="headerlink" href="#2025-02-18"></a>2025-02-18</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/range-frequency-queries/description/?envType=daily-question&amp;envId=2025-02-18">2080. 区间内查询数字的频率 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>哈希表+二分查找，对于每个值都建立一个列表，按照顺序维护他出现的位置，然后对这个列表进行<code>upper_bound</code>-<code>lower_bound</code>即可。</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">RangeFreqQuery</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    unordered_map&lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;&gt; mp;</span><br><span class="line">    <span class="built_in">RangeFreqQuery</span>(vector&lt;<span class="type">int</span>&gt;&amp; arr) &#123;</span><br><span class="line">        <span class="type">int</span> n = arr.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;++i)&#123;</span><br><span class="line">            mp[arr[i]].<span class="built_in">push_back</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">query</span><span class="params">(<span class="type">int</span> left, <span class="type">int</span> right, <span class="type">int</span> value)</span> </span>&#123;</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt;&amp; tmp = mp[value];</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">upper_bound</span>(tmp.<span class="built_in">begin</span>(),tmp.<span class="built_in">end</span>(),right) - <span class="built_in">lower_bound</span>(tmp.<span class="built_in">begin</span>(),tmp.<span class="built_in">end</span>(),left);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Your RangeFreqQuery object will be instantiated and called as such:</span></span><br><span class="line"><span class="comment"> * RangeFreqQuery* obj = new RangeFreqQuery(arr);</span></span><br><span class="line"><span class="comment"> * int param_1 = obj-&gt;query(left,right,value);</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-19" tabindex="-1" id="2025-02-19"><a class="headerlink" href="#2025-02-19"></a>2025-02-19</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/maximum-distance-in-arrays/description/?envType=daily-question&amp;envId=2025-02-19">624. 数组列表中的最大距离 - 力扣（LeetCode）</a></p>
+</blockquote>
+<ol>
+<li>对于每个数组，维护一个最大值列表和最小值列表（用列表形式存储每个数组中的最大值和最小值）。</li>
+<li>然后找出这个列表中的最大值、次大值以及最小值、次小值。</li>
+<li>如果最大值和最小值不在一个数组中的话，返回他们两个的差。</li>
+<li>如果在的话，就返回<code>max(最大值-次小值，次大值-最小值)</code></li>
+</ol>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">maxDistance</span><span class="params">(vector&lt;vector&lt;<span class="type">int</span>&gt;&gt;&amp; arrays)</span> </span>&#123;</span><br><span class="line">        <span class="type">int</span> n = arrays.<span class="built_in">size</span>();</span><br><span class="line">        vector&lt;<span class="type">int</span>&gt; maxx, minn;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> arr : arrays) &#123;</span><br><span class="line">            <span class="type">int</span> nn = arr.<span class="built_in">size</span>();</span><br><span class="line">            minn.<span class="built_in">push_back</span>(arr[ <span class="number">0</span> ]);</span><br><span class="line">            maxx.<span class="built_in">push_back</span>(arr[nn<span class="number">-1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> max_num1=maxx[<span class="number">0</span>],max_loc1=<span class="number">0</span>,max_num2=maxx[<span class="number">0</span>],max_loc2=<span class="number">0</span>;</span><br><span class="line">        <span class="type">int</span> min_num1=minn[<span class="number">0</span>],min_loc1=<span class="number">0</span>,min_num2=minn[<span class="number">0</span>],min_loc2=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>( <span class="type">int</span> i = <span class="number">0</span>; i &lt; n ; ++ i ) &#123;</span><br><span class="line">            <span class="keyword">if</span> (maxx[i] &gt; max_num1) max_num1 = maxx[i], max_loc1 = i;</span><br><span class="line">            <span class="keyword">if</span> (minn[i] &lt; min_num1) min_num1 = minn[i], min_loc1 = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (max_loc1 == <span class="number">0</span> &amp;&amp; n &gt; <span class="number">1</span>) max_loc2 = <span class="number">1</span>, max_num2 = maxx[<span class="number">1</span>]; </span><br><span class="line">        <span class="keyword">if</span> (min_loc1 == <span class="number">0</span> &amp;&amp; n &gt; <span class="number">1</span>) min_loc2 = <span class="number">1</span>, min_num2 = minn[<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span>( <span class="type">int</span> i = <span class="number">0</span>; i &lt; n ; ++ i ) &#123;</span><br><span class="line">            <span class="keyword">if</span> (maxx[i] &gt; max_num2 &amp;&amp; i != max_loc1) max_num2 = maxx[i], max_loc2 = i;</span><br><span class="line">            <span class="keyword">if</span> (minn[i] &lt; min_num2 &amp;&amp; i != min_loc1) min_num2 = minn[i], min_loc2 = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> max_loc1 != min_loc1 ? max_num1-min_num1 : <span class="built_in">max</span>(max_num1-min_num2, max_num2-min_num1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="2025-02-20" tabindex="-1" id="2025-02-20"><a class="headerlink" href="#2025-02-20"></a>2025-02-20</h2>
+<blockquote>
+<p>题目传送门：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/number-of-even-and-odd-bits/description/?envType=daily-question&amp;envId=2025-02-20">2595. 奇偶位数 - 力扣（LeetCode）</a></p>
+</blockquote>
+<p>模2除2，做统计即可。</p>
+<p>最后实现代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">evenOddBit</span><span class="params">(<span class="type">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">ans</span><span class="params">(<span class="number">2</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> ( n ) &#123;</span><br><span class="line">            ans[cnt%<span class="number">2</span>] += n%<span class="number">2</span>;</span><br><span class="line">            n /= <span class="number">2</span>;</span><br><span class="line">            cnt++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">回顾上一篇</div><a href="/wiki/LeetCode/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/2025%E5%B9%B401%E6%9C%88%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98.html">2025年01月每日一题</a></div><div class="item" id="next"></div></section></div>
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">@anonymity</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar">Stellar</a> 主题创建。<br />
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-01"><span class="toc-text">2025-02-01</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-02"><span class="toc-text">2025-02-02</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-03"><span class="toc-text">2025-02-03</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-04"><span class="toc-text">2025-02-04</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-05"><span class="toc-text">2025-02-05</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-06"><span class="toc-text">2025-02-06</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-07"><span class="toc-text">2025-02-07</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-08"><span class="toc-text">2025-02-08</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-09"><span class="toc-text">2025-02-09</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-10"><span class="toc-text">2025-02-10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-11"><span class="toc-text">2025-02-11</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-12"><span class="toc-text">2025-02-12</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-13"><span class="toc-text">2025-02-13</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-14"><span class="toc-text">2025-02-14</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-15"><span class="toc-text">2025-02-15</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-16"><span class="toc-text">2025-02-16</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-17"><span class="toc-text">2025-02-17</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-18"><span class="toc-text">2025-02-18</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-19"><span class="toc-text">2025-02-19</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2025-02-20"><span class="toc-text">2025-02-20</span></a></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"codeblock":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.4/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js`,
+    marked: `https://cdn.bootcdn.net/ajax/libs/marked/4.0.18/marked.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.27.0" async></script>
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script><script defer src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@17.8.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.swiper-slide img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || null
+        }
+      });
+    })
+  }
+</script><script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@8.4.5/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script><link rel="stylesheet" href="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://gcore.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"onload="renderMathInElement(document.body);"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
